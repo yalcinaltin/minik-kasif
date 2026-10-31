@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minik Kaşif - 3-5 Yaş Çocuk Bilişsel ve Zihinsel Oyun Dünyası</title>
-    <meta name="description" content="3-5 yaş çocuklar için 15 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi ve daha fazlası.">
+    <meta name="description" content="3-5 yaş çocuklar için 18 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi ve daha fazlası.">
 
     <!-- 📲 Uygulama (PWA): ana ekrana ekleme, simgeler, tam ekran açılış -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -225,6 +225,30 @@
                 <div class="tab-sub">Sınıflandırma & Gruplama</div>
             </div>
         </button>
+
+        <button class="nav-tab-btn" data-tab="dots" aria-selected="false">
+            <span class="tab-icon">✏️</span>
+            <div>
+                <div class="tab-title">Noktaları Birleştir</div>
+                <div class="tab-sub">Sayı Sırası & Gizli Resim</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="oddone" aria-selected="false">
+            <span class="tab-icon">🔍</span>
+            <div>
+                <div class="tab-title">Farklı Olanı Bul</div>
+                <div class="tab-sub">Görsel Ayırt Etme</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="missing" aria-selected="false">
+            <span class="tab-icon">🙈</span>
+            <div>
+                <div class="tab-title">Kim Kayboldu?</div>
+                <div class="tab-sub">Bak, Hatırla & Bul</div>
+            </div>
+        </button>
     </nav>
 
     <!-- Ana Oyun Alanı (Tam Ekran Uçtan Uca) -->
@@ -442,7 +466,7 @@
         <section id="view-shape" class="game-view">
             <div class="level-banner-card banner-shape">
                 <div class="level-meta">
-                    <h2 id="shape-title">Bölüm 1: Geometrik Şekiller 🔺🟡⬛⭐</h2>
+                    <h2 id="shape-title">Bölüm 1: Geometrik Şekiller 🔺🔵⬛⭐</h2>
                     <p id="shape-instruction" class="level-instruction">Renkli şekilleri doğru gölgelerine yerleştir!</p>
                 </div>
                 <div class="level-nav-actions">
@@ -776,6 +800,77 @@
             </div>
         </section>
 
+        <!-- ============================================== -->
+        <!-- ✏️ NOKTALARI BİRLEŞTİR (SAYI SIRASI)          -->
+        <!-- ============================================== -->
+        <section id="view-dots" class="game-view">
+            <div class="level-banner-card banner-dots">
+                <div class="level-meta">
+                    <h2 id="dots-title">Bölüm 1: Üç Nokta ✏️</h2>
+                    <p id="dots-instruction" class="level-instruction">Bir numaradan başla! Noktalara sırayla dokun.</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="dots-progress" class="balloon-score-pill dots-progress-pill">✏️ 0 / 3</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-dots-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-dots-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dots-stage-card">
+                <div id="dots-board" class="dots-board" aria-label="Nokta Tahtası"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🔍 MODÜL 16: FARKLI OLANI BUL                  -->
+        <!-- ============================================== -->
+        <section id="view-oddone" class="game-view">
+            <div class="level-banner-card banner-oddone">
+                <div class="level-meta">
+                    <h2 id="oddone-title">Bölüm 1: Hayvanlar 🐶🐱</h2>
+                    <p id="oddone-instruction" class="level-instruction">Biri farklı! Ona dokun.</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="oddone-progress" class="balloon-score-pill oddone-progress-pill">⭐ 1 / 3</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-oddone-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-oddone-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="oddone-stage-card">
+                <div id="oddone-board" class="oddone-board" data-count="3" aria-label="Kartlar"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🙈 MODÜL 17: KİM KAYBOLDU? (GÖRSEL BELLEK)     -->
+        <!-- ============================================== -->
+        <section id="view-missing" class="game-view">
+            <div class="level-banner-card banner-missing">
+                <div class="level-meta">
+                    <h2 id="missing-title">Bölüm 1: Üç Hayvan 🐶🐱🐰</h2>
+                    <p id="missing-instruction" class="level-instruction">Hayvanlara iyi bak! Biri saklanacak.</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="missing-progress" class="balloon-score-pill missing-progress-pill">⭐ 1 / 3</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-missing-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-missing-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="missing-stage-card">
+                <div id="missing-status" class="missing-status-chip">👀 İyi bak, aklında tut!</div>
+                <div id="missing-shelf" class="missing-shelf" aria-label="Kartlar"></div>
+                <div id="missing-options" class="missing-options missing-options-hidden" aria-label="Seçenekler"></div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ============================================== -->
@@ -863,6 +958,21 @@
                     <p><strong>Kazanımlar:</strong> Nesneleri <strong>tek bir özelliğe</strong> göre gruplama (renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen). 3-5 yaşta iki özelliğe birden göre ayırmak zordur; bölümler bu yüzden tek kurallıdır.</p>
                 </div>
 
+                <div class="guide-pill-card" style="border-left-color: #0EA5E9;">
+                    <h4>✏️ Noktaları Birleştir (Sayı Sırası & İnce Motor)</h4>
+                    <p><strong>Kazanımlar:</strong> 1'den 10'a <strong>sayı sırasını</strong> izleme, rakam tanıma ve kalem tutmaya hazırlık. Noktalara sırayla dokunulur ya da parmak noktadan noktaya kaydırılır; her sayı sesli söylenir, şekil kapanınca gizli resim (çadır, ev, balık, yıldız…) ortaya çıkar. Nokta sayısı 3'ten 10'a yavaşça artar; yanlış noktada sıradaki nokta parlayarak ipucu verir.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #0EA5E9;">
+                    <h4>🔍 16. Farklı Olanı Bul (Görsel Ayırt Etme)</h4>
+                    <p><strong>Kazanımlar:</strong> 3-4 nesne arasından <strong>tek bir özelliği</strong> (tür, renk, boy, yön) farklı olanı bulma; benzerlik-farklılık kavramı, dikkat ve karşılaştırma. Doğru seçimde fark sesli söylenir ("Kedi! Ötekiler köpek."). <em>Soru önerisi:</em> "Bu neden farklı?"</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #F59E0B;">
+                    <h4>🙈 17. Kim Kayboldu? (Görsel Bellek)</h4>
+                    <p><strong>Kazanımlar:</strong> Kısa süre bakılan 3-5 nesneyi akılda tutup perde kalkınca eksik olanı bulma; görsel çalışma belleği. İlk bölümlerde kaybolanın yeri ❓ ile boş kalır, sonra kartlar kayar, en sonda yerleri de karışır. İki yanlıştan sonra doğru seçenek parlayarak ipucu verir.</p>
+                </div>
+
                 <div class="guide-pill-card" style="border-left-color: #10B981;">
                     <h4>📲 Telefona Uygulama Gibi Kurma</h4>
                     <p>Oyun ana ekrana eklenebilir: tarayıcı çubuğu olmadan tam ekran açılır ve bir kez açıldıktan sonra <strong>internetsiz</strong> oynanır. Android Chrome'da menüden <strong>"Uygulamayı yükle"</strong>, iPhone Safari'de <strong>Paylaş › Ana Ekrana Ekle</strong>. Oyun seçim ekranındaki <strong>📲 Ana ekrana ekle</strong> düğmesi de yol gösterir.</p>
@@ -930,5 +1040,8 @@
     <script src="games/jigsaw.js"></script>
     <script src="games/melody.js"></script>
     <script src="games/sorting.js"></script>
+    <script src="games/dots.js"></script>
+    <script src="games/oddone.js"></script>
+    <script src="games/missing.js"></script>
 </body>
 </html>

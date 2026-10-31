@@ -129,7 +129,7 @@ const BUNNY_LEVELS = [
     {
         id: 10,
         title: "Şampiyon Kaşif! 👑",
-        instruction: "Büyük final! Bütün yeteneklerini göster ve ödülü kap!",
+        instruction: "Bütün yeteneklerini göster ve havucu kap!",
         gridSize: { cols: 5, rows: 5 },
         start: { x: 0, y: 2 },
         target: { x: 4, y: 2 },
@@ -140,6 +140,72 @@ const BUNNY_LEVELS = [
         ],
         stars: [{ x: 2, y: 1 }, { x: 2, y: 3 }],
         pedagogicalFocus: "Kapsamlı algoritmik düşünme ve ustalık"
+    },
+    {
+        id: 11,
+        title: "Kaya Duvarı ⛰️",
+        instruction: "Kayaların üstünden dolaş, havuca git!",
+        gridSize: { cols: 5, rows: 5 },
+        start: { x: 0, y: 4 },
+        target: { x: 4, y: 4 },
+        obstacles: [
+            { x: 2, y: 2, type: "rock", emoji: "⛰️" },
+            { x: 2, y: 3, type: "rock", emoji: "⛰️" },
+            { x: 2, y: 4, type: "rock", emoji: "⛰️" }
+        ],
+        stars: [{ x: 2, y: 1 }],
+        pedagogicalFocus: "Uzun bir engeli yukarıdan dolaşma (yukarı-sağ-aşağı dizisi)"
+    },
+    {
+        id: 12,
+        title: "Dere Kenarı 💧",
+        instruction: "Suya girme! Dereyi dolaş, havuca git.",
+        gridSize: { cols: 5, rows: 5 },
+        start: { x: 0, y: 0 },
+        target: { x: 0, y: 4 },
+        obstacles: [
+            { x: 0, y: 2, type: "pond", emoji: "💧" },
+            { x: 1, y: 2, type: "pond", emoji: "💧" },
+            { x: 2, y: 2, type: "pond", emoji: "💧" },
+            { x: 2, y: 4, type: "bush", emoji: "🌳" }
+        ],
+        stars: [{ x: 3, y: 2 }, { x: 1, y: 4 }],
+        pedagogicalFocus: "Geçitten geçip geri dönme (sağ-aşağı-sol dizisi)"
+    },
+    {
+        id: 13,
+        title: "Orman Yolu 🌲",
+        instruction: "Ağaçları ve suyu dolaş, yıldızları da topla!",
+        gridSize: { cols: 6, rows: 5 },
+        start: { x: 0, y: 0 },
+        target: { x: 5, y: 4 },
+        obstacles: [
+            { x: 2, y: 0, type: "bush", emoji: "🌳" },
+            { x: 2, y: 1, type: "bush", emoji: "🌳" },
+            { x: 4, y: 3, type: "pond", emoji: "💧" },
+            { x: 4, y: 4, type: "pond", emoji: "💧" }
+        ],
+        stars: [{ x: 3, y: 1 }, { x: 1, y: 2 }],
+        pedagogicalFocus: "Daha geniş tahtada iki engel grubunu sırayla aşma"
+    },
+    {
+        id: 14,
+        title: "Büyük Bahçe Finali 🏆",
+        instruction: "Büyük final! Yıldızları da topla, havuca koş!",
+        gridSize: { cols: 6, rows: 6 },
+        start: { x: 0, y: 5 },
+        target: { x: 5, y: 0 },
+        obstacles: [
+            { x: 1, y: 0, type: "bush", emoji: "🌳" },
+            { x: 2, y: 2, type: "pond", emoji: "💧" },
+            { x: 3, y: 2, type: "pond", emoji: "💧" },
+            { x: 5, y: 2, type: "rock", emoji: "⛰️" },
+            { x: 0, y: 3, type: "bush", emoji: "🌳" },
+            { x: 2, y: 3, type: "pond", emoji: "💧" },
+            { x: 3, y: 3, type: "pond", emoji: "💧" }
+        ],
+        stars: [{ x: 2, y: 4 }, { x: 4, y: 1 }],
+        pedagogicalFocus: "Büyük tahtada gölün çevresinden ara hedeflerle uzun rota planlama"
     }
 ];
 
@@ -153,11 +219,11 @@ const BALLOON_LEVELS = [
         mode: "free",
         targetDesc: "Herhangi bir balonu patlat!",
         colors: [
-            { name: "Kırmızı", hex: "#EF4444", emoji: "🔴" },
-            { name: "Mavi", hex: "#3B82F6", emoji: "🔵" },
-            { name: "Sarı", hex: "#FACC15", emoji: "🟡" },
-            { name: "Yeşil", hex: "#22C55E", emoji: "🟢" },
-            { name: "Mor", hex: "#A855F7", emoji: "🟣" }
+            { name: "Kırmızı", hex: "#EF4444", emoji: "❤️" },
+            { name: "Mavi", hex: "#3B82F6", emoji: "💙" },
+            { name: "Sarı", hex: "#FACC15", emoji: "💛" },
+            { name: "Yeşil", hex: "#22C55E", emoji: "💚" },
+            { name: "Mor", hex: "#A855F7", emoji: "💜" }
         ]
     },
     {
@@ -169,25 +235,25 @@ const BALLOON_LEVELS = [
         targetColor: "Kırmızı",
         targetDesc: "Yalnızca Kırmızı balonları patlat!",
         colors: [
-            { name: "Kırmızı", hex: "#EF4444", emoji: "🔴" },
-            { name: "Mavi", hex: "#3B82F6", emoji: "🔵" },
-            { name: "Sarı", hex: "#FACC15", emoji: "🟡" },
-            { name: "Yeşil", hex: "#22C55E", emoji: "🟢" }
+            { name: "Kırmızı", hex: "#EF4444", emoji: "❤️" },
+            { name: "Mavi", hex: "#3B82F6", emoji: "💙" },
+            { name: "Sarı", hex: "#FACC15", emoji: "💛" },
+            { name: "Yeşil", hex: "#22C55E", emoji: "💚" }
         ]
     },
     {
         id: 3,
-        title: "Sarı Güneş Balonları 🟡",
+        title: "Sarı Güneş Balonları ☀️",
         instruction: "Pırıl pırıl parlayan SARI balonları bul ve patlat!",
         targetCount: 5,
         mode: "color_filter",
         targetColor: "Sarı",
         targetDesc: "Yalnızca Sarı balonları patlat!",
         colors: [
-            { name: "Sarı", hex: "#FACC15", emoji: "🟡" },
-            { name: "Mavi", hex: "#3B82F6", emoji: "🔵" },
-            { name: "Mor", hex: "#A855F7", emoji: "🟣" },
-            { name: "Yeşil", hex: "#22C55E", emoji: "🟢" }
+            { name: "Sarı", hex: "#FACC15", emoji: "💛" },
+            { name: "Mavi", hex: "#3B82F6", emoji: "💙" },
+            { name: "Mor", hex: "#A855F7", emoji: "💜" },
+            { name: "Yeşil", hex: "#22C55E", emoji: "💚" }
         ]
     },
     {
@@ -204,6 +270,50 @@ const BALLOON_LEVELS = [
             { label: "4", speech: "Dört!" },
             { label: "5", speech: "Beş!" }
         ]
+    },
+    {
+        id: 5,
+        title: "Mavi Gökyüzü Balonları 🔵",
+        instruction: "Sadece MAVİ balonları patlat!",
+        targetCount: 6,
+        mode: "color_filter",
+        targetColor: "Mavi",
+        targetDesc: "Yalnızca Mavi balonları patlat!",
+        colors: [
+            { name: "Mavi", hex: "#3B82F6", emoji: "💙" },
+            { name: "Kırmızı", hex: "#EF4444", emoji: "❤️" },
+            { name: "Sarı", hex: "#FACC15", emoji: "💛" },
+            { name: "Yeşil", hex: "#22C55E", emoji: "💚" },
+            { name: "Mor", hex: "#A855F7", emoji: "💜" }
+        ]
+    },
+    {
+        id: 6,
+        title: "Sırayla Say: 1, 2, 3 🔢",
+        instruction: "Balonları sırayla patlat: bir, iki, üç!",
+        targetCount: 3,
+        mode: "sequence", // Sayılar sırayla patlatılır; sıradaki sayı rozette görünür
+        targetDesc: "Balonları sırayla patlat!",
+        items: [
+            { label: "1", speech: "Bir!" },
+            { label: "2", speech: "İki!" },
+            { label: "3", speech: "Üç!" }
+        ]
+    },
+    {
+        id: 7,
+        title: "Beşe Kadar Sayalım 🔢",
+        instruction: "Sırayla patlat! Bir, iki, üç, dört, beş!",
+        targetCount: 5,
+        mode: "sequence",
+        targetDesc: "Balonları sırayla patlat!",
+        items: [
+            { label: "1", speech: "Bir!" },
+            { label: "2", speech: "İki!" },
+            { label: "3", speech: "Üç!" },
+            { label: "4", speech: "Dört!" },
+            { label: "5", speech: "Beş!" }
+        ]
     }
 ];
 
@@ -211,12 +321,12 @@ const BALLOON_LEVELS = [
 const SHAPE_MATCH_LEVELS = [
     {
         id: 1,
-        title: "Geometrik Şekiller 🔺🟡⬛⭐",
+        title: "Geometrik Şekiller 🔺🔵⬛⭐",
         instruction: "Renkli şekilleri doğru gölgelerine yerleştir!",
         items: [
-            { id: "circle", symbol: "🟡", label: "Sarı Daire" },
+            { id: "circle", symbol: "🔵", label: "Mavi Daire" },
             { id: "triangle", symbol: "🔺", label: "Kırmızı Üçgen" },
-            { id: "square", symbol: "🟦", label: "Mavi Kare" },
+            { id: "square", symbol: "⬛", label: "Siyah Kare" },
             { id: "star", symbol: "⭐", label: "Sarı Yıldız" }
         ]
     },
@@ -251,6 +361,39 @@ const SHAPE_MATCH_LEVELS = [
             { id: "banana", symbol: "🍌", label: "Muz" },
             { id: "strawberry", symbol: "🍓", label: "Çilek" },
             { id: "grapes", symbol: "🍇", label: "Üzüm" }
+        ]
+    },
+    {
+        id: 5,
+        title: "Deniz Dostları 🐟🐙🐢🦀",
+        instruction: "Deniz canlılarını gölgeleriyle eşleştir!",
+        items: [
+            { id: "fish", symbol: "🐟", label: "Balık" },
+            { id: "octopus", symbol: "🐙", label: "Ahtapot" },
+            { id: "turtle", symbol: "🐢", label: "Kaplumbağa" },
+            { id: "crab", symbol: "🦀", label: "Yengeç" }
+        ]
+    },
+    {
+        id: 6,
+        title: "Orman Dostları 🐻🐿️🦔🦌",
+        instruction: "Orman hayvanlarını gölgelerine yerleştir!",
+        items: [
+            { id: "bear", symbol: "🐻", label: "Ayıcık" },
+            { id: "squirrel", symbol: "🐿️", label: "Sincap" },
+            { id: "hedgehog", symbol: "🦔", label: "Kirpi" },
+            { id: "deer", symbol: "🦌", label: "Geyik" }
+        ]
+    },
+    {
+        id: 7,
+        title: "Kanatlı Kuşlar 🐔🐧🦆🦉",
+        instruction: "Kuşların gölgeleri çok benzer, dikkatli bak!",
+        items: [
+            { id: "chicken", symbol: "🐔", label: "Tavuk" },
+            { id: "penguin", symbol: "🐧", label: "Penguen" },
+            { id: "duck", symbol: "🦆", label: "Ördek" },
+            { id: "owl", symbol: "🦉", label: "Baykuş" }
         ]
     }
 ];
@@ -294,6 +437,42 @@ const MEMORY_LEVELS = [
             { id: "elephant", symbol: "🐘", label: "Fil" },
             { id: "panda", symbol: "🐼", label: "Panda" }
         ]
+    },
+    {
+        id: 5,
+        title: "Gökyüzü (8 Kart) ☀️🌙⭐☁️",
+        instruction: "Gökyüzündeki çiftleri bul!",
+        pairs: [
+            { id: "sun", symbol: "☀️", label: "Güneş" },
+            { id: "moon", symbol: "🌙", label: "Ay" },
+            { id: "star", symbol: "⭐", label: "Yıldız" },
+            { id: "cloud", symbol: "☁️", label: "Bulut" }
+        ]
+    },
+    {
+        id: 6,
+        title: "Çiftlik Hayvanları (10 Kart) 🐮🐔🐑",
+        instruction: "Çiftlik hayvanlarının eşlerini bul!",
+        pairs: [
+            { id: "cow", symbol: "🐮", label: "İnek" },
+            { id: "chicken", symbol: "🐔", label: "Tavuk" },
+            { id: "sheep", symbol: "🐑", label: "Koyun" },
+            { id: "horse", symbol: "🐴", label: "At" },
+            { id: "duck", symbol: "🦆", label: "Ördek" }
+        ]
+    },
+    {
+        id: 7,
+        title: "Oyuncak Kutusu (12 Kart) ⚽🎈🧸",
+        instruction: "Oyuncak çiftlerini bul, hepsini topla!",
+        pairs: [
+            { id: "ball", symbol: "⚽", label: "Top" },
+            { id: "balloon", symbol: "🎈", label: "Balon" },
+            { id: "teddy", symbol: "🧸", label: "Ayıcık" },
+            { id: "drum", symbol: "🥁", label: "Davul" },
+            { id: "rocket", symbol: "🚀", label: "Roket" },
+            { id: "gift", symbol: "🎁", label: "Hediye" }
+        ]
     }
 ];
 
@@ -329,9 +508,9 @@ const PATTERN_LEVELS = [
         ],
         correct: { symbol: "🔴", label: "Kırmızı Top" },
         options: [
-            { symbol: "🟡", label: "Sarı Top" },
+            { symbol: "⚪", label: "Beyaz Top" },
             { symbol: "🔴", label: "Kırmızı Top" },
-            { symbol: "🟢", label: "Yeşil Top" }
+            { symbol: "⚫", label: "Siyah Top" }
         ],
         patternType: "Renk Değişimi Örüntüsü"
     },
@@ -356,19 +535,19 @@ const PATTERN_LEVELS = [
     },
     {
         id: 4,
-        title: "Geometrik Şekiller 🟡🔺",
+        title: "Geometrik Şekiller 🔵🔺",
         instruction: "Daire, Üçgen, Daire, Üçgen... Şimdi hangisi gelmeli?",
         pattern: [
-            { symbol: "🟡", label: "Sarı Daire" },
+            { symbol: "🔵", label: "Mavi Daire" },
             { symbol: "🔺", label: "Kırmızı Üçgen" },
-            { symbol: "🟡", label: "Sarı Daire" },
+            { symbol: "🔵", label: "Mavi Daire" },
             { symbol: "🔺", label: "Kırmızı Üçgen" }
         ],
-        correct: { symbol: "🟡", label: "Sarı Daire" },
+        correct: { symbol: "🔵", label: "Mavi Daire" },
         options: [
             { symbol: "⬛", label: "Kare" },
             { symbol: "🔺", label: "Kırmızı Üçgen" },
-            { symbol: "🟡", label: "Sarı Daire" }
+            { symbol: "🔵", label: "Mavi Daire" }
         ],
         patternType: "Şekil ve Form Örüntüsü"
     },
@@ -448,6 +627,90 @@ const PATTERN_LEVELS = [
             { symbol: "🛸", label: "UFO" }
         ],
         patternType: "Gelişmiş Sıralı Mantık"
+    },
+    {
+        id: 9,
+        title: "Bulutlu Gökyüzü ☀️☁️",
+        instruction: "Güneş, bulut, bulut... Sırada ne var?",
+        pattern: [
+            { symbol: "☀️", label: "Güneş" },
+            { symbol: "☁️", label: "Bulut" },
+            { symbol: "☁️", label: "Bulut" },
+            { symbol: "☀️", label: "Güneş" },
+            { symbol: "☁️", label: "Bulut" },
+            { symbol: "☁️", label: "Bulut" }
+        ],
+        correct: { symbol: "☀️", label: "Güneş" },
+        options: [
+            { symbol: "☁️", label: "Bulut" },
+            { symbol: "☀️", label: "Güneş" },
+            { symbol: "🌈", label: "Gökkuşağı" }
+        ],
+        patternType: "ABB Örüntüsü"
+    },
+    {
+        id: 10,
+        title: "Çilek ve Limon 🍓🍋",
+        instruction: "Çilek, çilek, limon, limon... Sonra hangisi?",
+        pattern: [
+            { symbol: "🍓", label: "Çilek" },
+            { symbol: "🍓", label: "Çilek" },
+            { symbol: "🍋", label: "Limon" },
+            { symbol: "🍋", label: "Limon" },
+            { symbol: "🍓", label: "Çilek" },
+            { symbol: "🍓", label: "Çilek" }
+        ],
+        correct: { symbol: "🍋", label: "Limon" },
+        options: [
+            { symbol: "🍓", label: "Çilek" },
+            { symbol: "🍋", label: "Limon" },
+            { symbol: "🍇", label: "Üzüm" },
+            { symbol: "🍊", label: "Portakal" }
+        ],
+        patternType: "AABB Örüntüsü (4 seçenek)"
+    },
+    {
+        id: 11,
+        title: "Dört Arkadaş 🐶🐱🐰🐻",
+        instruction: "Köpek, kedi, tavşan, ayı... Sıradaki kim?",
+        pattern: [
+            { symbol: "🐶", label: "Köpek" },
+            { symbol: "🐱", label: "Kedi" },
+            { symbol: "🐰", label: "Tavşan" },
+            { symbol: "🐻", label: "Ayı" },
+            { symbol: "🐶", label: "Köpek" },
+            { symbol: "🐱", label: "Kedi" },
+            { symbol: "🐰", label: "Tavşan" }
+        ],
+        correct: { symbol: "🐻", label: "Ayı" },
+        options: [
+            { symbol: "🐶", label: "Köpek" },
+            { symbol: "🐻", label: "Ayı" },
+            { symbol: "🐸", label: "Kurbağa" }
+        ],
+        patternType: "ABCD Dörtlü Döngü"
+    },
+    {
+        id: 12,
+        title: "Meyve Treni 🍎🍌🍇🍉",
+        instruction: "Elma, muz, üzüm, karpuz... Sıradaki hangisi?",
+        pattern: [
+            { symbol: "🍎", label: "Elma" },
+            { symbol: "🍌", label: "Muz" },
+            { symbol: "🍇", label: "Üzüm" },
+            { symbol: "🍉", label: "Karpuz" },
+            { symbol: "🍎", label: "Elma" },
+            { symbol: "🍌", label: "Muz" },
+            { symbol: "🍇", label: "Üzüm" }
+        ],
+        correct: { symbol: "🍉", label: "Karpuz" },
+        options: [
+            { symbol: "🍎", label: "Elma" },
+            { symbol: "🍌", label: "Muz" },
+            { symbol: "🍇", label: "Üzüm" },
+            { symbol: "🍉", label: "Karpuz" }
+        ],
+        patternType: "ABCD Dörtlü Döngü (4 seçenek)"
     }
 ];
 
@@ -518,6 +781,43 @@ const SIZE_LEVELS = [
             { id: "gunes", symbol: "☀️", label: "Güneş", rank: 3, sizeText: "En Büyük", scale: 1.65 }
         ],
         pedagogicalFocus: "Geniş ölçekli kavramsal düşünme"
+    },
+    {
+        id: 7,
+        title: "Dört Hayvan Dostu 🐭🐱🐴🐘",
+        instruction: "Dört hayvanı en küçükten en büyüğe diz!",
+        items: [
+            { id: "fare", symbol: "🐭", label: "Fare", rank: 1, sizeText: "En Küçük", scale: 0.7 },
+            { id: "kedi", symbol: "🐱", label: "Kedi", rank: 2, sizeText: "Küçük", scale: 0.95 },
+            { id: "at", symbol: "🐴", label: "At", rank: 3, sizeText: "Büyük", scale: 1.2 },
+            { id: "fil", symbol: "🐘", label: "Fil", rank: 4, sizeText: "En Büyük", scale: 1.45 }
+        ],
+        pedagogicalFocus: "Dört nesneyle sıralama (Seriation)"
+    },
+    {
+        id: 8,
+        title: "Tersine Sırala 🌳🌷🐞",
+        instruction: "Bu kez tersine! En büyükten en küçüğe diz!",
+        order: "desc", // İsteğe bağlı: büyükten küçüğe sıralama (yoksa küçükten büyüğe)
+        items: [
+            { id: "agac", symbol: "🌳", label: "Ağaç", rank: 3, sizeText: "En Büyük", scale: 1.6 },
+            { id: "cicek", symbol: "🌷", label: "Çiçek", rank: 2, sizeText: "Orta Boy", scale: 1.15 },
+            { id: "ugurbocegi", symbol: "🐞", label: "Uğur Böceği", rank: 1, sizeText: "En Küçük", scale: 0.75 }
+        ],
+        pedagogicalFocus: "Ters yönde sıralama (büyükten küçüğe)"
+    },
+    {
+        id: 9,
+        title: "Deniz Canlıları 🐳🐬🐟🦐",
+        instruction: "Koca balinadan minik karidese doğru diz!",
+        order: "desc",
+        items: [
+            { id: "balina", symbol: "🐳", label: "Balina", rank: 4, sizeText: "En Büyük", scale: 1.45 },
+            { id: "yunus", symbol: "🐬", label: "Yunus", rank: 3, sizeText: "Büyük", scale: 1.2 },
+            { id: "balik", symbol: "🐟", label: "Balık", rank: 2, sizeText: "Küçük", scale: 0.95 },
+            { id: "karides", symbol: "🦐", label: "Karides", rank: 1, sizeText: "En Küçük", scale: 0.7 }
+        ],
+        pedagogicalFocus: "Dört nesneyle ters yönde sıralama"
     }
 ];
 
@@ -566,6 +866,87 @@ const REALTIME_MAZE_LEVELS = [
             { x: 2, y: 4 }, { x: 2, y: 5 }
         ],
         stars: [{ x: 0, y: 3 }, { x: 3, y: 1 }, { x: 6, y: 1 }]
+    },
+    {
+        id: 4,
+        title: "Zikzak Patika 🐾",
+        instruction: "Yolu takip et, kemiğe koş!",
+        cols: 7,
+        rows: 6,
+        start: { x: 0, y: 0 },
+        goal: { x: 6, y: 5 },
+        walls: [
+            { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }, { x: 4, y: 1 }, { x: 6, y: 1 },
+            { x: 0, y: 3 }, { x: 2, y: 3 }, { x: 3, y: 3 }, { x: 4, y: 3 }, { x: 5, y: 3 }, { x: 6, y: 3 }
+        ],
+        stars: [{ x: 6, y: 0 }, { x: 0, y: 2 }, { x: 3, y: 4 }]
+    },
+    {
+        id: 5,
+        title: "Kaktüs Çölü 🌵",
+        instruction: "Kaktüslerin arasından kemiğe koş!",
+        cols: 7,
+        rows: 5,
+        start: { x: 0, y: 0 },
+        goal: { x: 6, y: 0 },
+        wallEmoji: "🌵",
+        walls: [
+            { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 1, y: 3 },
+            { x: 3, y: 1 }, { x: 3, y: 2 }, { x: 3, y: 3 }, { x: 3, y: 4 },
+            { x: 5, y: 0 }, { x: 5, y: 1 }, { x: 5, y: 2 }, { x: 5, y: 3 }
+        ],
+        stars: [{ x: 0, y: 4 }, { x: 2, y: 0 }, { x: 4, y: 4 }]
+    },
+    {
+        id: 6,
+        title: "Karlı Orman ⛄",
+        instruction: "Kardan adamların arasından geç, kemiği bul!",
+        cols: 7,
+        rows: 7,
+        start: { x: 0, y: 0 },
+        goal: { x: 6, y: 6 },
+        wallEmoji: "⛄",
+        walls: [
+            { x: 3, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 3, y: 1 }, { x: 5, y: 1 },
+            { x: 5, y: 2 }, { x: 1, y: 3 }, { x: 2, y: 3 }, { x: 3, y: 3 }, { x: 5, y: 3 },
+            { x: 3, y: 4 }, { x: 0, y: 5 }, { x: 1, y: 5 }, { x: 3, y: 5 }, { x: 4, y: 5 },
+            { x: 5, y: 5 }, { x: 5, y: 6 }
+        ],
+        stars: [{ x: 3, y: 2 }, { x: 1, y: 4 }, { x: 0, y: 6 }]
+    },
+    {
+        id: 7,
+        title: "Ayçiçeği Tarlası 🌻",
+        instruction: "Dört yıldızı da toplayabilir misin? Sonra kemiğe koş!",
+        cols: 7,
+        rows: 7,
+        start: { x: 0, y: 0 },
+        goal: { x: 6, y: 6 },
+        wallEmoji: "🌻",
+        walls: [
+            { x: 2, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 4, y: 1 }, { x: 5, y: 1 },
+            { x: 5, y: 2 }, { x: 0, y: 3 }, { x: 1, y: 3 }, { x: 3, y: 3 }, { x: 3, y: 4 },
+            { x: 5, y: 4 }, { x: 6, y: 4 }, { x: 1, y: 5 }, { x: 2, y: 5 }, { x: 3, y: 5 },
+            { x: 4, y: 6 }
+        ],
+        stars: [{ x: 3, y: 0 }, { x: 3, y: 2 }, { x: 0, y: 4 }, { x: 3, y: 6 }]
+    },
+    {
+        id: 8,
+        title: "Büyük Orman Labirenti 🌲",
+        instruction: "Yıldızları toplayabilir misin? Sonra kemiği yakala!",
+        cols: 7,
+        rows: 7,
+        start: { x: 0, y: 0 },
+        goal: { x: 6, y: 6 },
+        wallEmoji: "🌲",
+        walls: [
+            { x: 3, y: 0 }, { x: 1, y: 1 }, { x: 3, y: 1 }, { x: 5, y: 1 }, { x: 1, y: 2 },
+            { x: 5, y: 2 }, { x: 1, y: 3 }, { x: 2, y: 3 }, { x: 3, y: 3 }, { x: 5, y: 3 },
+            { x: 3, y: 4 }, { x: 0, y: 5 }, { x: 1, y: 5 }, { x: 3, y: 5 }, { x: 4, y: 5 },
+            { x: 5, y: 5 }
+        ],
+        stars: [{ x: 6, y: 0 }, { x: 4, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }]
     }
 ];
 
@@ -603,6 +984,43 @@ const BALL_TOSS_LEVELS = [
         ballLabel: "Sulu Karpuz",
         targetCount: 5,
         targetSpeed: 0.28
+    },
+    {
+        id: 4,
+        title: "Muz Sever Maymun 🐵",
+        instruction: "Maymun küçüldü! Dikkatle nişan al, muzu at!",
+        targetEmoji: "🐵",
+        targetLabel: "Maymuncuk",
+        ballEmoji: "🍌",
+        ballLabel: "Muz",
+        targetCount: 5,
+        targetSpeed: 0.2,
+        targetScale: 0.8 // İsteğe bağlı: hedef %80 boyutunda (yoksa tam boy)
+    },
+    {
+        id: 5,
+        title: "Penguene Balık 🐧",
+        instruction: "Penguen kayıyor! Balığı tam ona at!",
+        targetEmoji: "🐧",
+        targetLabel: "Penguen",
+        ballEmoji: "🐟",
+        ballLabel: "Balık",
+        targetCount: 6,
+        targetSpeed: 0.3,
+        targetScale: 0.85
+    },
+    {
+        id: 6,
+        title: "Aç Filcik 🐘",
+        instruction: "Filcik çok hızlı! Meyveleri ona fırlat!",
+        targetEmoji: "🐘",
+        targetLabel: "Filcik",
+        ballEmoji: "🍎",
+        ballLabel: "Meyve",
+        ballEmojis: ["🍎", "🍌", "🍉", "🍇"], // İsteğe bağlı: her atışta sıradaki meyve
+        targetCount: 6,
+        targetSpeed: 0.34,
+        targetScale: 0.8
     }
 ];
 
@@ -648,6 +1066,54 @@ const SOAP_BUBBLE_LEVELS = [
             { symbol: "🍇", label: "Üzüm" },
             { symbol: "🍉", label: "Karpuz" }
         ]
+    },
+    {
+        id: 4,
+        title: "Balıklı Köpükler 🧼🐠",
+        instruction: "Sadece içinde balık olan köpükleri patlat!",
+        targetCount: 6,
+        // İsteğe bağlı: yalnız bu sürprizler sayılır; diğer köpükler sallanır, patlamaz
+        goalSymbols: ["🐠", "🐟"],
+        goalHint: "Balığı bul!",
+        surprises: [
+            { symbol: "🐠", label: "Renkli Balık" },
+            { symbol: "🐟", label: "Balık" },
+            { symbol: "🐙", label: "Ahtapot" },
+            { symbol: "🦀", label: "Yengeç" },
+            { symbol: "🐢", label: "Kaplumbağa" }
+        ]
+    },
+    {
+        id: 5,
+        title: "Minik Hızlı Köpükler 🧼🐰",
+        instruction: "Köpükler küçüldü ve hızlandı! Hepsini yakala!",
+        targetCount: 10,
+        bubbleScale: 0.8, // İsteğe bağlı: köpük boyutu (yoksa 1)
+        floatSpeed: 1.4, // İsteğe bağlı: yükselme hızı çarpanı (yoksa 1)
+        surprises: [
+            { symbol: "🐶", label: "Köpek" },
+            { symbol: "🐱", label: "Kedi" },
+            { symbol: "🐰", label: "Tavşan" },
+            { symbol: "🐥", label: "Civciv" },
+            { symbol: "🐮", label: "İnek" }
+        ]
+    },
+    {
+        id: 6,
+        title: "Yıldızlı Gece Köpükleri 🧼⭐",
+        instruction: "Sadece yıldızlı köpükleri patlat!",
+        targetCount: 8,
+        goalSymbols: ["⭐"],
+        goalHint: "Yıldızı bul!",
+        bubbleScale: 0.85,
+        floatSpeed: 1.2,
+        surprises: [
+            { symbol: "⭐", label: "Yıldız" },
+            { symbol: "🌙", label: "Ay" },
+            { symbol: "☁️", label: "Bulut" },
+            { symbol: "🚀", label: "Roket" },
+            { symbol: "☀️", label: "Güneş" }
+        ]
     }
 ];
 
@@ -680,7 +1146,7 @@ const ALL_COLORS = {
         cardBg: '#FEFCE8',
         borderHex: '#CA8A04',
         emoji: '☀️',
-        items: ['🟡 Halka', '☀️ Güneş', '🍌 Muz', '🐥 Civciv']
+        items: ['💛 Kalp', '☀️ Güneş', '🍌 Muz', '🐥 Civciv']
     },
     green: {
         id: 'green',
@@ -689,7 +1155,7 @@ const ALL_COLORS = {
         cardBg: '#F0FDF4',
         borderHex: '#15803D',
         emoji: '🐸',
-        items: ['🟢 Halka', '🍏 Yeşil Elma', '🐸 Kurbağa', '🌳 Ağaç']
+        items: ['💚 Kalp', '🍏 Yeşil Elma', '🐸 Kurbağa', '🌳 Ağaç']
     },
     orange: {
         id: 'orange',
@@ -698,7 +1164,7 @@ const ALL_COLORS = {
         cardBg: '#FFF7ED',
         borderHex: '#C2410C',
         emoji: '🥕',
-        items: ['🟠 Halka', '🥕 Havuç', '🍊 Portakal', '🦊 Tilki']
+        items: ['🧡 Kalp', '🥕 Havuç', '🍊 Portakal', '🦊 Tilki']
     },
     purple: {
         id: 'purple',
@@ -707,7 +1173,7 @@ const ALL_COLORS = {
         cardBg: '#FAF5FF',
         borderHex: '#7E22CE',
         emoji: '🍇',
-        items: ['🟣 Halka', '🍇 Üzüm', '🍆 Patlıcan', '🔮 Küre']
+        items: ['💜 Kalp', '🍇 Üzüm', '🍆 Patlıcan', '🔮 Küre']
     },
     pink: {
         id: 'pink',
@@ -716,7 +1182,7 @@ const ALL_COLORS = {
         cardBg: '#FDF2F8',
         borderHex: '#BE185D',
         emoji: '🌸',
-        items: ['🌸 Çiçek', '🦩 Flamingo', '🎀 Kurdele', '🍧 Dondurma']
+        items: ['🌸 Çiçek', '🐷 Domuzcuk', '🎀 Kurdele', '🍧 Dondurma']
     },
     brown: {
         id: 'brown',
@@ -725,7 +1191,7 @@ const ALL_COLORS = {
         cardBg: '#FEF3C7',
         borderHex: '#451A03',
         emoji: '🐻',
-        items: ['🟤 Halka', '🐻 Ayıcık', '🌰 Kestane', '🍫 Çikolata']
+        items: ['🥔 Patates', '🐻 Ayıcık', '🌰 Kestane', '🍫 Çikolata']
     },
     white: {
         id: 'white',
@@ -743,10 +1209,11 @@ const ALL_COLORS = {
         cardBg: '#F8FAFC',
         borderHex: '#334155',
         emoji: '🎩',
-        items: ['⚫ Halka', '🐈‍⬛ Kara Kedi', '🎩 Şapka', '🕶️ Gözlük']
+        items: ['⚫ Halka', '🦇 Yarasa', '🎩 Şapka', '🕶️ Gözlük']
     }
 };
 
+// cardStyle (isteğe bağlı): 'object' = kartta renk zemini/adı yok, yalnız o renkteki nesne resmi
 const COLOR_FINDER_LEVELS = [
     {
         id: 1,
@@ -792,6 +1259,31 @@ const COLOR_FINDER_LEVELS = [
             { target: 'purple', options: ['purple', 'pink', 'blue', 'orange', 'green', 'red'] },
             { target: 'blue', options: ['blue', 'red', 'yellow', 'green', 'purple', 'white'] }
         ]
+    },
+    {
+        id: 5,
+        title: "Bütün Renkler Karışık 🎨",
+        instruction: "Bir sürü renk var! Söylediğim rengi bul!",
+        rounds: [
+            { target: 'pink', options: ['red', 'pink', 'purple', 'orange', 'blue', 'yellow'] },
+            { target: 'brown', options: ['orange', 'black', 'brown', 'green', 'yellow', 'red'] },
+            { target: 'orange', options: ['yellow', 'red', 'pink', 'orange', 'brown', 'purple'] },
+            { target: 'white', options: ['white', 'yellow', 'pink', 'blue', 'green', 'black'] },
+            { target: 'black', options: ['brown', 'purple', 'blue', 'white', 'black', 'green'] }
+        ]
+    },
+    {
+        id: 6,
+        title: "Renkli Resimler 🍎🐸",
+        instruction: "Bu kez kartlarda resim var! Söylediğim renkteki resme dokun!",
+        cardStyle: 'object',
+        rounds: [
+            { target: 'yellow', options: ['yellow', 'red', 'green', 'purple'] },
+            { target: 'green', options: ['orange', 'green', 'blue', 'pink'] },
+            { target: 'red', options: ['blue', 'purple', 'red', 'yellow'] },
+            { target: 'orange', options: ['green', 'orange', 'brown', 'blue'] },
+            { target: 'purple', options: ['purple', 'yellow', 'red', 'green'] }
+        ]
     }
 ];
 
@@ -811,6 +1303,8 @@ const ALL_NUMBERS = {
     10: { num: 10, word: 'ON', emoji: '🏆', countLabel: '10 Şampiyon Kupa', countVisual: '🏆 🏆 🏆 🏆 🏆 🏆 🏆 🏆 🏆 🏆' }
 };
 
+// cardStyle (isteğe bağlı): 'count' = kartta rakam/yazı yok, countEmoji'den sayı kadar (çocuk sayar)
+// ask (isteğe bağlı): 'most' = "En çok olanı bul!" (hedef seçeneklerdeki en büyük sayı olmalı)
 const NUMBER_FINDER_LEVELS = [
     {
         id: 1,
@@ -857,6 +1351,35 @@ const NUMBER_FINDER_LEVELS = [
             { target: 9, options: [4, 6, 7, 8, 9, 10] },
             { target: 4, options: [2, 4, 5, 6, 7, 9] },
             { target: 10, options: [5, 6, 7, 8, 9, 10] }
+        ]
+    },
+    {
+        id: 5,
+        title: "Say ve Bul 🍎",
+        instruction: "Kartlardaki elmaları say!",
+        cardStyle: 'count',
+        countEmoji: '🍎',
+        rounds: [
+            { target: 2, options: [1, 2, 4] },
+            { target: 3, options: [3, 1, 5] },
+            { target: 1, options: [3, 1, 4] },
+            { target: 4, options: [2, 4, 1] },
+            { target: 5, options: [5, 2, 3] }
+        ]
+    },
+    {
+        id: 6,
+        title: "En Çok Hangisinde? 🍓",
+        instruction: "Kartlardaki çilekleri say!",
+        cardStyle: 'count',
+        countEmoji: '🍓',
+        ask: 'most',
+        rounds: [
+            { target: 4, options: [1, 4, 2] },
+            { target: 5, options: [5, 2, 3] },
+            { target: 6, options: [3, 6, 1] },
+            { target: 4, options: [2, 1, 4] },
+            { target: 6, options: [6, 3, 4] }
         ]
     }
 ];
@@ -911,8 +1434,8 @@ const COLORING_PAGES = [
             <polygon class="paint-region" points="266,130 330,88 330,172"/>
             <ellipse class="paint-region" cx="188" cy="130" rx="86" ry="52"/>
             <path class="paint-region" d="M168 82 Q196 46 228 84 Z"/>
-            <circle class="paint-region" cx="96" cy="78" r="11"/>
-            <circle class="paint-region" cx="78" cy="46" r="7"/>
+            <circle class="paint-region" cx="96" cy="78" r="17"/>
+            <circle class="paint-region" cx="78" cy="46" r="14"/>
             <circle class="paint-fixed" cx="140" cy="118" r="12" fill="#FFFFFF"/>
             <circle class="paint-fixed" cx="137" cy="118" r="5" fill="#1E293B"/>
             <path class="paint-fixed" d="M118 146 Q130 154 142 146" fill="none"/>
@@ -931,7 +1454,7 @@ const COLORING_PAGES = [
             <polygon class="paint-region" points="206,114 244,114 274,144 206,144"/>
             <circle class="paint-region" cx="122" cy="204" r="27"/>
             <circle class="paint-region" cx="280" cy="204" r="27"/>
-            <circle class="paint-region" cx="330" cy="168" r="8"/>
+            <circle class="paint-region" cx="324" cy="168" r="14"/>
             <circle class="paint-fixed" cx="122" cy="204" r="8" fill="#CBD5E1"/>
             <circle class="paint-fixed" cx="280" cy="204" r="8" fill="#CBD5E1"/>
             <rect class="paint-fixed" x="20" y="262" width="50" height="8" rx="4" fill="#FFFFFF"/>
@@ -946,7 +1469,7 @@ const COLORING_PAGES = [
         svg: `
             <rect class="paint-region" x="0" y="0" width="400" height="222"/>
             <rect class="paint-region" x="0" y="220" width="400" height="80"/>
-            <path class="paint-region" d="M196 138 H206 V252 H196 Z"/>
+            <path class="paint-region" d="M193 138 H209 V252 H193 Z"/>
             <path class="paint-region" d="M198 212 Q158 190 146 216 Q174 232 198 222 Z"/>
             <path class="paint-region" d="M204 192 Q242 170 254 196 Q228 212 204 202 Z"/>
             <circle class="paint-region" cx="200" cy="72" r="27"/>
@@ -955,9 +1478,83 @@ const COLORING_PAGES = [
             <circle class="paint-region" cx="178" cy="140" r="27"/>
             <circle class="paint-region" cx="164" cy="98" r="27"/>
             <circle class="paint-region" cx="200" cy="110" r="23"/>
-            <ellipse class="paint-region" cx="304" cy="62" rx="24" ry="30" transform="rotate(-20 304 62)"/>
-            <ellipse class="paint-region" cx="346" cy="62" rx="24" ry="30" transform="rotate(20 346 62)"/>
+            <g transform="rotate(-20 304 62)"><ellipse class="paint-region" cx="304" cy="62" rx="24" ry="30"/></g>
+            <g transform="rotate(20 346 62)"><ellipse class="paint-region" cx="346" cy="62" rx="24" ry="30"/></g>
             <rect class="paint-fixed" x="320" y="38" width="10" height="52" rx="5" fill="#334155"/>
+        `
+    },
+    {
+        id: 5,
+        title: "Sevimli Kedi 🐱",
+        instruction: "Kediyi, yumağı ve odayı boya!",
+        svg: `
+            <rect class="paint-region" x="0" y="0" width="400" height="232"/>
+            <rect class="paint-region" x="0" y="230" width="400" height="70"/>
+            <rect class="paint-region" x="34" y="36" width="84" height="74"/>
+            <path class="paint-region" d="M250 222 C300 222 322 182 300 140 L314 134 C342 184 312 238 254 238 Z"/>
+            <ellipse class="paint-region" cx="200" cy="200" rx="70" ry="50"/>
+            <polygon class="paint-region" points="150,92 160,40 192,78"/>
+            <polygon class="paint-region" points="208,78 240,40 250,92"/>
+            <circle class="paint-region" cx="200" cy="110" r="52"/>
+            <circle class="paint-region" cx="324" cy="242" r="28"/>
+            <path class="paint-fixed" d="M76 36 V110 M34 73 H118" fill="none"/>
+            <circle class="paint-fixed" cx="182" cy="102" r="6" fill="#1E293B"/>
+            <circle class="paint-fixed" cx="218" cy="102" r="6" fill="#1E293B"/>
+            <polygon class="paint-fixed" points="193,118 207,118 200,127" fill="#F472B6"/>
+            <path class="paint-fixed" d="M200 127 Q193 137 185 131 M200 127 Q207 137 215 131" fill="none"/>
+            <path class="paint-fixed" d="M168 122 H138 M168 130 L140 138 M232 122 H262 M232 130 L260 138" fill="none"/>
+            <path class="paint-fixed" d="M302 230 Q324 242 346 230 M298 250 Q324 264 350 250" fill="none"/>
+        `
+    },
+    {
+        id: 6,
+        title: "Elma Ağacı 🌳",
+        instruction: "Ağacı, elmaları ve güneşi boya!",
+        svg: `
+            <rect class="paint-region" x="0" y="0" width="400" height="232"/>
+            <rect class="paint-region" x="0" y="230" width="400" height="70"/>
+            <circle class="paint-region" cx="56" cy="54" r="30"/>
+            <path class="paint-region" d="M292 64 a20 20 0 0 1 30 -16 a24 24 0 0 1 44 6 a18 18 0 0 1 2 34 h-70 a16 16 0 0 1 -6 -24z"/>
+            <path class="paint-region" d="M180 252 L190 150 H214 L224 252 Z"/>
+            <path class="paint-region" d="M200 36 C252 36 284 76 272 112 C306 128 294 182 252 176 C232 198 168 198 148 176 C106 182 94 128 128 112 C116 76 148 36 200 36 Z"/>
+            <circle class="paint-region" cx="164" cy="112" r="15"/>
+            <circle class="paint-region" cx="236" cy="96" r="15"/>
+            <circle class="paint-region" cx="214" cy="152" r="15"/>
+            <path class="paint-fixed" d="M164 97 V89 M236 81 V73 M214 137 V129" fill="none"/>
+        `
+    },
+    {
+        id: 7,
+        title: "Gökkuşağı 🌈",
+        instruction: "Gökkuşağının renklerini sen seç!",
+        svg: `
+            <rect class="paint-region" x="0" y="0" width="400" height="264"/>
+            <rect class="paint-region" x="0" y="262" width="400" height="38"/>
+            <circle class="paint-region" cx="346" cy="54" r="28"/>
+            <path class="paint-region" d="M30 240 A170 170 0 0 1 370 240 H344 A144 144 0 0 0 56 240 Z"/>
+            <path class="paint-region" d="M56 240 A144 144 0 0 1 344 240 H318 A118 118 0 0 0 82 240 Z"/>
+            <path class="paint-region" d="M82 240 A118 118 0 0 1 318 240 H292 A92 92 0 0 0 108 240 Z"/>
+            <path class="paint-region" d="M108 240 A92 92 0 0 1 292 240 H266 A66 66 0 0 0 134 240 Z"/>
+            <path class="paint-region" d="M24 250 a22 22 0 0 1 20 -30 a30 30 0 0 1 54 -6 a24 24 0 0 1 34 22 a18 18 0 0 1 -6 30 h-92 a16 16 0 0 1 -10 -16z"/>
+            <path class="paint-region" d="M376 250 a22 22 0 0 0 -20 -30 a30 30 0 0 0 -54 -6 a24 24 0 0 0 -34 22 a18 18 0 0 0 6 30 h92 a16 16 0 0 0 10 -16z"/>
+        `
+    },
+    {
+        id: 8,
+        title: "Uzay Roketi 🚀",
+        instruction: "Roketi, gezegeni ve yıldızı boya!",
+        svg: `
+            <rect class="paint-region" x="0" y="0" width="400" height="300"/>
+            <circle class="paint-region" cx="76" cy="226" r="48"/>
+            <circle class="paint-region" cx="332" cy="62" r="30"/>
+            <polygon class="paint-region" points="96,30 105,52 128,54 110,68 116,90 96,78 76,90 82,68 64,54 87,52"/>
+            <path class="paint-region" d="M186 206 Q188 248 210 280 Q232 248 234 206 Z"/>
+            <polygon class="paint-region" points="182,150 148,214 182,204"/>
+            <polygon class="paint-region" points="238,150 272,214 238,204"/>
+            <rect class="paint-region" x="180" y="84" width="60" height="126"/>
+            <path class="paint-region" d="M180 86 Q182 54 210 28 Q238 54 240 86 Z"/>
+            <circle class="paint-region" cx="210" cy="132" r="17"/>
+            <ellipse class="paint-fixed" cx="76" cy="226" rx="72" ry="13" fill="none"/>
         `
     }
 ];
@@ -973,10 +1570,14 @@ const JIGSAW_LEVELS = [
     { id: 3, title: "Koca Fil 🐘", instruction: "6 parça var! Önce köşeleri bulalım.", hero: '🐘', heroLabel: 'Fil', cols: 3, rows: 2, colors: ['#BAE6FD', '#38BDF8'], guide: 0.22 },
     { id: 4, title: "Mavi Balina 🐳", instruction: "Balinayı denizde tamamla!", hero: '🐳', heroLabel: 'Balina', cols: 3, rows: 2, colors: ['#C7D2FE', '#6366F1'], guide: 0.18 },
     { id: 5, title: "Tatlı Panda 🐼", instruction: "9 parçalık büyük yapboz! Süslere dikkat et.", hero: '🐼', heroLabel: 'Panda', cols: 3, rows: 3, colors: ['#FBCFE8', '#F472B6'], guide: 0.14 },
-    { id: 6, title: "Neşeli Tren 🚂", instruction: "Şampiyon yapbozcu! Treni tamamla.", hero: '🚂', heroLabel: 'Tren', cols: 3, rows: 3, colors: ['#FED7AA', '#FB923C'], guide: 0.1 }
+    { id: 6, title: "Neşeli Tren 🚂", instruction: "Şampiyon yapbozcu! Treni tamamla.", hero: '🚂', heroLabel: 'Tren', cols: 3, rows: 3, colors: ['#FED7AA', '#FB923C'], guide: 0.1 },
+    { id: 7, title: "Bilge Baykuş 🦉", instruction: "Baykuşun dokuz parçasını yerleştir!", hero: '🦉', heroLabel: 'Baykuş', cols: 3, rows: 3, colors: ['#DDD6FE', '#8B5CF6'], guide: 0.1 },
+    { id: 8, title: "Neşeli Ahtapot 🐙", instruction: "12 parçalık dev yapboz! Köşelerden başla.", hero: '🐙', heroLabel: 'Ahtapot', cols: 3, rows: 4, colors: ['#A5F3FC', '#0891B2'], guide: 0.14 },
+    { id: 9, title: "Uzay Roketi 🚀", instruction: "Yapboz şampiyonu! Roketi tamamla.", hero: '🚀', heroLabel: 'Roket', cols: 3, rows: 4, colors: ['#C7D2FE', '#312E81'], guide: 0.14 }
 ];
 
-const JIGSAW_DECORATIONS = ['☀️', '☁️', '🌈', '🌼', '🍄', '⭐', '🦋', '🌷', '🍀'];
+// 12 süs: 3x4'lük yapbozda bile her parçanın süsü farklı olsun
+const JIGSAW_DECORATIONS = ['☀️', '☁️', '🌈', '🌼', '🍄', '⭐', '🦋', '🌷', '🍀', '🌙', '🎈', '🍎'];
 
 // ==========================================
 // 🎹 MODÜL 14: MELODİ TEKRARLA (KSİLOFON)
@@ -992,11 +1593,14 @@ const MELODY_NOTES = [
 
 // mode 'free': serbest çalma (goal kadar notaya dokununca biter)
 // mode 'echo': dinlenen 'length' notalık diziyi aynı sırayla tekrar et, 'rounds' tur
+// tempo (isteğe bağlı): notalar arası bekleme (ms); verilmezse 700
 const MELODY_LEVELS = [
     { id: 1, title: "Serbest Ksilofon 🎹", instruction: "Renkli tuşlara dokun, kendi şarkını çal!", mode: 'free', notes: ['do', 're', 'mi', 'fa', 'sol', 'la'], goal: 10 },
     { id: 2, title: "İki Nota Yankısı 🐱🐰", instruction: "Önce dinle! Sonra aynı iki notayı sırayla çal.", mode: 'echo', notes: ['do', 'mi', 'sol'], length: 2, rounds: 4 },
     { id: 3, title: "Üç Nota Yankısı 🎶", instruction: "Üç notayı dikkatle dinle ve aynı sırayla çal!", mode: 'echo', notes: ['do', 're', 'mi', 'sol'], length: 3, rounds: 4 },
-    { id: 4, title: "Melodi Ustası 🏆", instruction: "Dört notalık melodiyi hatırlayabilir misin?", mode: 'echo', notes: ['do', 're', 'mi', 'fa', 'sol', 'la'], length: 4, rounds: 4 }
+    { id: 4, title: "Melodi Ustası 🏆", instruction: "Dört notalık melodiyi hatırlayabilir misin?", mode: 'echo', notes: ['do', 're', 'mi', 'fa', 'sol', 'la'], length: 4, rounds: 4 },
+    { id: 5, title: "Beş Nota Yankısı 🐱🐰🐳", instruction: "Beş nota geliyor! Dinle ve aynısını çal.", mode: 'echo', notes: ['do', 'mi', 'sol'], length: 5, rounds: 3 },
+    { id: 6, title: "Hızlı Melodi 🚀", instruction: "Bu melodi çok hızlı! Dikkatle dinle ve çal.", mode: 'echo', notes: ['do', 're', 'mi', 'fa', 'sol'], length: 5, rounds: 3, tempo: 520 }
 ];
 
 // ==========================================
@@ -1081,6 +1685,395 @@ const SORTING_LEVELS = [
             { symbol: '🐋', label: 'Balina', basket: 'swim' },
             { symbol: '🦈', label: 'Köpekbalığı', basket: 'swim' }
         ]
+    },
+    {
+        id: 5,
+        title: "Gündüz mü, Gece mi? ☀️🌙",
+        instruction: "Gündüz mü, gece mi? Doğru sepete koy!",
+        baskets: [
+            { id: 'day', label: 'Gündüz', icon: '☀️', color: '#F59E0B' },
+            { id: 'night', label: 'Gece', icon: '🌙', color: '#4338CA' }
+        ],
+        items: [
+            { symbol: '🌈', label: 'Gökkuşağı', basket: 'day' },
+            { symbol: '🐓', label: 'Horoz', basket: 'day' },
+            { symbol: '🌻', label: 'Ayçiçeği', basket: 'day' },
+            { symbol: '🦋', label: 'Kelebek', basket: 'day' },
+            { symbol: '⭐', label: 'Yıldız', basket: 'night' },
+            { symbol: '🦉', label: 'Baykuş', basket: 'night' },
+            { symbol: '🌕', label: 'Dolunay', basket: 'night' },
+            { symbol: '🦇', label: 'Yarasa', basket: 'night' }
+        ]
+    },
+    {
+        id: 6,
+        title: "Yiyecek mi, Oyuncak mı? 🍕🧸",
+        instruction: "Yiyecekler bir sepete, oyuncaklar öbür sepete!",
+        baskets: [
+            { id: 'food', label: 'Yiyecekler', icon: '🍴', color: '#16A34A' },
+            { id: 'toy', label: 'Oyuncaklar', icon: '🧸', color: '#DB2777' }
+        ],
+        items: [
+            { symbol: '🍕', label: 'Pizza', basket: 'food' },
+            { symbol: '🍞', label: 'Ekmek', basket: 'food' },
+            { symbol: '🧀', label: 'Peynir', basket: 'food' },
+            { symbol: '🍰', label: 'Pasta', basket: 'food' },
+            { symbol: '⚽', label: 'Top', basket: 'toy' },
+            { symbol: '🎈', label: 'Balon', basket: 'toy' },
+            { symbol: '🧩', label: 'Yapboz', basket: 'toy' },
+            { symbol: '🤖', label: 'Robot', basket: 'toy' }
+        ]
+    },
+    {
+        id: 7,
+        title: "Büyük mü, Küçük mü? 🐘🐜",
+        instruction: "Büyük hayvanlar bir sepete, küçükler öbürüne!",
+        baskets: [
+            { id: 'big', label: 'Büyük', icon: '🐘', color: '#7C3AED' },
+            { id: 'small', label: 'Küçük', icon: '🐜', color: '#0D9488' }
+        ],
+        items: [
+            { symbol: '🐋', label: 'Balina', basket: 'big' },
+            { symbol: '🦒', label: 'Zürafa', basket: 'big' },
+            { symbol: '🦏', label: 'Gergedan', basket: 'big' },
+            { symbol: '🐫', label: 'Deve', basket: 'big' },
+            { symbol: '🐞', label: 'Uğur Böceği', basket: 'small' },
+            { symbol: '🐭', label: 'Fare', basket: 'small' },
+            { symbol: '🐝', label: 'Arı', basket: 'small' },
+            { symbol: '🐌', label: 'Salyangoz', basket: 'small' }
+        ]
+    },
+    {
+        id: 8,
+        title: "Kırmızı, Sarı, Yeşil ❤️💛💚",
+        instruction: "Üç renk sepeti var! Her şeyi kendi rengine koy.",
+        baskets: [
+            { id: 'red', label: 'Kırmızı', icon: '❤️', color: '#EF4444' },
+            { id: 'yellow', label: 'Sarı', icon: '💛', color: '#CA8A04' },
+            { id: 'green', label: 'Yeşil', icon: '💚', color: '#16A34A' }
+        ],
+        items: [
+            { symbol: '🍎', label: 'Elma', basket: 'red' },
+            { symbol: '🍅', label: 'Domates', basket: 'red' },
+            { symbol: '🍓', label: 'Çilek', basket: 'red' },
+            { symbol: '🍌', label: 'Muz', basket: 'yellow' },
+            { symbol: '🍋', label: 'Limon', basket: 'yellow' },
+            { symbol: '🐥', label: 'Civciv', basket: 'yellow' },
+            { symbol: '🐸', label: 'Kurbağa', basket: 'green' },
+            { symbol: '🍀', label: 'Yonca', basket: 'green' },
+            { symbol: '🥒', label: 'Salatalık', basket: 'green' }
+        ]
+    }
+];
+
+// 🔍 Farklı Olanı Bul: her turda 3-4 kart, biri tek bir özelliğiyle farklı.
+// Tur: base = aynı kartlar, odd = farklı kart (yoksa base), oddStyle = 'big' | 'small' | 'flip' | 'upside',
+// count = kart sayısı (3-4), say = doğru seçimde söylenecek kısa açıklama
+const ODDONE_LEVELS = [
+    {
+        id: 1,
+        title: "Hayvanlar 🐶🐱",
+        instruction: "Biri farklı! Ona dokun.",
+        rounds: [
+            { base: '🐶', odd: '🐱', count: 3, say: "Kedi! Ötekiler köpek." },
+            { base: '🐮', odd: '🐷', count: 3, say: "Domuz! Ötekiler inek." },
+            { base: '🐔', odd: '🐟', count: 3, say: "Balık! Ötekiler tavuk." }
+        ]
+    },
+    {
+        id: 2,
+        title: "Meyveler 🍎🍌",
+        instruction: "Hangi meyve farklı? Ona dokun.",
+        rounds: [
+            { base: '🍎', odd: '🍌', count: 3, say: "Muz! Ötekiler elma." },
+            { base: '🍓', odd: '🍇', count: 3, say: "Üzüm! Ötekiler çilek." },
+            { base: '🍊', odd: '🍉', count: 3, say: "Karpuz! Ötekiler portakal." }
+        ]
+    },
+    {
+        id: 3,
+        title: "Dört Kart 🚗🚀",
+        instruction: "Dört kart var. Farklı olan hangisi?",
+        rounds: [
+            { base: '🚗', odd: '🚀', count: 4, say: "Roket! Ötekiler araba." },
+            { base: '🌸', odd: '🍄', count: 4, say: "Mantar! Ötekiler çiçek." },
+            { base: '⚽', odd: '🎈', count: 4, say: "Balon! Ötekiler top." },
+            { base: '🐰', odd: '🐻', count: 4, say: "Ayı! Ötekiler tavşan." }
+        ]
+    },
+    {
+        id: 4,
+        title: "Renkler ❤️💙",
+        instruction: "Biri başka renk! Hangisi?",
+        rounds: [
+            { base: '❤️', odd: '💙', count: 3, say: "Mavi! Ötekiler kırmızı." },
+            { base: '🍎', odd: '🍏', count: 3, say: "Yeşil elma! Ötekiler kırmızı." },
+            { base: '💛', odd: '💚', count: 3, say: "Yeşil! Ötekiler sarı." },
+            { base: '🔵', odd: '🔴', count: 3, say: "Kırmızı! Ötekiler mavi." }
+        ]
+    },
+    {
+        id: 5,
+        title: "Dört Renk Kartı 💚❤️",
+        instruction: "Dört kart var. Hangisi başka renk?",
+        rounds: [
+            { base: '💚', odd: '❤️', count: 4, say: "Kırmızı! Ötekiler yeşil." },
+            { base: '🍏', odd: '🍎', count: 4, say: "Kırmızı elma! Ötekiler yeşil." },
+            { base: '⚪', odd: '⚫', count: 4, say: "Siyah! Ötekiler beyaz." },
+            { base: '💙', odd: '💜', count: 4, say: "Mor! Ötekiler mavi." }
+        ]
+    },
+    {
+        id: 6,
+        title: "Büyük Olan 🐘",
+        instruction: "Biri daha büyük! Hangisi?",
+        rounds: [
+            { base: '🐘', oddStyle: 'big', count: 3, say: "Bu fil daha büyük!" },
+            { base: '⭐', oddStyle: 'big', count: 3, say: "Bu yıldız daha büyük!" },
+            { base: '🍎', oddStyle: 'big', count: 3, say: "Bu elma daha büyük!" }
+        ]
+    },
+    {
+        id: 7,
+        title: "Ters Duran 🙃",
+        instruction: "Biri ters duruyor! Hangisi?",
+        rounds: [
+            { base: '🌳', oddStyle: 'upside', count: 3, say: "Bu ağaç ters duruyor!" },
+            { base: '🏠', oddStyle: 'upside', count: 3, say: "Bu ev ters duruyor!" },
+            { base: '🚗', oddStyle: 'upside', count: 3, say: "Bu araba ters duruyor!" }
+        ]
+    },
+    {
+        id: 8,
+        title: "Karışık 🔍",
+        instruction: "Hepsine iyi bak! Farklı olanı bul.",
+        rounds: [
+            { base: '🐟', oddStyle: 'flip', count: 4, say: "Bu balık öbür yöne bakıyor!" },
+            { base: '🐶', oddStyle: 'small', count: 4, say: "Bu köpek daha küçük!" },
+            { base: '🌻', odd: '🌷', count: 4, say: "Lale! Ötekiler ayçiçeği." },
+            { base: '💙', odd: '💚', count: 4, say: "Yeşil! Ötekiler mavi." }
+        ]
+    }
+];
+
+// 🙈 Kim Kayboldu?: kartlar gösterilir, perde iner, biri kaybolur; seçeneklerden kaybolan bulunur.
+// pool = karışık seçilecek kartlar (etiketler benzersiz), show = gösterilen kart (3-5),
+// options = seçenek sayısı (3-4, show'dan büyük olamaz), rounds = tur sayısı,
+// gap = kaybolanın yeri ❓ ile boş kalır (kolay), shuffle = kalanların yeri de karışır (zor),
+// memorizeMs = bakma süresi (isteğe bağlı; yoksa 1800 + 700 × show)
+const MISSING_LEVELS = [
+    {
+        id: 1,
+        title: "Üç Hayvan 🐶🐱🐰",
+        instruction: "Hayvanlara iyi bak! Biri saklanacak.",
+        show: 3, options: 3, rounds: 3, gap: true,
+        pool: [
+            { symbol: '🐶', label: 'Köpek' },
+            { symbol: '🐱', label: 'Kedi' },
+            { symbol: '🐰', label: 'Tavşan' },
+            { symbol: '🐮', label: 'İnek' },
+            { symbol: '🐷', label: 'Domuz' },
+            { symbol: '🐔', label: 'Tavuk' },
+            { symbol: '🐴', label: 'At' },
+            { symbol: '🐑', label: 'Koyun' }
+        ]
+    },
+    {
+        id: 2,
+        title: "Üç Meyve 🍎🍌🍇",
+        instruction: "Meyvelere iyi bak! Biri saklanacak.",
+        show: 3, options: 3, rounds: 3, gap: true,
+        pool: [
+            { symbol: '🍎', label: 'Elma' },
+            { symbol: '🍌', label: 'Muz' },
+            { symbol: '🍇', label: 'Üzüm' },
+            { symbol: '🍓', label: 'Çilek' },
+            { symbol: '🍊', label: 'Portakal' },
+            { symbol: '🍉', label: 'Karpuz' },
+            { symbol: '🍒', label: 'Kiraz' },
+            { symbol: '🍐', label: 'Armut' }
+        ]
+    },
+    {
+        id: 3,
+        title: "Dört Oyuncak ⚽🎈",
+        instruction: "Oyuncaklara iyi bak! Biri saklanacak.",
+        show: 4, options: 3, rounds: 3, gap: true,
+        pool: [
+            { symbol: '⚽', label: 'Top' },
+            { symbol: '🧸', label: 'Ayıcık' },
+            { symbol: '🎈', label: 'Balon' },
+            { symbol: '🚂', label: 'Tren' },
+            { symbol: '🥁', label: 'Davul' },
+            { symbol: '🎁', label: 'Hediye' },
+            { symbol: '🚗', label: 'Araba' },
+            { symbol: '🎺', label: 'Trompet' }
+        ]
+    },
+    {
+        id: 4,
+        title: "Dört Taşıt 🚌🚲",
+        instruction: "Taşıtlara iyi bak! Biri gidecek.",
+        show: 4, options: 4, rounds: 3, gap: false,
+        pool: [
+            { symbol: '🚗', label: 'Araba' },
+            { symbol: '🚌', label: 'Otobüs' },
+            { symbol: '🚲', label: 'Bisiklet' },
+            { symbol: '🚂', label: 'Tren' },
+            { symbol: '✈️', label: 'Uçak' },
+            { symbol: '🚀', label: 'Roket' },
+            { symbol: '🚁', label: 'Helikopter' },
+            { symbol: '🚢', label: 'Gemi' }
+        ]
+    },
+    {
+        id: 5,
+        title: "Beş Deniz Hayvanı 🐟🐙",
+        instruction: "Deniz hayvanlarına iyi bak! Biri saklanacak.",
+        show: 5, options: 3, rounds: 3, gap: true,
+        pool: [
+            { symbol: '🐟', label: 'Balık' },
+            { symbol: '🐙', label: 'Ahtapot' },
+            { symbol: '🦀', label: 'Yengeç' },
+            { symbol: '🐬', label: 'Yunus' },
+            { symbol: '🐳', label: 'Balina' },
+            { symbol: '🐢', label: 'Kaplumbağa' },
+            { symbol: '🦈', label: 'Köpekbalığı' },
+            { symbol: '🐚', label: 'Deniz Kabuğu' }
+        ]
+    },
+    {
+        id: 6,
+        title: "Hayvanat Bahçesi 🦁🐻",
+        instruction: "Hayvanlara iyi bak! Biri gidecek.",
+        show: 5, options: 4, rounds: 3, gap: false,
+        pool: [
+            { symbol: '🦁', label: 'Aslan' },
+            { symbol: '🐯', label: 'Kaplan' },
+            { symbol: '🐻', label: 'Ayı' },
+            { symbol: '🐵', label: 'Maymun' },
+            { symbol: '🦊', label: 'Tilki' },
+            { symbol: '🐘', label: 'Fil' },
+            { symbol: '🐨', label: 'Koala' },
+            { symbol: '🐼', label: 'Panda' }
+        ]
+    },
+    {
+        id: 7,
+        title: "Lezzetli Yiyecekler 🍕🍦",
+        instruction: "Yiyeceklere iyi bak! Sonra yerleri karışacak.",
+        show: 5, options: 4, rounds: 3, gap: false, shuffle: true,
+        pool: [
+            { symbol: '🍕', label: 'Pizza' },
+            { symbol: '🍔', label: 'Hamburger' },
+            { symbol: '🍦', label: 'Dondurma' },
+            { symbol: '🍰', label: 'Pasta' },
+            { symbol: '🍪', label: 'Kurabiye' },
+            { symbol: '🥕', label: 'Havuç' },
+            { symbol: '🧀', label: 'Peynir' },
+            { symbol: '🍞', label: 'Ekmek' }
+        ]
+    },
+    {
+        id: 8,
+        title: "Büyük Karışık 🌙⭐",
+        instruction: "Hepsine iyi bak! Sonra yerleri karışacak.",
+        show: 5, options: 4, rounds: 4, gap: false, shuffle: true,
+        pool: [
+            { symbol: '🐶', label: 'Köpek' },
+            { symbol: '🍎', label: 'Elma' },
+            { symbol: '🚗', label: 'Araba' },
+            { symbol: '⚽', label: 'Top' },
+            { symbol: '🌸', label: 'Çiçek' },
+            { symbol: '⭐', label: 'Yıldız' },
+            { symbol: '🎈', label: 'Balon' },
+            { symbol: '🐟', label: 'Balık' },
+            { symbol: '🌙', label: 'Ay' },
+            { symbol: '☀️', label: 'Güneş' }
+        ]
+    }
+];
+
+// ✏️ NOKTALARI BİRLEŞTİR: noktalar 1'den sırayla birleştirilir, şekil kapanınca gizli resim çıkar.
+// points: [x, y] (0-100 arası tahta koordinatı), sıra = noktanın numarası.
+// picture/pictureLabel: bitince çıkan resim ve adı ("Bu bir ev!"). color: çizgi ve dolgu rengi.
+// İsteğe bağlı: closed: false → son noktadan ilke çizgi çekilmez; pictureAt: [x, y] → resmin yeri.
+const DOTS_LEVELS = [
+    {
+        id: 1,
+        title: "Üç Nokta ✏️",
+        instruction: "Bir numaradan başla! Noktalara sırayla dokun.",
+        picture: '⛺',
+        pictureLabel: 'çadır',
+        color: '#F97316',
+        points: [[50, 12], [88, 84], [12, 84]]
+    },
+    {
+        id: 2,
+        title: "Dört Nokta ✏️",
+        instruction: "Noktaları sırayla birleştir: bir, iki, üç, dört!",
+        picture: '💎',
+        pictureLabel: 'elmas',
+        color: '#0EA5E9',
+        points: [[50, 10], [86, 50], [50, 90], [14, 50]]
+    },
+    {
+        id: 3,
+        title: "Beş Nokta ✏️",
+        instruction: "Beş noktayı sırayla birleştir! Gizli resim ne?",
+        picture: '🏠',
+        pictureLabel: 'ev',
+        color: '#EF4444',
+        points: [[50, 10], [88, 44], [88, 90], [12, 90], [12, 44]]
+    },
+    {
+        id: 4,
+        title: "Altı Nokta ✏️",
+        instruction: "Altı noktayı sırayla birleştir!",
+        picture: '⛵',
+        pictureLabel: 'yelkenli',
+        color: '#2563EB',
+        points: [[50, 8], [76, 60], [92, 60], [76, 86], [24, 86], [8, 60]]
+    },
+    {
+        id: 5,
+        title: "Yedi Nokta ✏️",
+        instruction: "Yedi noktayı birleştir! Parmağını kaydırabilirsin.",
+        picture: '🐟',
+        pictureLabel: 'balık',
+        color: '#F59E0B',
+        points: [[8, 50], [36, 24], [64, 42], [92, 22], [92, 78], [64, 58], [36, 76]],
+        pictureAt: [40, 50]
+    },
+    {
+        id: 6,
+        title: "Sekiz Nokta ✏️",
+        instruction: "Sekiz noktayı sırayla birleştir!",
+        picture: '❤️',
+        pictureLabel: 'kalp',
+        color: '#EC4899',
+        points: [[50, 28], [66, 14], [86, 20], [92, 40], [50, 88], [8, 40], [14, 20], [34, 14]],
+        pictureAt: [50, 48]
+    },
+    {
+        id: 7,
+        title: "Dokuz Nokta ✏️",
+        instruction: "Dokuz noktayı birleştir! Gizli resim ne?",
+        picture: '🚀',
+        pictureLabel: 'roket',
+        color: '#8B5CF6',
+        points: [[50, 6], [66, 28], [66, 62], [82, 84], [58, 78], [42, 78], [18, 84], [34, 62], [34, 28]],
+        pictureAt: [50, 46]
+    },
+    {
+        id: 8,
+        title: "On Nokta ✏️",
+        instruction: "On noktayı birleştir! Bakalım ne çıkacak?",
+        picture: '⭐',
+        pictureLabel: 'yıldız',
+        color: '#EAB308',
+        points: [[50, 12], [61, 39], [90, 41], [67, 60], [75, 88], [50, 72], [25, 88], [33, 60], [10, 41], [39, 39]],
+        pictureAt: [50, 56]
     }
 ];
 
@@ -1105,5 +2098,8 @@ window.GAME_DATA = {
     JIGSAW_DECORATIONS,
     MELODY_NOTES,
     MELODY_LEVELS,
-    SORTING_LEVELS
+    DOTS_LEVELS,
+    SORTING_LEVELS,
+    ODDONE_LEVELS,
+    MISSING_LEVELS
 };

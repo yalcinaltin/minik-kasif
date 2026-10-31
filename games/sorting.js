@@ -66,7 +66,7 @@ class SortingGame {
 
     trySortItem(itemEl, basketEl) {
         const level = window.GAME_DATA.SORTING_LEVELS[this.sortingLevelIdx];
-        itemEl.classList.remove('selected-piece');
+        this.sortingPool.querySelectorAll('.sorting-item').forEach(i => i.classList.remove('selected-piece'));
         this.sortingSelected = null;
 
         if (itemEl.dataset.basket !== basketEl.dataset.basket) {

@@ -442,6 +442,14 @@ body.on-home .nav-tab-btn:hover .tab-icon {
     transform: scale(1.15) rotate(-6deg);
 }
 
+/* Geniş ekranda 18 oyun 6 sütunda: kaydırmadan 3 sıra */
+@media (min-width: 1200px) {
+    body.on-home .nav-tab-container { grid-template-columns: repeat(6, 1fr); }
+    body.on-home .nav-tab-btn .tab-title { font-size: 1.15rem; }
+    body.on-home .nav-tab-btn .tab-icon { font-size: clamp(2.2rem, 5vh, 4.2rem); }
+    body.on-home .nav-tab-btn { padding-top: 10px; padding-bottom: 10px; min-height: clamp(112px, 15vh, 190px); }
+}
+
 /* ========================================= */
 /* 🖥️ ANA İÇERİK ALANI (TAM EKRAN YAYILIMI)   */
 /* ========================================= */
@@ -2004,6 +2012,8 @@ dialog::backdrop {
     flex-direction: column;
     gap: clamp(10px, 1.6vh, 20px);
     width: 100%;
+    /* Kartlar kalan yüksekliği paylaşır: 6 kartlı bölümler de kaydırmadan sığar */
+    height: var(--play-h);
 }
 
 .finder-hero-card {
@@ -2194,17 +2204,27 @@ dialog::backdrop {
 /* Büyük Etkileşimli Kart Izgarası */
 .finder-cards-area {
     width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
 }
 
 .finder-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    /* Satırlar en çok 260px; yer azsa eşit küçülür */
+    grid-auto-rows: minmax(0, 260px);
+    align-content: center;
     gap: clamp(12px, 2.4vh, 24px);
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     padding: 6px 0 8px;
 }
+
+/* 5-6 kart: 3 sütun, 2 satır */
+.finder-cards-grid[data-count="5"],
+.finder-cards-grid[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
 
 .finder-card {
     position: relative;
@@ -2220,7 +2240,7 @@ dialog::backdrop {
     justify-content: center;
     gap: clamp(4px, 1.2vh, 12px);
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    min-height: clamp(140px, 20vh, 230px);
+    min-height: 0;
     overflow: hidden;
     user-select: none;
     touch-action: manipulation;
@@ -2257,6 +2277,14 @@ dialog::backdrop {
     font-size: clamp(1.2rem, 2.6vh, 1.6rem);
     letter-spacing: 3px;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Sayma kartı (cardStyle 'count'): emojiler büyük; telefon kurallarını da geçersiz kılar */
+.finder-card .card-count-visual.count-big {
+    font-size: clamp(1.7rem, 5.5vmin, 2.8rem);
+    line-height: 1.3;
+    letter-spacing: 2px;
+    text-align: center;
 }
 
 .finder-card .card-count-label {
@@ -2947,6 +2975,132 @@ dialog::backdrop {
 .sorting-basket.basket-happy { transform: scale(1.05); }
 .sorting-basket.basket-wrong { animation: gentleShake 0.5s ease; }
 
+/* ========================================= */
+/* ✏️ NOKTALARI BİRLEŞTİR                    */
+/* ========================================= */
+
+.banner-dots { border-left-color: #0EA5E9; }
+.dots-progress-pill { border-color: #38BDF8; color: #0369A1; background: #F0F9FF; }
+
+/* Tahta kalan yüksekliği doldurur; kare SVG ortalanır (altında başka öğe yok) */
+.dots-stage-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    padding: clamp(12px, 2.4vh, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: min(var(--play-h), 900px);
+}
+
+.dots-board {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* touch-action: none → parmak kaydırınca sayfa değil çizgi hareket etsin */
+.dots-svg {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: pointer;
+}
+
+/* SVG içindeki ölçüler tahta birimidir (viewBox 112 birim) */
+.dots-svg .dots-fill {
+    fill-opacity: 0;
+    stroke: none;
+    transition: fill-opacity 0.6s ease;
+}
+
+.dots-svg.dots-revealed .dots-fill { fill-opacity: 0.8; }
+
+.dots-line {
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: dotsDraw 0.3s ease forwards;
+}
+
+@keyframes dotsDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.dots-rubber {
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 3 3;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dots-rubber.active { opacity: 0.55; }
+
+.dot { transform-box: fill-box; transform-origin: center; }
+
+.dot .dot-core {
+    fill: #FFFFFF;
+    stroke-width: 2.2;
+    transition: fill 0.2s ease;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.dot-num {
+    font-family: var(--font-main);
+    font-size: 7px;
+    font-weight: 900;
+    fill: #1E293B;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+}
+
+.dot.dot-done .dot-num { fill: #FFFFFF; }
+
+/* Sıradaki nokta: başta "1" ve yanlış dokunuştan sonra nazikçe büyüyüp küçülür */
+.dot.dot-next .dot-core { animation: dotsHint 0.9s ease-in-out infinite; }
+
+@keyframes dotsHint {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+}
+
+.dot.dot-wrong { animation: dotsWrong 0.5s ease; }
+
+@keyframes dotsWrong {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-2px); }
+    40%, 80% { transform: translateX(2px); }
+}
+
+.dots-picture {
+    opacity: 0;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+    transform-box: fill-box;
+    transform-origin: center;
+}
+
+.dots-revealed .dots-picture { animation: dotsPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+
+@keyframes dotsPop {
+    0% { opacity: 0; transform: scale(0.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Telefon (dikey ve yatay): ince kart kenarı, tahtaya daha çok yer */
+@media (max-width: 600px), (max-height: 500px) and (orientation: landscape) {
+    .dots-stage-card { padding: 10px; border-radius: 20px; }
+}
+
 /* Tablet dikey: tepsi/palet tahtanın altına iner */
 @media (max-width: 980px) {
     .coloring-layout,
@@ -2965,9 +3119,9 @@ dialog::backdrop {
     .jigsaw-piece { width: clamp(70px, 9vh, 110px); }
     .jigsaw-layout { gap: 14px; }
 
-    /* Ana ekran: 3 sütun, 15 oyun kaydırmadan görünsün */
+    /* Ana ekran: 3 sütun, 17 oyun (6 sıra) kaydırmadan görünsün */
     body.on-home .nav-tab-container { grid-template-columns: repeat(3, 1fr); padding: 8px 16px 16px; }
-    body.on-home .nav-tab-btn { min-height: clamp(104px, 13.5vh, 170px); padding: 10px 8px; }
+    body.on-home .nav-tab-btn { min-height: clamp(96px, 11.5vh, 150px); padding: 10px 8px; }
     body.on-home .nav-tab-btn .tab-icon { font-size: clamp(2.4rem, 5vh, 3.6rem); }
     body.on-home .nav-tab-btn .tab-title { font-size: 1.08rem; }
     body.on-home .nav-tab-btn .tab-sub { font-size: 0.76rem; }
@@ -3055,8 +3209,9 @@ dialog::backdrop {
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-    .btn-bubble-action { pointer-events: auto; padding: 6px 10px; font-size: 0.85rem; }
-    .mascot-speech-bubble.bubble-hidden .btn-bubble-action { pointer-events: none; }
+    /* Balon bölüm kartının (◀ ▶) üstüne biner: dokunuşlar alttaki düğmelere geçsin.
+       Yönergeyi tekrar dinlemek için başlıktaki 🐶'ya dokunulur */
+    .btn-bubble-action { display: none; }
 
     .main-content { padding: 6px 10px 8px; }
     .game-view { gap: 8px; }
@@ -3156,7 +3311,7 @@ dialog::backdrop {
     .hud-pill { font-size: 0.85rem; padding: 4px 10px; }
     /* Tahta: kalan yükseklikten 3 ok + 2 boşluk + kart iç boşlukları düşülür */
     #view-realmaze .bunny-grid {
-        --controls-h: calc(3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 20px + 20px + 8px);
+        --controls-h: calc(3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 20px + 20px + 12px);
         --board-size: min(calc(100vw - 40px), calc(var(--play-h) - var(--controls-h)));
         max-width: var(--board-size);
         max-height: var(--board-size);
@@ -3185,7 +3340,7 @@ dialog::backdrop {
     #view-bunny .code-action-row .btn-secondary-action { flex: 0 0 auto; font-size: 0.95rem; padding: 8px; }
     /* Tahta: kalan yükseklikten komut treni + 3 ok + boşluklar düşülür */
     #view-bunny .bunny-grid {
-        --controls-h: calc(var(--train-h) + 3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 8px + 20px + 16px + 16px);
+        --controls-h: calc(var(--train-h) + 3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 8px + 20px + 16px + 20px);
         --board-size: min(calc(100vw - 40px), calc(var(--play-h) - var(--controls-h)));
         max-width: var(--board-size);
         max-height: var(--board-size);
@@ -3196,6 +3351,10 @@ dialog::backdrop {
         height: max(160px, min(calc(var(--play-h) - 240px), calc((100vw - 44px) * var(--rows, 2) / var(--cols, 2))));
     }
     .jigsaw-piece { width: 64px; border-width: 2px; border-radius: 10px; }
+    .many-pieces .jigsaw-board {
+        height: max(160px, min(calc(var(--play-h) - 300px), calc((100vw - 44px) * var(--rows, 2) / var(--cols, 2))));
+    }
+    .many-pieces .jigsaw-piece { width: 56px; }
     .jigsaw-tray-card { gap: 8px; }
     .jigsaw-tray { gap: 8px; }
     .jigsaw-layout { gap: 8px; }
@@ -3245,7 +3404,9 @@ dialog::backdrop {
     .finder-listen-btn { font-size: 0.9rem; padding: 6px 14px; gap: 6px; }
     .finder-listen-btn .listen-icon { font-size: 1.3rem; }
     .finder-cards-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0; }
-    .finder-card { min-height: 108px; padding: 10px 6px; gap: 2px; border-width: 3px; }
+    .finder-cards-grid[data-count="5"],
+    .finder-cards-grid[data-count="6"] { grid-template-columns: repeat(3, 1fr); }
+    .finder-card { padding: 10px 6px; gap: 2px; border-width: 3px; }
     .finder-card .card-emoji-visual { font-size: 2.3rem; }
     .finder-card .card-title-text { font-size: 1.15rem; }
     .finder-card .card-count-visual { font-size: 0.95rem; letter-spacing: 1px; }
@@ -3278,6 +3439,9 @@ dialog::backdrop {
     .pattern-option-card { width: 88px; height: 94px; border-width: 3px; gap: 4px; }
     .pattern-option-card .option-symbol { font-size: 2.4rem; }
     .pattern-option-card .option-label { font-size: 0.72rem; }
+    /* 4 seçenek: 360px'te 2 sıraya kaymasın, tek sırada küçülsün */
+    .pattern-options-row.options-four { gap: 8px; flex-wrap: nowrap; }
+    .options-four .pattern-option-card { width: min(88px, calc((100vw - 74px) / 4)); }
 
     /* Boyut Dünyası: podyumlar yan yana kalır */
     .size-container-card { gap: 10px; --podium-max: clamp(150px, calc(var(--play-h) - 250px), 320px); }
@@ -3500,6 +3664,282 @@ dialog::backdrop {
 }
 
 /* ============================================================ */
+/* 🔍 MODÜL 16: FARKLI OLANI BUL                                 */
+/* 🙈 MODÜL 17: KİM KAYBOLDU?                                    */
+/* (Telefon/tablet kuralları da bu bölümün sonunda: sıra önemli) */
+/* ============================================================ */
+
+.banner-oddone { border-left-color: #0EA5E9; }
+.banner-missing { border-left-color: #F59E0B; }
+.nav-tab-btn[data-tab="oddone"].active { border-color: #0EA5E9; box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25); }
+.nav-tab-btn[data-tab="missing"].active { border-color: #F59E0B; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25); }
+.oddone-progress-pill { border-color: #7DD3FC; color: #0369A1; background: #F0F9FF; }
+.missing-progress-pill { border-color: #FCD34D; color: #B45309; background: #FFFBEB; }
+
+.oddone-stage-card,
+.missing-stage-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    padding: clamp(12px, 2.4vh, 24px);
+    height: min(var(--play-h), 900px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Kart boyu: sütun sayısına göre genişliğe, satır sayısına göre kalan yüksekliğe sığar */
+.oddone-board {
+    --odd-cols: 3;
+    --odd-rows: 1;
+    --odd-gap: clamp(14px, 3vw, 36px);
+    --odd-card: min(
+        240px,
+        calc((100vw - 140px - (var(--odd-cols) - 1) * var(--odd-gap)) / var(--odd-cols)),
+        calc((min(var(--play-h), 900px) - 60px - (var(--odd-rows) - 1) * var(--odd-gap)) / var(--odd-rows))
+    );
+    display: grid;
+    grid-template-columns: repeat(var(--odd-cols), var(--odd-card));
+    grid-auto-rows: var(--odd-card);
+    gap: var(--odd-gap);
+    justify-content: center;
+    align-content: center;
+}
+
+.oddone-board[data-count="4"] { --odd-cols: 4; }
+
+.oddone-card {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    background: #F8FAFC;
+    border: 5px solid #E2E8F0;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s, border-color 0.2s, background 0.2s;
+}
+
+.oddone-card:hover {
+    transform: translateY(-6px);
+    border-color: #38BDF8;
+}
+
+.oddone-symbol {
+    display: inline-block;
+    line-height: 1;
+    font-size: calc(var(--odd-card) * 0.55);
+}
+
+/* Boy turu: hepsi küçük, farklı olan büyük (ya da tersi) */
+.oddone-size-round .oddone-symbol { font-size: calc(var(--odd-card) * 0.36); }
+.oddone-size-round .oddone-big { font-size: calc(var(--odd-card) * 0.72); }
+.oddone-shrink-round .oddone-symbol { font-size: calc(var(--odd-card) * 0.62); }
+.oddone-shrink-round .oddone-small { font-size: calc(var(--odd-card) * 0.3); }
+
+/* Yön turu: aynaya dönük ya da baş aşağı */
+.oddone-flip { transform: scaleX(-1); }
+.oddone-upside { transform: rotate(180deg); }
+
+.oddone-card.oddone-correct {
+    border-color: #22C55E;
+    background: #DCFCE7;
+    animation: popSuccess 0.5s ease;
+}
+
+.oddone-card.oddone-wrong {
+    border-color: #EF4444;
+    background: #FEE2E2;
+    animation: gentleShake 0.5s ease;
+}
+
+/* Kim Kayboldu: üstte durum, ortada raf (3-5 kart), altta seçenekler (3-4 kart) */
+.missing-stage-card {
+    --mis-gap: clamp(10px, 1.6vw, 18px);
+    --mis-card: min(
+        170px,
+        calc((100vw - 140px - 4 * var(--mis-gap)) / 5),
+        calc((min(var(--play-h), 900px) - 180px) / 2)
+    );
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: clamp(8px, 1.6vh, 18px);
+}
+
+.missing-status-chip {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #B45309;
+    background: #FFFBEB;
+    border: 3px solid #FCD34D;
+    border-radius: var(--radius-full);
+    padding: 6px 20px;
+    white-space: nowrap;
+}
+
+.missing-shelf,
+.missing-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: var(--mis-gap);
+    min-height: var(--mis-card);
+}
+
+.missing-options {
+    width: 100%;
+    padding-top: var(--mis-gap);
+    border-top: 4px dashed #E2E8F0;
+}
+
+.missing-options.missing-options-hidden { visibility: hidden; }
+
+.missing-card {
+    position: relative;
+    width: var(--mis-card);
+    height: var(--mis-card);
+    background: #FFFFFF;
+    border: 4px solid #E2E8F0;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.missing-symbol {
+    font-size: calc(var(--mis-card) * 0.5);
+    line-height: 1;
+}
+
+.missing-label {
+    font-size: clamp(0.68rem, calc(var(--mis-card) * 0.11), 1.1rem);
+    font-weight: 800;
+    color: #475569;
+    white-space: nowrap;
+}
+
+/* Kaybolanın boş yeri (kolay bölümler) */
+.missing-card.missing-empty-slot {
+    background: #FEF9C3;
+    border-style: dashed;
+    border-color: #EAB308;
+    animation: pulseBorder 1.5s infinite;
+}
+
+/* Perde: kartların içi gizlenir, üstüne 🙈 gelir */
+.missing-curtain .missing-card > * { visibility: hidden; }
+
+.missing-curtain .missing-card::after {
+    content: '🙈';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--mis-card) * 0.45);
+    background: linear-gradient(180deg, #FDE68A 0%, #FBBF24 100%);
+    border-radius: inherit;
+}
+
+.missing-card.missing-option {
+    cursor: pointer;
+    background: #FFFBEB;
+    border-color: #FCD34D;
+    transition: transform 0.15s, border-color 0.2s, background 0.2s;
+}
+
+.missing-card.missing-option:hover { transform: translateY(-4px); }
+
+.missing-card.missing-correct,
+.missing-card.missing-returned {
+    border-color: #22C55E;
+    background: #DCFCE7;
+    animation: popSuccess 0.5s ease;
+}
+
+.missing-card.missing-wrong {
+    border-color: #EF4444;
+    background: #FEE2E2;
+    animation: gentleShake 0.5s ease;
+}
+
+/* İki yanlıştan sonra doğru seçenek nazikçe parlar */
+.missing-card.missing-hint { animation: missingHintPulse 1.1s ease-in-out infinite; }
+
+@keyframes missingHintPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08); }
+    50% { transform: scale(1.08); box-shadow: 0 0 26px rgba(250, 204, 21, 0.8); }
+}
+
+@media (hover: none) {
+    .oddone-card:hover:not(.oddone-correct),
+    .missing-card.missing-option:hover:not(.missing-correct) { transform: none; }
+}
+
+/* Dikey tablet ve telefon: 4 kart 2×2 (daha büyük kart) */
+@media (max-width: 980px) and (orientation: portrait) {
+    .oddone-board[data-count="4"] { --odd-cols: 2; --odd-rows: 2; }
+}
+
+/* 📱 Telefon (dikey ya da yatay): ince kenar boşlukları */
+@media (max-width: 600px), (max-height: 500px) and (orientation: landscape) {
+    .oddone-stage-card,
+    .missing-stage-card { padding: 10px; border-radius: 20px; }
+
+    .oddone-board {
+        --odd-gap: 10px;
+        --odd-card: min(
+            200px,
+            calc((100vw - 50px - (var(--odd-cols) - 1) * var(--odd-gap)) / var(--odd-cols)),
+            calc((var(--play-h) - 30px - (var(--odd-rows) - 1) * var(--odd-gap)) / var(--odd-rows))
+        );
+    }
+    .oddone-card { border-width: 4px; border-radius: 20px; }
+
+    .missing-stage-card { --mis-gap: 8px; gap: 6px; }
+    .missing-status-chip { font-size: 0.9rem; padding: 3px 12px; border-width: 2px; }
+    .missing-card { border-width: 3px; border-radius: 16px; }
+    .missing-options { border-top-width: 3px; }
+}
+
+/* 📱 Telefon dikey: 3 kart alt alta; Kim Kayboldu rafı 3 sütun, 4 kart 2×2 */
+@media (max-width: 600px) {
+    .oddone-board[data-count="3"] { --odd-cols: 1; --odd-rows: 3; }
+
+    .missing-stage-card {
+        --mis-card: min(
+            104px,
+            calc((100vw - 50px - 2 * var(--mis-gap)) / 3),
+            calc((var(--play-h) - 110px) / 4)
+        );
+    }
+    .missing-shelf[data-count="4"],
+    .missing-options[data-count="4"] { max-width: calc(2 * var(--mis-card) + var(--mis-gap) + 1px); margin: 0 auto; }
+}
+
+/* 📱 Telefon yatay: raf ve seçenekler tek sıra, yazılar gizli */
+@media (max-height: 500px) and (orientation: landscape) {
+    .missing-stage-card {
+        --mis-card: min(
+            110px,
+            calc((100vw - 60px - 4 * var(--mis-gap)) / 5),
+            calc((var(--play-h) - 84px) / 2)
+        );
+    }
+    .missing-label { display: none; }
+    .missing-shelf, .missing-options { flex-wrap: nowrap; }
+}
+
+/* ============================================================ */
 /* 📲 UYGULAMA (PWA)                                             */
 /* ============================================================ */
 
@@ -3531,3 +3971,41 @@ body.on-home .install-app-pill:active { transform: scale(0.97); }
    (display-mode: fullscreen medya sorgusu kullanılmaz: tarayıcıda tam ekran açılınca da eşleşip
    düğmeyi gizler ve çıkış yolu kalmaz; sınıfı game.js açılışta bir kez belirler) */
 html.pwa-launched #btn-fullscreen-toggle { display: none; }
+
+/* ========================================= */
+/* ⚖️ BOYUT DÜNYASI: 4 PODYUM / TERS SIRA    */
+/* size.js .size-container-card'a size-four  */
+/* (4 nesne) ve size-desc (büyükten küçüğe)  */
+/* sınıflarını ekler                         */
+/* ========================================= */
+.size-four .podium-container { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.size-four .size-item-card { width: clamp(96px, 14vh, 140px); height: clamp(96px, 14vh, 140px); }
+
+/* Basamak yükseklikleri (601-720px dikeydeki tek sütun düzeni hariç; telefonda yine yan yana) */
+@media (min-width: 721px), (max-width: 600px), (max-height: 500px) and (orientation: landscape) {
+    .size-four .podium-slot:nth-child(1) { height: calc(var(--podium-max) * 0.66); }
+    .size-four .podium-slot:nth-child(2) { height: calc(var(--podium-max) * 0.78); }
+    .size-four .podium-slot:nth-child(3) { height: calc(var(--podium-max) * 0.89); }
+    .size-four .podium-slot:nth-child(4) { height: var(--podium-max); }
+
+    /* Büyükten küçüğe: en yüksek basamak başta */
+    .size-desc .podium-slot:nth-child(1) { height: var(--podium-max); }
+    .size-desc .podium-slot:nth-child(2) { height: calc(var(--podium-max) * 0.87); }
+    .size-desc .podium-slot:nth-child(3) { height: calc(var(--podium-max) * 0.74); }
+    .size-four.size-desc .podium-slot:nth-child(1) { height: var(--podium-max); }
+    .size-four.size-desc .podium-slot:nth-child(2) { height: calc(var(--podium-max) * 0.89); }
+    .size-four.size-desc .podium-slot:nth-child(3) { height: calc(var(--podium-max) * 0.78); }
+    .size-four.size-desc .podium-slot:nth-child(4) { height: calc(var(--podium-max) * 0.66); }
+}
+
+/* Telefon dikey: 4 kart tek satıra sığsın (360px'te ~61px) */
+@media (max-width: 600px) {
+    .size-four .size-item-card { width: clamp(56px, 17vw, 92px); height: clamp(56px, 17vw, 92px); }
+    .size-four .size-item-card .item-visual { font-size: 2rem; }
+}
+
+/* Telefon yatay: sağ sütunda 4 küçük kart */
+@media (max-height: 500px) and (orientation: landscape) {
+    .size-four .size-item-card { width: 60px; height: 60px; }
+    .size-four .size-item-card .item-visual { font-size: 1.8rem; }
+}

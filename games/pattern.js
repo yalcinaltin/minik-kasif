@@ -60,8 +60,11 @@ class PatternGame {
     renderPatternOptions() {
         const level = window.GAME_DATA.PATTERN_LEVELS[this.patternLevelIdx];
         this.patternOptionsContainer.innerHTML = '';
+        // 4 seçenekli bölümlerde dar telefonda kartlar tek sıraya sığsın diye küçülür
+        this.patternOptionsContainer.classList.toggle('options-four', level.options.length > 3);
 
-        level.options.forEach(opt => {
+        // Seçenek sırası her açılışta karışık: doğru cevap hep aynı yerde olmasın
+        this.shuffleArray(level.options).forEach(opt => {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'pattern-option-card';

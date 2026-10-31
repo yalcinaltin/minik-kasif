@@ -38,6 +38,8 @@ class BubblesGame {
         this.bubblesSpawnTimer = setInterval(() => {
             // Uygulama arka plandayken yeni köpük çıkmasın (dönünce kaldığı yerden sürer)
             if (document.hidden) return;
+            // Seçmeli bölümde ekran sayılmayan köpüklerle dolarsa en eskisi süzülüp gider
+            if (this.activeBubbles.length >= 8) this.fadeOldestWrongBubble();
             if (this.activeBubbles.length < 8) {
                 this.spawnSoapBubble();
             }
@@ -55,12 +57,43 @@ class BubblesGame {
         this.activeBubbles = [];
     }
 
+    // goalSymbols varsa yalnız o sürprizler sayılır (yoksa her köpük sayılır)
+    isGoalSurprise(level, surprise) {
+        return !level.goalSymbols || level.goalSymbols.includes(surprise.symbol);
+    }
+
+    // Seçmeli bölümde hedef köpükler sık çıkar; ekranda hiç yoksa mutlaka hedef çıkar
+    pickBubbleSurprise(level) {
+        const pick = (list) => list[Math.floor(Math.random() * list.length)];
+        if (!level.goalSymbols) return pick(level.surprises);
+        const goals = level.surprises.filter(s => this.isGoalSurprise(level, s));
+        const others = level.surprises.filter(s => !this.isGoalSurprise(level, s));
+        const goalCount = this.activeBubbles.filter(b => b.dataset.goal === '1').length;
+        if (goalCount === 0 || !others.length) return pick(goals);
+        // Ekranın yarısı zaten hedefse çeldirici çıkar: "sadece balıklı köpükler" görevi hep anlamlı kalsın
+        if (goalCount * 2 >= this.activeBubbles.length) return pick(others);
+        return Math.random() < 0.55 ? pick(goals) : pick(others);
+    }
+
+    // Sayılmayan en eski köpüğü yavaşça silip yer açar (normal bölümlerde hepsi sayıldığı için hiçbir şey yapmaz)
+    fadeOldestWrongBubble() {
+        const old = this.activeBubbles.find(b => b.dataset.goal !== '1');
+        if (!old) return;
+        this.activeBubbles = this.activeBubbles.filter(b => b !== old);
+        old.style.pointerEvents = 'none';
+        this.waitForAnimation(old.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }), 400)
+            .then(() => old.remove());
+    }
+
     spawnSoapBubble() {
         const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
-        const surprise = level.surprises[Math.floor(Math.random() * level.surprises.length)];
+        const surprise = this.pickBubbleSurprise(level);
 
         const bubble = document.createElement('div');
         bubble.className = 'magic-soap-bubble';
+        bubble.dataset.goal = this.isGoalSurprise(level, surprise) ? '1' : '0';
+        // İsteğe bağlı küçük köpük ('scale' özelliği uçuş animasyonundaki 'transform' ile çakışmaz)
+        if (level.bubbleScale) bubble.style.scale = String(level.bubbleScale);
 
         // Yatay rastgele konum (%8 - %88)
         const leftPercent = 8 + Math.random() * 80;
@@ -72,7 +105,7 @@ class BubblesGame {
             <div class="bubble-surprise-inside">${surprise.symbol}</div>
         `;
 
-        const duration = 6.5 + Math.random() * 4;
+        const duration = (6.5 + Math.random() * 4) / (level.floatSpeed || 1);
         bubble.style.animation = `soapBubbleFloat ${duration}s linear infinite`;
 
         const popHandler = (e) => {
@@ -86,6 +119,22 @@ class BubblesGame {
     }
 
     async popSoapBubble(bubbleEl, surprise) {
+        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
+        if (this.bubblesPoppedScore >= level.targetCount) return;
+
+        // Seçmeli bölümde aranmayan köpük patlamaz: sallanır ve ipucu söylenir (ceza yok)
+        if (!this.isGoalSurprise(level, surprise)) {
+            bubbleEl.animate([
+                { rotate: '0deg' }, { rotate: '-14deg' }, { rotate: '14deg' }, { rotate: '0deg' }
+            ], { duration: 400 });
+            const now = Date.now();
+            if (!this.bubblesHintAt || now - this.bubblesHintAt > 1500) {
+                this.bubblesHintAt = now;
+                soundManager.speak(level.goalHint);
+            }
+            return;
+        }
+
         soundManager.playBubblePlop();
 
         this.activeBubbles = this.activeBubbles.filter(b => b !== bubbleEl);
@@ -108,7 +157,6 @@ class BubblesGame {
         this.bubblesPoppedScore++;
         this.updateBubblesScoreUI();
 
-        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
         if (this.bubblesPoppedScore >= level.targetCount) {
             this.stopBubblesSpawner();
             soundManager.playSuccess();

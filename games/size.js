@@ -12,15 +12,44 @@ class SizeGame {
 
         this.setLevelHeader('size', level);
 
+        this.setupSizePodium(level);
         this.resetSizeLevel();
         soundManager.speak(level.instruction);
+    }
+
+    // Podyum sayısı nesne sayısına uyar (3 ya da 4); büyükten küçüğe bölümlerde basamaklar ters dizilir
+    setupSizePodium(level) {
+        const count = level.items.length;
+        const container = document.querySelector('#view-size .podium-container');
+        if (container.children.length !== count) {
+            container.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'podium-slot';
+                slot.dataset.slot = i;
+                container.appendChild(slot);
+            }
+            this.podiumSlotsEl = container.querySelectorAll('.podium-slot');
+        }
+        const card = container.closest('.size-container-card');
+        card.classList.toggle('size-four', count === 4);
+        card.classList.toggle('size-desc', level.order === 'desc');
+    }
+
+    // Podyum başlıkları: 3 nesnede madalyalı, 4 nesnede kısa; ters bölümde en büyük başta
+    getSizeRankTexts(level) {
+        const texts = level.items.length === 4
+            ? ['EN KÜÇÜK', 'KÜÇÜK', 'BÜYÜK', 'EN BÜYÜK']
+            : ['EN KÜÇÜK 🥉', 'ORTA BOY 🥈', 'EN BÜYÜK 🥇'];
+        if (level.order === 'desc') texts.reverse();
+        return texts.map((t, i) => `${i + 1}. ${t}`);
     }
 
     resetSizeLevel() {
         const level = window.GAME_DATA.SIZE_LEVELS[this.sizeLevelIdx];
         this.sizeLocked = false;
         this.sizeToken = (this.sizeToken || 0) + 1; // Bekleyen değerlendirme yeni dizilişe dokunmasın
-        this.sizePodiumSlots = [null, null, null];
+        this.sizePodiumSlots = level.items.map(() => null);
         this.availableSizeItems = this.shuffleArray(level.items);
         // Önceki bölümün yeşil "başardın" / kırmızı "karıştı" görünümü yeni bölüme taşınmasın
         this.podiumSlotsEl.forEach(el => el.classList.remove('podium-success', 'podium-error'));
@@ -58,13 +87,13 @@ class SizeGame {
     }
 
     renderSizePodium() {
+        const rankTexts = this.getSizeRankTexts(window.GAME_DATA.SIZE_LEVELS[this.sizeLevelIdx]);
         this.podiumSlotsEl.forEach((slotEl, idx) => {
             const placedItem = this.sizePodiumSlots[idx];
             slotEl.innerHTML = '';
 
             const slotHeader = document.createElement('div');
             slotHeader.className = 'podium-header';
-            const rankTexts = ['1. EN KÜÇÜK 🥉', '2. ORTA BOY 🥈', '3. EN BÜYÜK 🥇'];
             slotHeader.textContent = rankTexts[idx];
             slotEl.appendChild(slotHeader);
 
@@ -130,7 +159,11 @@ class SizeGame {
         this.sizeLocked = true;
         const epoch = this.levelEpoch;
         const token = this.sizeToken;
-        const isCorrect = this.sizePodiumSlots.every((item, idx) => item.rank === (idx + 1));
+        const level = window.GAME_DATA.SIZE_LEVELS[this.sizeLevelIdx];
+        const desc = level.order === 'desc';
+        const count = this.sizePodiumSlots.length;
+        // Küçükten büyüğe: 1. podyumda rank 1; büyükten küçüğe: 1. podyumda en büyük rank
+        const isCorrect = this.sizePodiumSlots.every((item, idx) => item.rank === (desc ? count - idx : idx + 1));
 
         await this.sleep(300);
         if (epoch !== this.levelEpoch || token !== this.sizeToken) return;
@@ -141,16 +174,20 @@ class SizeGame {
             this.addStar(2);
 
             this.podiumSlotsEl.forEach(el => el.classList.add('podium-success'));
-            soundManager.speak("Tebrikler! Küçükten büyüğe kusursuz sıraladın!");
+            soundManager.speak(desc
+                ? "Tebrikler! Büyükten küçüğe kusursuz sıraladın!"
+                : "Tebrikler! Küçükten büyüğe kusursuz sıraladın!");
 
             this.celebrateAfter(900,
                 "Boyut Ustası! ⚖️🌟",
-                "Nesneleri küçükten büyüğe harika bir şekilde yerleştirdin!"
+                `Nesneleri ${desc ? 'büyükten küçüğe' : 'küçükten büyüğe'} harika bir şekilde yerleştirdin!`
             );
         } else {
             soundManager.playObstacle();
             this.podiumSlotsEl.forEach(el => el.classList.add('podium-error'));
-            soundManager.speak("Biraz karıştı! Hadi baştan en küçüğü bularak başlayalım.");
+            soundManager.speak(desc
+                ? "Biraz karıştı! Hadi baştan en büyüğü bularak başlayalım."
+                : "Biraz karıştı! Hadi baştan en küçüğü bularak başlayalım.");
 
             await this.sleep(1000);
             if (epoch !== this.levelEpoch || token !== this.sizeToken) return;

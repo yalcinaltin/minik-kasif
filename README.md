@@ -1,5 +1,5 @@
 # 🐰 Minik Kaşif: 3-5 Yaş Bilişsel, Zihinsel ve Algoritmik Oyun Dünyası
-### 🌐 (Toddler Games Online İlhamlı, 15 Oyunlu, Telefona Kurulabilen Sürüm)
+### 🌐 (Toddler Games Online İlhamlı, 18 Oyunlu, Telefona Kurulabilen Sürüm)
 
 > **Toddler Games Online (toddlergamesonline.com)** pedagojisi ve okul öncesi erken çocukluk gelişim dinamikleri temel alınarak hazırlanan; **tam ekran uyumlu**, **büyük dokunmatik butonlu**, **yazısız piktografik arayüze** ve **anlaşılır Türkçe sesli yönlendirmeye** sahip zengin eğitici web oyun platformu.
 
@@ -30,7 +30,7 @@
    * Tek tıkla **Tam Ekran (F11 / Fullscreen API)** desteği.
 
 5. **🏠 Oyun Seçim Ana Ekranı:**
-   * Açılışta 15 oyun büyük resimli kartlar halinde görünür (yatay kaydırmalı sekme şeridi kaldırıldı).
+   * Açılışta 18 oyun büyük resimli kartlar halinde görünür (yatay kaydırmalı sekme şeridi kaldırıldı).
    * Oyun içindeyken sol üstteki **🏠** düğmesi menüye döner; oyun alanı sekmelere yer vermediği için daha büyük kalır.
 
 6. **🗣️ Doğal & Anlaşılır Türkçe Seslendirme:**
@@ -39,25 +39,28 @@
 
 ---
 
-## 🎮 15 Temel Gelişim Modülü (3 - 5 Yaş)
+## 🎮 18 Temel Gelişim Modülü (3 - 5 Yaş)
 
 | Modül | Kontrol | Gelişim Alanı | Pedagojik Hedef |
 | :--- | :--- | :--- | :--- |
-| 🖍️ **Boyama Kitabı** | Renk Seç & Dokun | Yaratıcılık, Renk Adları & İnce Motor | Ev, balık, araba, çiçek sayfaları; seçilen rengin adı sesli söylenir, silgi ve temizle var. Bitince kutlanır ama sonraki sayfaya zorlanmaz. |
-| 🖼️ **Yapboz** | Sürükle-Bırak / Dokun-Dokun | Parça-Bütün & Görsel-Uzamsal Akıl | 4 → 6 → 9 parça; her parçada ayırt edici küçük süs, zorlaştıkça silikleşen ipucu resmi. |
-| 🎹 **Melodi Tekrarla** | Ksilofon Tuşları / Klavye 1-6 | İşitsel Bellek & Sıralama | Serbest çalma, ardından 2 → 3 → 4 notalık melodiyi dinleyip aynı sırayla çalma; yanlışta melodi yeniden çalınır. |
-| 🧺 **Sepetlere Ayır** | Sürükle-Bırak / Dokun-Dokun | Sınıflandırma (tek özellik) | Renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen. 3-5 yaş tek kurala göre ayırabildiği için her bölüm tek kurallı. |
-| 🎨 **Renk Bulucu** | Dinle & Dokun | Renk Adları & Dinleme Dikkati | Söylenen rengi dinleyip doğru renk kartına dokunma (🔊 ile tekrar dinlenir). 10 renk, 4 bölüm. |
-| 🔢 **Sayı Bulucu** | Dinle & Dokun | Sayı Tanıma & Miktar Eşleme | Söylenen sayıyı dinleyip doğru karta dokunma; 1'den 10'a rakam, yazılış ve nesne sayısı. 4 bölüm. |
-| 🐶 **Yön Oklu Labirent** | Ekran Okları / Klavye Ok Tuşları | Mekânsal Yönelim & Canlı Tepki | Labirent koridorlarında gezinme, engelleri aşma, kemiğe ve yıldızlara ulaşma. |
-| 🏀 **Neşeli Top Atma** | Dokun / Kaydır / Sapan | İnce Motor, Zamanlama & Açı Tahmini | Duran ve kayan hedeflere nişan alma; ıskalayınca tekrar deneme. |
-| 🧼 **Köpük Patlatma** | Dokun / Tıkla | Görsel Dikkat & Duyusal Refleks | Salınan köpükleri patlatıp içindeki gizli oyuncakları sandığa toplama. |
-| 🥕 **Tavşancık Kodlama** | Komut Treni (Adım Adım) | Algoritmik Sıralama & Debugging | Yön kartlarını sıraya dizip tavşanı yürütme, engel aşma ve havuç avı. |
-| 🎈 **Balon Avı** | Tıkla / Patlat | Refleks, Renk & Sayı Algısı | Hedef renkteki balonları yakalama, 1'den 5'e sayma. |
-| 🧩 **Şekil & Gölge** | Dokun & Eşle | Biçim Tanıma & Parça-Bütün | Nesneleri ve hayvanları gölgeleriyle/silüetleriyle buluşturma. |
-| 🧠 **Hafıza Kartları** | 3D Kart Çevirme | Çalışma Belleği & Odaklanma | 4 ve 6 kartlık kademelerde aynı çiftleri akılda tutma. |
-| 🚂 **Örüntü Treni** | Vagon Tamamlama | Mantık & Kural Çıkarımı | AB, AAB, ABC döngülerini kavrayıp sıradaki vagonu tahmin etme. |
-| ⚖️ **Boyut Dünyası** | Podyum Sıralama | Piaget Seriasyonu (Boyut Algısı) | Küçük, Orta ve Büyük nesneleri boyutuna göre podyuma dizme. |
+| 🖍️ **Boyama Kitabı** | Renk Seç & Dokun | Yaratıcılık, Renk Adları & İnce Motor | 8 sayfa (ev, balık, araba, çiçek, kedi, elma ağacı, gökkuşağı, roket); seçilen rengin adı sesli söylenir, silgi ve temizle var. Bitince kutlanır ama sonraki sayfaya zorlanmaz. |
+| 🖼️ **Yapboz** | Sürükle-Bırak / Dokun-Dokun | Parça-Bütün & Görsel-Uzamsal Akıl | 4 → 6 → 9 → 12 parça, 9 bölüm; her parçada ayırt edici küçük süs, zorlaştıkça silikleşen ipucu resmi. |
+| 🎹 **Melodi Tekrarla** | Ksilofon Tuşları / Klavye 1-6 | İşitsel Bellek & Sıralama | Serbest çalma, ardından 2 → 3 → 4 → 5 notalık (son bölümde hızlı) melodiyi dinleyip aynı sırayla çalma; yanlışta melodi yeniden çalınır. |
+| 🧺 **Sepetlere Ayır** | Sürükle-Bırak / Dokun-Dokun | Sınıflandırma (tek özellik) | 8 bölüm: renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen, gündüz/gece, yiyecek/oyuncak, büyük/küçük. 3-5 yaş tek kurala göre ayırabildiği için her bölüm tek kurallı. |
+| 🎨 **Renk Bulucu** | Dinle & Dokun | Renk Adları & Dinleme Dikkati | Söylenen rengi dinleyip doğru renk kartına dokunma (🔊 ile tekrar dinlenir). 10 renk, 6 bölüm; sonuncusunda kartta yalnızca o renkteki nesne var. |
+| 🔢 **Sayı Bulucu** | Dinle & Dokun | Sayı Tanıma & Miktar Eşleme | Söylenen sayıyı dinleyip doğru karta dokunma; 1'den 10'a rakam, yazılış ve nesne sayısı; sonra kartlardaki elmaları sayma ve "en çok olanı bul". 6 bölüm. |
+| 🐶 **Yön Oklu Labirent** | Ekran Okları / Klavye Ok Tuşları | Mekânsal Yönelim & Canlı Tepki | 8 bölüm (5×5'ten 7×7'ye, temalı duvarlar: kaktüs, kardan adam, ayçiçeği); koridorlarda gezinme, kemiğe ve yıldızlara ulaşma. |
+| 🏀 **Neşeli Top Atma** | Dokun / Kaydır / Sapan | İnce Motor, Zamanlama & Açı Tahmini | 6 bölüm; duran, kayan ve küçülen hedeflere nişan alma; ıskalayınca tekrar deneme. |
+| 🧼 **Köpük Patlatma** | Dokun / Tıkla | Görsel Dikkat & Duyusal Refleks | 6 bölüm; köpükleri patlatıp sürprizleri toplama, son bölümlerde yalnızca balıklı / yıldızlı köpükleri seçme. |
+| 🥕 **Tavşancık Kodlama** | Komut Treni (Adım Adım) | Algoritmik Sıralama & Debugging | 14 bölüm; yön kartlarını sıraya dizip tavşanı yürütme, engel aşma ve havuç avı. |
+| 🎈 **Balon Avı** | Tıkla / Patlat | Refleks, Renk & Sayı Algısı | 7 bölüm; hedef renkteki balonları yakalama, sayılar ve 1'den 5'e sırayla patlatma. |
+| 🧩 **Şekil & Gölge** | Dokun & Eşle | Biçim Tanıma & Parça-Bütün | 7 bölüm; nesneleri ve hayvanları gölgeleriyle buluşturma. |
+| 🧠 **Hafıza Kartları** | 3D Kart Çevirme | Çalışma Belleği & Odaklanma | 4'ten 12 karta kadar 7 kademede aynı çiftleri akılda tutma. |
+| 🚂 **Örüntü Treni** | Vagon Tamamlama | Mantık & Kural Çıkarımı | 12 bölüm; AB, AAB, ABC, ABB, AABB, ABCD döngülerinde sıradaki vagonu bulma, seçenek yerleri karışık. |
+| ⚖️ **Boyut Dünyası** | Podyum Sıralama | Piaget Seriasyonu (Boyut Algısı) | 9 bölüm; 3-4 nesneyi küçükten büyüğe, son bölümlerde büyükten küçüğe dizme. |
+| ✏️ **Noktaları Birleştir** | Sırayla Dokun / Parmağı Kaydır | Sayı Sırası, Rakam Tanıma & İnce Motor | 3 → 10 nokta; her sayı sesli söylenir, şekil kapanınca gizli resim (çadır, ev, balık, yıldız…) çıkar. Yanlış noktada sıradaki nokta parlar. |
+| 🔍 **Farklı Olanı Bul** | Dokun | Görsel Ayırt Etme & Karşılaştırma | 3-4 kartta tek özelliği (tür, renk, boy, yön) farklı olanı bulma; doğru seçimde fark sesli söylenir. 8 bölüm, her bölüm 3-4 tur. |
+| 🙈 **Kim Kayboldu?** | Bak, Hatırla & Dokun | Görsel Çalışma Belleği | 3 → 4 → 5 karta bakıp perde kalkınca kaybolanı seçeneklerden bulma; önce ❓ boşluklu, sonra kayan, en sonda yeri karışan kartlar. 8 bölüm. |
 
 ---
 
@@ -74,7 +77,7 @@
 1. `index.html` dosyasına çift tıklayarak herhangi bir tarayıcıda (Chrome, Edge, Safari vb.) açın.
 2. Açılan **oyun seçim ekranından** bir oyuna dokunun; oyun içinden **🏠** ile menüye dönebilirsiniz. Labirentte klavyenin **Yön Tuşları** (`⬆️ ⬇️ ⬅️ ➡️`) da çalışır.
 3. **Mikrofon kullanılmaz:** Renk / Sayı Bulucu'da maskot rengi ya da sayıyı söyler, çocuk dinleyip doğru karta dokunur. Oyun hiçbir ses kaydı almaz ve dışarı ses göndermez.
-4. **Telefonda:** dikey ve yatay ekranda 15 oyun kaydırmadan oynanır (360×640'tan itibaren test edildi). Telefonda başlık yalnızca simgelerden oluşur; yönerge balonu kısa süre görünüp kaybolur, **başlıktaki 🐶'ya dokununca** yönerge tekrar söylenir.
+4. **Telefonda:** dikey ve yatay ekranda 18 oyun kaydırmadan oynanır (360×640'tan itibaren test edildi). Telefonda başlık yalnızca simgelerden oluşur; yönerge balonu kısa süre görünüp kaybolur, **başlıktaki 🐶'ya dokununca** yönerge tekrar söylenir.
 5. Sağ üstteki **⛶ Tam Ekran** düğmesine basarak oyunu tam ekranda keyifle oynayabilirsiniz!
 
 ---
@@ -85,7 +88,7 @@ Oyun bir **Progressive Web App**'tir: bir web adresinden (https) açıldığınd
 
 * **Kurulum:** Android Chrome'da menü › **"Uygulamayı yükle"**, iPhone Safari'de **Paylaş › Ana Ekrana Ekle**. Oyun seçim ekranındaki **📲 Ana ekrana ekle** düğmesi kurulabilir durumdayken görünür ve yol gösterir.
 * **Tam ekran açılış:** Ana ekrandaki Minik Kaşif simgesinden açılınca tarayıcı çubuğu görünmez (`manifest.webmanifest`, `display: fullscreen`).
-* **İnternetsiz oynama:** İlk açılışta tüm oyun dosyaları ve yazı tipleri cihaza kaydedilir (`sw.js`). Sonra internet olmadan da 15 oyunun hepsi oynanır.
+* **İnternetsiz oynama:** İlk açılışta tüm oyun dosyaları ve yazı tipleri cihaza kaydedilir (`sw.js`). Sonra internet olmadan da 18 oyunun hepsi oynanır.
 * **Hep güncel:** Service worker oyun dosyalarında **önce interneti** dener; bağlantı varken her açılışta en yeni sürüm gelir, yoksa (ya da 4 sn'de cevap gelmezse) cihazdaki kopya kullanılır. Bu yüzden güncellemeden sonra telefonda eski görünüm kalmaz.
 * **Simgeler:** `icons/` klasöründe; kaynak çizimler `icon.svg` (normal) ve `icon-maskable.svg` (Android'in yuvarlak/damla maskeleri için kenara kadar dolu). PNG'ler bu SVG'lerden üretilmiştir.
 * **Not:** Service worker yalnızca `https://` ya da `localhost` üzerinden çalışır; `index.html` dosyaya çift tıklanarak açıldığında oyun yine çalışır ama kurulum ve internetsiz oynama devreye girmez.
@@ -100,5 +103,5 @@ Oyun derlemesizdir: tarayıcı dosyaları olduğu gibi yükler. `package.json` y
 * **Yeni oyun eklerken:** `index.html`'e bölüm ve `<script src="games/…">` satırı, `game.js`'teki `this.games` kaydına bir satır, `sw.js`'teki `APP_SHELL` listesine dosya adı eklenir; `sw.js`'teki `CACHE_VERSION` bir artırılır.
 * **Kurulum:** `npm ci` ve bir kez `npx playwright install chromium`.
 * **Yerel sunucu:** `npm run serve` → http://localhost:8765
-* **Hepsini denetle:** `npm run check` — bölüm verisi denetimi (`tools/check-levels.mjs`: labirentler çözülebilir mi, cevaplar seçeneklerde mi …), ESLint + Stylelint ve Playwright testleri (15 oyun 4 ekran boyutunda taşmadan ve hatasız açılır, çevrimdışı açılış, düzeltilmiş hataların geri gelmemesi).
+* **Hepsini denetle:** `npm run check` — bölüm verisi denetimi (`tools/check-levels.mjs`: labirentler çözülebilir mi, cevaplar seçeneklerde mi …), ESLint + Stylelint ve Playwright testleri (18 oyun 4 ekran boyutunda taşmadan ve hatasız açılır, çevrimdışı açılış, düzeltilmiş hataların geri gelmemesi).
 * **GitHub Actions:** her push'ta aynı denetim çalışır (`.github/workflows/check.yml`). `master`'a push ~15 sn içinde canlıya çıktığı için önce yerelde `npm run check` çalıştırın.

@@ -106,12 +106,14 @@ class MelodyGame {
         this.melodyInputPos = 0;
         this.setMelodyStatus('👂 Dikkatle dinle...', 'listening');
 
+        // Hızlı bölümlerde notalar arası bekleme kısalır (varsayılan 700 ms)
+        const tempo = window.GAME_DATA.MELODY_LEVELS[this.melodyLevelIdx].tempo || 700;
         await this.sleep(500);
         for (const id of this.melodySeq) {
             if (token !== this.melodyToken) return;
             soundManager.playNote(this.getMelodyNote(id).freq);
             this.flashMelodyBar(id);
-            await this.sleep(700);
+            await this.sleep(tempo);
         }
         if (token !== this.melodyToken) return;
 

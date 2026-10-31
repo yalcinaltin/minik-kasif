@@ -9,7 +9,7 @@
  * - Önbellek adını değiştirmek (CACHE_VERSION) eski kopyaları siler.
  */
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const APP_CACHE = `minik-kasif-app-${CACHE_VERSION}`;
 const FONT_CACHE = `minik-kasif-fonts-${CACHE_VERSION}`;
 const NETWORK_TIMEOUT_MS = 4000;
@@ -33,6 +33,9 @@ const APP_SHELL = [
     'games/jigsaw.js',
     'games/melody.js',
     'games/sorting.js',
+    'games/dots.js',
+    'games/oddone.js',
+    'games/missing.js',
     'levels.js',
     'audio.js',
     'manifest.webmanifest',

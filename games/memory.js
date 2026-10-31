@@ -5,15 +5,21 @@ class MemoryGame {
     // 🧠 MODÜL 7: SEVİMLİ HAFIZA KARTLARI
     // ==========================================
 
-    // Yatay ekranda 4 kart tek sıra, 6 kart 3×2; dikey ekranda 2 sütun.
+    // Yatay ekranda en çok 2 sıra: 4 kart tek sıra, 6 kart 3×2, 8 kart 4×2, 12 kart 6×2.
+    // Dikey ekranda 2 sütun; 8'den çok kartta 3 sütun (yoksa 5-6 sıra olup kartlar çok küçülür).
     // Kart boyu CSS'te bu satır/sütun sayısına göre ekrana sığacak şekilde hesaplanır.
     applyMemoryGrid(cardCount) {
         const isLandscape = window.innerWidth >= window.innerHeight;
-        const cols = isLandscape ? (cardCount === 4 ? 4 : 3) : 2;
+        const landscapeCols = cardCount <= 4 ? cardCount : Math.ceil(cardCount / 2);
+        const cols = isLandscape ? landscapeCols : (cardCount > 8 ? 3 : 2);
         const rows = Math.ceil(cardCount / cols);
         this.memoryBoard.style.gridTemplateColumns = `repeat(${cols}, auto)`;
         this.memoryBoard.style.setProperty('--mem-cols', cols);
         this.memoryBoard.style.setProperty('--mem-rows', rows);
+        // 3 sütunda son sırada tek kart kalırsa ortaya alınır (10 kart: 3+3+3+1)
+        const cards = [...this.memoryBoard.children];
+        cards.forEach(c => { c.style.gridColumn = ''; });
+        if (cols === 3 && cardCount % 3 === 1 && cards.length) cards[cards.length - 1].style.gridColumn = '2';
     }
 
     loadMemoryLevel(idx) {
@@ -41,7 +47,6 @@ class MemoryGame {
         });
         cardsData.sort(() => Math.random() - 0.5);
 
-        this.applyMemoryGrid(cardsData.length);
 
         cardsData.forEach(card => {
             const cardEl = document.createElement('div');
@@ -65,6 +70,8 @@ class MemoryGame {
 
             this.memoryBoard.appendChild(cardEl);
         });
+
+        this.applyMemoryGrid(cardsData.length);
     }
 
     async handleMemoryCardClick(cardEl, card) {

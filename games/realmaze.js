@@ -8,6 +8,8 @@ class RealmazeGame {
     loadRealmazeLevel(idx) {
         this.levelEpoch++;
         this.realmazeLevelIdx = idx;
+        // "Başa Dön" tahtayı sıfırlar ama yıldızlar bölüm başına bir kez verilir
+        this.realmazePaidStars = new Set();
         const level = window.GAME_DATA.REALTIME_MAZE_LEVELS[idx];
 
         this.setLevelHeader('realmaze', level);
@@ -62,7 +64,8 @@ class RealmazeGame {
                     cell.classList.add('realmaze-wall-cell');
                     const wall = document.createElement('div');
                     wall.className = 'tile-item item-obstacle item-bush';
-                    wall.innerHTML = '<span class="item-emoji">🌳</span>';
+                    // Bölüm teması: isteğe bağlı wallEmoji (yoksa eskisi gibi ağaç)
+                    wall.innerHTML = `<span class="item-emoji">${level.wallEmoji || '🌳'}</span>`;
                     cell.appendChild(wall);
                 }
 
@@ -136,7 +139,10 @@ class RealmazeGame {
         if (starTile && !this.realmazeStars.has(starKey)) {
             this.realmazeStars.add(starKey);
             soundManager.playStar();
-            this.addStar(1);
+            if (!this.realmazePaidStars.has(starKey)) {
+                this.realmazePaidStars.add(starKey);
+                this.addStar(1);
+            }
             this.updateRealmazeStarsUI();
             this.renderRealmazeGrid();
         }

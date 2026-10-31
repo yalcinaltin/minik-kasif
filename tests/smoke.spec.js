@@ -1,8 +1,9 @@
-// Duman testi: 15 oyun her cihaz profilinde hatasız açılır ve ekrana kaydırmasız sığar
+// Duman testi: 18 oyunun bütün bölümleri her cihaz profilinde hatasız açılır ve ekrana kaydırmasız sığar
 const { test, expect } = require('@playwright/test');
 const { collectErrors, openGame } = require('./helpers');
 
-test('15 oyun hatasız açılır ve ekrana sığar', async ({ page }) => {
+test('18 oyunun bütün bölümleri hatasız açılır ve ekrana sığar', async ({ page }) => {
+    test.setTimeout(180000);
     const errors = collectErrors(page);
     await openGame(page);
 
@@ -24,22 +25,29 @@ test('15 oyun hatasız açılır ve ekrana sığar', async ({ page }) => {
         };
         const tabs = [...document.querySelectorAll('.nav-tab-btn')].map(b => b.dataset.tab);
         const problems = [];
+        let levels = 0;
         for (const t of tabs) {
             app.switchTab(t);
-            await sleep(350);
-            speechSynthesis.cancel();
-            const view = document.getElementById(`view-${t}`);
-            const overflowY = document.documentElement.scrollHeight - innerHeight;
-            const right = maxRight(view);
-            if (!view.classList.contains('active')) problems.push(`${t}: görünüm açılmadı`);
-            if (overflowY > 0) problems.push(`${t}: ${overflowY}px dikey taşma`);
-            if (right > innerWidth + 1) problems.push(`${t}: ${right - innerWidth}px yatay taşma`);
+            await sleep(300);
+            const count = app.games[t].levels().length;
+            for (let i = 0; i < count; i++) {
+                if (i > 0) { app.games[t].load(i); await sleep(300); }
+                speechSynthesis.cancel();
+                levels++;
+                const where = `${t} ${i + 1}. bölüm`;
+                const view = document.getElementById(`view-${t}`);
+                const overflowY = document.documentElement.scrollHeight - innerHeight;
+                const right = maxRight(view);
+                if (!view.classList.contains('active')) problems.push(`${where}: görünüm açılmadı`);
+                if (overflowY > 0) problems.push(`${where}: ${overflowY}px dikey taşma`);
+                if (right > innerWidth + 1) problems.push(`${where}: ${right - innerWidth}px yatay taşma`);
+            }
         }
         app.switchTab('home');
-        return { count: tabs.length, problems };
+        return { count: tabs.length, levels, problems };
     });
 
-    expect(report.count).toBe(15);
+    expect(report.count).toBe(18);
     expect(report.problems).toEqual([]);
     expect(errors).toEqual([]);
 });

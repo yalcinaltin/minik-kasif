@@ -10,13 +10,16 @@ class BallTossGame {
         this.ballTossLevelIdx = idx;
         const level = window.GAME_DATA.BALL_TOSS_LEVELS[idx];
         this.ballTossScore = 0;
+        this.ballTossShots = 0;
         this.isTossLaunching = false;
 
         this.setLevelHeader('balltoss', level);
 
         this.targetEmojiDisplay.textContent = level.targetEmoji;
         this.targetLabelDisplay.textContent = level.targetLabel;
-        this.ballAmmoEmoji.textContent = level.ballEmoji;
+        this.ballAmmoEmoji.textContent = this.getTossBallEmoji(level);
+        // İsteğe bağlı küçük hedef ('scale' özelliği zıplama animasyonundaki 'transform' ile çakışmaz)
+        this.balltossTargetBox.style.scale = level.targetScale ? String(level.targetScale) : '';
 
         this.updateBallTossScoreUI();
         soundManager.speak(level.instruction);
@@ -26,6 +29,13 @@ class BallTossGame {
         this.tossTargetDir = 1;
         this.applyTossTargetPosition();
         this.startTossTargetLoop();
+    }
+
+    // Sıradaki atışın topu: ballEmojis varsa her atışta sıradaki, yoksa tek ballEmoji
+    getTossBallEmoji(level) {
+        const list = level.ballEmojis;
+        if (!list || !list.length) return level.ballEmoji;
+        return list[this.ballTossShots % list.length];
     }
 
     // Hedefin gidebileceği en uzak yatay mesafe (alanın yarısı - hedefin yarısı)
@@ -186,8 +196,11 @@ class BallTossGame {
 
         const flyingBall = document.createElement('div');
         flyingBall.className = 'flying-projectile-ball';
-        flyingBall.textContent = level.ballEmoji;
+        flyingBall.textContent = this.getTossBallEmoji(level);
         this.balltossArena.appendChild(flyingBall);
+        // Elde bekleyen top sıradakine geçer (ballEmojis yoksa aynı kalır)
+        this.ballTossShots++;
+        this.ballAmmoEmoji.textContent = this.getTossBallEmoji(level);
 
         const at = (x, y, scale, deg) =>
             `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${scale}) rotate(${deg}deg)`;

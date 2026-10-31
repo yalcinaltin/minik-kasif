@@ -21,7 +21,46 @@ class BalloonGame {
 
     updateBalloonScoreUI() {
         const level = window.GAME_DATA.BALLOON_LEVELS[this.balloonLevelIdx];
-        this.balloonScoreBadge.textContent = `🎯 ${this.balloonScore} / ${level.targetCount}`;
+        if (level.mode === 'sequence') {
+            // Sırayla saymada rozet sıradaki sayıyı gösterir
+            const next = this.getBalloonSequenceItem();
+            this.balloonScoreBadge.textContent = next
+                ? `👉 ${next.label} · ${this.balloonScore}/${level.targetCount}`
+                : `🎉 ${this.balloonScore}/${level.targetCount}`;
+            return;
+        }
+        // Renk görevinde hedef rengin dairesi görünür (🎯 yerine 🔴 gibi)
+        let icon = '🎯';
+        if (level.mode === 'color_filter') {
+            const target = level.colors.find(c => c.name === level.targetColor);
+            if (target) icon = target.emoji;
+        }
+        this.balloonScoreBadge.textContent = `${icon} ${this.balloonScore} / ${level.targetCount}`;
+    }
+
+    // Sırayla sayma bölümünde sıradaki sayı: doğru patlatılan balon sayısı kadar ilerler
+    getBalloonSequenceItem() {
+        const level = window.GAME_DATA.BALLOON_LEVELS[this.balloonLevelIdx];
+        if (level.mode !== 'sequence') return null;
+        return level.items[this.balloonScore] || null;
+    }
+
+    // Aranan balon gökyüzünde yoksa hemen bir tane çıkar (7 balon sınırına takılmasın):
+    // sırayla saymada sıradaki sayı, renk görevinde hedef renk
+    ensureSequenceBalloon() {
+        const level = window.GAME_DATA.BALLOON_LEVELS[this.balloonLevelIdx];
+        if (level.mode === 'color_filter') {
+            if (!this.activeBalloons.some(b => b.data.name === level.targetColor)) {
+                const target = level.colors.find(c => c.name === level.targetColor);
+                if (target) this.spawnBalloon(target);
+            }
+            return;
+        }
+        const next = this.getBalloonSequenceItem();
+        if (!next) return;
+        if (!this.activeBalloons.some(b => b.data.text === next.label)) {
+            this.spawnBalloon(next);
+        }
     }
 
     startBalloonSpawner() {
@@ -32,6 +71,7 @@ class BalloonGame {
         for (let i = 0; i < 3; i++) {
             this.spawnBalloon();
         }
+        this.ensureSequenceBalloon();
 
         this.balloonInterval = setInterval(() => {
             // Uygulama arka plandayken yeni balon çıkmasın (dönünce kaldığı yerden sürer)
@@ -39,6 +79,7 @@ class BalloonGame {
             if (this.activeBalloons.length < 7) {
                 this.spawnBalloon();
             }
+            this.ensureSequenceBalloon();
         }, 1200);
     }
 
@@ -55,12 +96,12 @@ class BalloonGame {
         this.activeBalloons = [];
     }
 
-    spawnBalloon() {
+    spawnBalloon(forcedItem = null) {
         const level = window.GAME_DATA.BALLOON_LEVELS[this.balloonLevelIdx];
 
         let balloonData = {};
-        if (level.mode === 'numbers') {
-            const item = level.items[Math.floor(Math.random() * level.items.length)];
+        if (level.mode === 'numbers' || level.mode === 'sequence') {
+            const item = forcedItem || level.items[Math.floor(Math.random() * level.items.length)];
             const randomColor = ['#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6'][Math.floor(Math.random() * 5)];
             balloonData = {
                 type: 'number',
@@ -69,7 +110,7 @@ class BalloonGame {
                 color: randomColor
             };
         } else {
-            const c = level.colors[Math.floor(Math.random() * level.colors.length)];
+            const c = forcedItem || level.colors[Math.floor(Math.random() * level.colors.length)];
             balloonData = {
                 type: 'color',
                 name: c.name,
@@ -125,11 +166,18 @@ class BalloonGame {
                 isCorrect = false;
                 soundManager.speak(`Bu ${data.name}! ${level.targetColor} balonu bulalım!`);
             }
+        } else if (level.mode === 'sequence') {
+            const next = this.getBalloonSequenceItem();
+            if (next && data.text !== next.label) {
+                isCorrect = false;
+                soundManager.speak(`Sıradaki sayı ${next.speech}`);
+            }
         }
 
         if (isCorrect) {
             this.balloonScore++;
             this.updateBalloonScoreUI();
+            if (this.balloonScore < level.targetCount) this.ensureSequenceBalloon();
 
             if (this.balloonScore >= level.targetCount) {
                 this.stopBalloonSpawner();

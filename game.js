@@ -1,6 +1,6 @@
 /**
  * Minik Kaşif - Ana Oyun Motoru (3-5 Yaş Çocuk Gelişim Sürümü)
- * 15 Zengin ve Eğlenceli Oyun Modülü:
+ * 18 Zengin ve Eğlenceli Oyun Modülü:
  * 1. 🐶 Yön Tuşlu Canlı Labirent (Klavyeyle/Dokunmatik Canlı Çıkış)
  * 2. 🏀 Neşeli Top Atma & Basket (Fizik & Hedef Vurma)
  * 3. 🧼 Sihirli Sabun Köpüğü (Duyusal Patlatma & Sürprizler)
@@ -16,6 +16,8 @@
  * 13. 🖼️ Yapboz (Parça - Bütün)
  * 14. 🎹 Melodi Tekrarla (Ksilofon & İşitsel Bellek)
  * 15. 🧺 Sepetlere Ayır (Sınıflandırma)
+ * 16. 🔍 Farklı Olanı Bul (Görsel Ayırt Etme)
+ * 17. 🙈 Kim Kayboldu? (Görsel Bellek)
  */
 
 // Tarayıcı depolaması kapalı ya da dolu olabilir (gizli pencere, engellenmiş site verisi):
@@ -135,7 +137,28 @@ class MiniExplorerApp {
         this.sortingSelected = null;
         this.sortingDone = 0;
 
-        // 15 oyunun ortak kaydı: önceki/sonraki düğmeleri, sekme açılışı, yönerge, kutlama sonrası
+        // ✏️ Noktaları Birleştir Durumu
+        this.dotsLevelIdx = 0;
+        this.dotsNext = 0;         // Sıradaki noktanın sırası (0 = "1" numaralı nokta)
+        this.dotsDone = false;
+        this.dotsDrag = null;      // Parmak kaydırılarak birleştirme durumu
+
+        // 🔍 16. Farklı Olanı Bul Durumu
+        this.oddoneLevelIdx = 0;
+        this.oddoneRoundIdx = 0;
+        this.oddoneBusy = false;
+        this.oddoneToken = 0;      // Tur değişince bekleyen "sonraki tur" işini iptal eder
+
+        // 🙈 17. Kim Kayboldu Durumu
+        this.missingLevelIdx = 0;
+        this.missingRoundIdx = 0;
+        this.missingPhase = 'look'; // look → hide → ask → done
+        this.missingBusy = false;
+        this.missingToken = 0;     // Bölüm/tur değişince süren bak-sakla akışını iptal eder
+        this.missingItem = null;
+        this.missingWrongCount = 0;
+
+        // 18 oyunun ortak kaydı: önceki/sonraki düğmeleri, sekme açılışı, yönerge, kutlama sonrası
         // ilerleme ve oyundan çıkarken temizlik buradan yürür. Anahtar = sekme adı = HTML kimlik öneki
         // (`${anahtar}-title`, `${anahtar}-instruction`, `btn-${anahtar}-prev/next`).
         //   levels()      → bölüm listesi          idxKey / getIdx() → açık bölüm sırası
@@ -177,7 +200,17 @@ class MiniExplorerApp {
                 // Çalmakta olan melodiyi durdur
                 onLeave: () => { this.melodyToken++; this.melodyBusy = false; }
             },
-            sorting: { levels: () => D().SORTING_LEVELS, idxKey: 'sortingLevelIdx', load: (i) => this.loadSortingLevel(i) }
+            sorting: { levels: () => D().SORTING_LEVELS, idxKey: 'sortingLevelIdx', load: (i) => this.loadSortingLevel(i) },
+            dots: {
+                levels: () => D().DOTS_LEVELS, idxKey: 'dotsLevelIdx', load: (i) => this.loadDotsLevel(i),
+                onLeave: () => this.endDotsDrag()
+            },
+            oddone: { levels: () => D().ODDONE_LEVELS, idxKey: 'oddoneLevelIdx', load: (i) => this.loadOddOneLevel(i) },
+            // Bak-sakla akışı levelEpoch ile kendiliğinden durur; Tekrar düğmesi aşamaya göre konuşur
+            missing: {
+                levels: () => D().MISSING_LEVELS, idxKey: 'missingLevelIdx', load: (i) => this.loadMissingLevel(i),
+                instruction: () => this.getMissingInstruction()
+            }
         };
 
         // Konfeti motoru
@@ -359,7 +392,10 @@ class MiniExplorerApp {
             coloring: document.getElementById('view-coloring'),
             jigsaw: document.getElementById('view-jigsaw'),
             melody: document.getElementById('view-melody'),
-            sorting: document.getElementById('view-sorting')
+            sorting: document.getElementById('view-sorting'),
+            dots: document.getElementById('view-dots'),
+            oddone: document.getElementById('view-oddone'),
+            missing: document.getElementById('view-missing')
         };
 
         // Üst panel
@@ -476,6 +512,20 @@ class MiniExplorerApp {
         this.sortingProgress = document.getElementById('sorting-progress');
         this.sortingPool = document.getElementById('sorting-pool');
         this.sortingBaskets = document.getElementById('sorting-baskets');
+
+        // --- Noktaları Birleştir ---
+        this.dotsProgress = document.getElementById('dots-progress');
+        this.dotsBoard = document.getElementById('dots-board');
+
+        // --- 16. Farklı Olanı Bul ---
+        this.oddoneProgress = document.getElementById('oddone-progress');
+        this.oddoneBoard = document.getElementById('oddone-board');
+
+        // --- 17. Kim Kayboldu? ---
+        this.missingProgress = document.getElementById('missing-progress');
+        this.missingStatus = document.getElementById('missing-status');
+        this.missingShelf = document.getElementById('missing-shelf');
+        this.missingOptions = document.getElementById('missing-options');
 
         // Başarı Kutlama Modalı
         this.celebrationModal = document.getElementById('celebration-modal');
@@ -606,6 +656,8 @@ class MiniExplorerApp {
         });
 
         this.btnResetRealmaze.addEventListener('click', () => {
+            // Kemiğe varıldıysa kutlama penceresi bölümü ilerletir; arada sıfırlayıp yeniden oynanmaz
+            if (this.realmazeFinished) return;
             soundManager.playPop();
             this.resetRealmazePosition();
         });
@@ -702,6 +754,10 @@ class MiniExplorerApp {
         });
 
         // Başarı modalı kapatma/ilerleme
+        // Esc / telefonun geri tuşu pencereyi kapatmasın: bölüm bitmiş halde kalır ve
+        // yeniden oynanıp yıldız toplanırdı; ilerlemek için pencerenin düğmesi kullanılır
+        this.celebrationModal.addEventListener('cancel', (e) => e.preventDefault());
+
         this.btnNextCelebration.addEventListener('click', () => {
             soundManager.playPop();
             this.celebrationModal.close();
@@ -867,6 +923,8 @@ class MiniExplorerApp {
         document.getElementById(`${key}-instruction`).textContent = level.instruction;
         document.getElementById(`btn-${key}-prev`).disabled = (idx === 0);
         document.getElementById(`btn-${key}-next`).disabled = (idx === levels.length - 1);
+        // Başlık/yönerge satır sayısı değişebilir: tahta boyu bir sonraki karede yeniden ölçülür
+        requestAnimationFrame(() => this.updatePlayAreaHeight());
     }
 
     // ==========================================

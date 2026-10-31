@@ -128,7 +128,7 @@ test('her oyunda önceki/sonraki bölüm düğmeleri ve yönerge çalışır', a
     const errors = collectErrors(page);
     await openGame(page);
     const keys = await page.evaluate(() => Object.keys(app.games));
-    expect(keys).toHaveLength(15);
+    expect(keys).toHaveLength(18);
 
     for (const key of keys) {
         const result = await page.evaluate(async (k) => {
@@ -161,6 +161,48 @@ test('her oyunda önceki/sonraki bölüm düğmeleri ve yönerge çalışır', a
         expect(result.idxAfterPrev, key).toBe(0);
         expect(result.nextDisabledAtLast, key).toBe(true);
     }
+    expect(errors).toEqual([]);
+});
+
+test('labirent: kutlama penceresi Esc ile kapanmaz, bitmiş bölüm yeniden oynanıp yıldız toplanamaz', async ({ page }) => {
+    await openGame(page);
+    await page.evaluate(() => { app.realmazeLevelIdx = 0; });
+    await switchTab(page, 'realmaze');
+    // Hedefe doğrudan götür (yol bulma testin konusu değil)
+    await page.evaluate(() => {
+        const lv = GAME_DATA.REALTIME_MAZE_LEVELS[0];
+        app.realmazePlayer = { x: lv.goal.x - 1, y: lv.goal.y, facing: 'right' };
+        if (lv.walls.some(w => w.x === lv.goal.x - 1 && w.y === lv.goal.y)) app.realmazePlayer = { x: lv.goal.x, y: lv.goal.y - 1, facing: 'right' };
+        app.moveRealmaze(app.realmazePlayer.x < lv.goal.x ? 'RIGHT' : 'DOWN');
+    });
+    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    const stars = await page.evaluate(() => app.totalStars);
+    await page.keyboard.press('Escape');
+    expect(await modalOpen(page)).toBe(true);
+    await page.evaluate(() => document.getElementById('btn-reset-realmaze').click());
+    expect(await page.evaluate(() => app.realmazeFinished)).toBe(true);
+    expect(await page.evaluate(() => app.totalStars)).toBe(stars);
+});
+
+test('balon: renk görevinde hedef renkte balon hep vardır (yalnız doğru renk patlatılsa da takılmaz)', async ({ page }) => {
+    const errors = collectErrors(page);
+    await openGame(page);
+    const idx = await page.evaluate(() => GAME_DATA.BALLOON_LEVELS.findIndex(l => l.mode === 'color_filter'));
+    await page.evaluate((i) => { app.balloonLevelIdx = i; }, idx);
+    await switchTab(page, 'balloon');
+    const result = await page.evaluate(async (i) => {
+        const level = GAME_DATA.BALLOON_LEVELS[i];
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        const seen = [];
+        for (let k = 0; k < level.targetCount - 1; k++) {
+            await sleep(1300);
+            const target = app.activeBalloons.find(b => b.data.name === level.targetColor);
+            seen.push(!!target);
+            if (target) await app.popBalloon(target.element, target.data);
+        }
+        return seen;
+    }, idx);
+    expect(result.every(Boolean)).toBe(true);
     expect(errors).toEqual([]);
 });
 

@@ -60,6 +60,8 @@ class JigsawGame {
         this.jigsawBoard.innerHTML = '';
         this.jigsawBoard.style.setProperty('--cols', level.cols);
         this.jigsawBoard.style.setProperty('--rows', level.rows);
+        // 9 ve daha çok parçada telefonda parçalar küçülür, tepsi tahtayla birlikte ekrana sığar
+        this.jigsawBoard.closest('.jigsaw-layout').classList.toggle('many-pieces', level.cols * level.rows >= 9);
 
         const guide = document.createElement('div');
         guide.className = 'jigsaw-guide';
@@ -116,7 +118,7 @@ class JigsawGame {
     tryPlaceJigsawPiece(piece, slot) {
         if (slot.classList.contains('filled')) return;
         const level = window.GAME_DATA.JIGSAW_LEVELS[this.jigsawLevelIdx];
-        piece.classList.remove('selected-piece');
+        this.jigsawTray.querySelectorAll('.selected-piece').forEach(p => p.classList.remove('selected-piece'));
         this.jigsawSelected = null;
 
         if (piece.dataset.index !== slot.dataset.index) {
