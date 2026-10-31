@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minik Kaşif - 3-5 Yaş Çocuk Bilişsel ve Zihinsel Oyun Dünyası</title>
+    <!-- Sevimli ve Okunabilir Yuvarlak Yazı Tipleri -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Konfeti Çizim Alanı -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- 🔇 Türkçe Ses Bulunamadı Uyarısı (ebeveyn için, kapatılınca hatırlanır) -->
+    <div id="voice-missing-notice" class="voice-missing-notice" role="status" hidden>
+        <span class="notice-icon">🔇</span>
+        <p class="notice-text notice-desktop">
+            <strong>Bu tarayıcıda Türkçe ses bulunamadı</strong>, yönergeler yalnızca yazıyla gösteriliyor.
+            Sesli anlatım için oyunu <strong>Chrome</strong> veya <strong>Edge</strong> ile açın ya da Windows'ta
+            <strong>Ayarlar › Saat ve dil › Konuşma › Ses ekle › Türkçe</strong> paketini kurup tarayıcıyı yeniden başlatın.
+        </p>
+        <p class="notice-text notice-mobile" hidden>
+            <strong>Türkçe ses bulunamadı.</strong> Telefonun ayarlarında <strong>metin okuma (TTS) sesleri</strong>
+            bölümünden Türkçe sesi indirin; iPhone'da <strong>Ayarlar › Erişilebilirlik › Seslendirilen İçerik › Sesler › Türkçe</strong>.
+        </p>
+        <button id="btn-close-voice-notice" class="notice-close" type="button">Tamam</button>
+    </div>
+
+    <!-- Üst Başlık (Header - Tam Ekran) -->
+    <header class="app-header">
+        <div class="brand-wrapper">
+            <!-- Oyun Menüsüne Dön (yalnızca oyun içindeyken görünür) -->
+            <button id="btn-home" class="btn-circle btn-home" title="Oyun Menüsüne Dön" aria-label="Oyun Menüsü">
+                <span class="btn-icon">🏠</span>
+            </button>
+            <span class="brand-mascot" role="button" tabindex="0" aria-label="Yönergeyi tekrar dinle" title="Bana dokun, tekrar söyleyeyim!">🐶</span>
+            <div>
+                <h1 class="brand-title">Minik Kaşif</h1>
+                <span class="brand-badge">3 - 5 Yaş Oyun Dünyası</span>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <!-- Toplam Yıldız Sayacı -->
+            <div class="star-counter-pill" title="Kazanılan Yıldızlar">
+                <span class="star-icon">⭐</span>
+                <span id="total-stars-count">0</span>
+            </div>
+
+            <!-- Dev Ekran (Büyüt / Küçült) Modu -->
+            <button id="btn-screen-scale" class="btn-circle btn-screen-scale" title="Dev Ekran Modu (Tüm Ekranı Kapla)" aria-label="Dev Ekran Modu">
+                <span class="btn-icon">🔍</span>
+            </button>
+
+            <!-- Tam Ekran Aç/Kapa -->
+            <button id="btn-fullscreen-toggle" class="btn-circle btn-fullscreen" title="Tam Ekran Modunu Aç/Kapat" aria-label="Tam Ekran">
+                <span class="btn-icon">⛶</span>
+            </button>
+
+            <!-- Ses Efektleri Aç/Kapa -->
+            <button id="btn-sound-toggle" class="btn-circle" title="Ses Efektlerini Aç/Kapat" aria-label="Ses Açık">
+                <span class="btn-icon">🔊</span>
+            </button>
+
+            <!-- Sesli Türkçe Anlatım Aç/Kapa -->
+            <button id="btn-voice-toggle" class="btn-circle" title="Sesli Türkçe Yönergeyi Aç/Kapat" aria-label="Sesli Anlatım Açık">
+                <span class="btn-icon">🗣️</span>
+            </button>
+
+            <!-- Ebeveyn ve Eğitsel Rehber Modalı Açma -->
+            <button id="btn-parent-guide" class="btn-pill-info" title="Ebeveyn Rehberi ve Gelişim Amaçları">
+                <span class="pill-icon">📖</span><span class="pill-text">Ebeveyn Rehberi</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 🐶 CANLI MASKOT KONUŞMA BALONU & ALTYAZI -->
+    <div class="mascot-speech-container">
+        <div id="mascot-speech-bubble" class="mascot-speech-bubble bubble-hidden" aria-live="polite">
+            <div class="bubble-mascot-avatar">🐶</div>
+            <div class="bubble-text-box">
+                <span class="bubble-tag">Sevimli Dostumuz Diyor ki:</span>
+                <p class="bubble-text">Hadi yön tuşlarıyla labirentten çıkalım!</p>
+            </div>
+            <button id="btn-replay-speech" class="btn-bubble-action" title="Yönergeyi Tekrar Oku / Dinle">
+                <span>🔁 Tekrar</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Oyun Seçim Ana Ekranı (11 Eğitici Oyun) — oyun içindeyken gizlenir, 🏠 ile geri gelinir -->
+    <nav class="nav-tab-container" aria-label="Oyun Modları">
+        <h2 class="home-title">🎈 Hangi oyunu oynayalım?</h2>
+        <button class="nav-tab-btn" data-tab="realmaze" aria-selected="false">
+            <span class="tab-icon">🐶</span>
+            <div>
+                <div class="tab-title">Yön Tuşlu Labirent</div>
+                <div class="tab-sub">Canlı Çıkış Macerası</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="colorfinder" aria-selected="false">
+            <span class="tab-icon">🎨</span>
+            <div>
+                <div class="tab-title">Renk Bulucu</div>
+                <div class="tab-sub">Söyle & Tıkla</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="numberfinder" aria-selected="false">
+            <span class="tab-icon">🔢</span>
+            <div>
+                <div class="tab-title">Sayı Bulucu</div>
+                <div class="tab-sub">Söyle & Say</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="balltoss" aria-selected="false">
+            <span class="tab-icon">🏀</span>
+            <div>
+                <div class="tab-title">Neşeli Top Atma</div>
+                <div class="tab-sub">Hedefe Atış & Basket</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="bubbles" aria-selected="false">
+            <span class="tab-icon">🫧</span>
+            <div>
+                <div class="tab-title">Köpük Patlatma</div>
+                <div class="tab-sub">Sürpriz Oyuncak Keşfi</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="bunny" aria-selected="false">
+            <span class="tab-icon">🥕</span>
+            <div>
+                <div class="tab-title">Tavşancık Kodlama</div>
+                <div class="tab-sub">Sıralama & Yön Algoritması</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="balloon" aria-selected="false">
+            <span class="tab-icon">🎈</span>
+            <div>
+                <div class="tab-title">Balon Avı</div>
+                <div class="tab-sub">Refleks, Renkler & Sayılar</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="shape" aria-selected="false">
+            <span class="tab-icon">🧩</span>
+            <div>
+                <div class="tab-title">Şekil & Gölge</div>
+                <div class="tab-sub">Görsel Algı & Eşleştirme</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="memory" aria-selected="false">
+            <span class="tab-icon">🧠</span>
+            <div>
+                <div class="tab-title">Hafıza Kartları</div>
+                <div class="tab-sub">Çalışma Belleği & Dikkat</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="pattern" aria-selected="false">
+            <span class="tab-icon">🚂</span>
+            <div>
+                <div class="tab-title">Örüntü Treni</div>
+                <div class="tab-sub">Mantık & Tahmin Becerisi</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="size" aria-selected="false">
+            <span class="tab-icon">⚖️</span>
+            <div>
+                <div class="tab-title">Boyut Dünyası</div>
+                <div class="tab-sub">Küçükten Büyüğe Sıralama</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="coloring" aria-selected="false">
+            <span class="tab-icon">🖍️</span>
+            <div>
+                <div class="tab-title">Boyama Kitabı</div>
+                <div class="tab-sub">Renk Seç & Dokun Boya</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="jigsaw" aria-selected="false">
+            <span class="tab-icon">🖼️</span>
+            <div>
+                <div class="tab-title">Yapboz</div>
+                <div class="tab-sub">Parça - Bütün İlişkisi</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="melody" aria-selected="false">
+            <span class="tab-icon">🎹</span>
+            <div>
+                <div class="tab-title">Melodi Tekrarla</div>
+                <div class="tab-sub">Dinle, Hatırla & Çal</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="sorting" aria-selected="false">
+            <span class="tab-icon">🧺</span>
+            <div>
+                <div class="tab-title">Sepetlere Ayır</div>
+                <div class="tab-sub">Sınıflandırma & Gruplama</div>
+            </div>
+        </button>
+    </nav>
+
+    <!-- Ana Oyun Alanı (Tam Ekran Uçtan Uca) -->
+    <main class="main-content">
+
+        <!-- ============================================== -->
+        <!-- 🐶 MODÜL 1: CANLI YÖN TUŞLU LABİRENT           -->
+        <!-- ============================================== -->
+        <section id="view-realmaze" class="game-view active">
+            <div class="level-banner-card banner-realmaze">
+                <div class="level-meta">
+                    <h2 id="realmaze-title">Bölüm 1: Köpekçiğin Kemik Yolu 🐾</h2>
+                    <p id="realmaze-instruction" class="level-instruction">Yön oklarıyla köpekçiği kemiğe ulaştır!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-realmaze-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-realmaze-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="bunny-gameplay-layout">
+                <!-- Canlı Labirent Tahtası -->
+                <div class="grid-board-card">
+                    <div id="realmaze-grid" class="bunny-grid realmaze-grid" aria-label="Canlı Labirent">
+                        <!-- Izgara hücreleri ve köpek karakteri JS ile üretilir -->
+                    </div>
+                </div>
+
+                <!-- Kontrol Paneli -->
+                <div class="coding-deck-card realmaze-controls-card">
+                    <div class="deck-section-title">
+                        <span>🎮 Yön Kontrolleri</span>
+                    </div>
+
+                    <div class="realmaze-hud-box">
+                        <span class="hud-pill kbd-only">⌨️ <strong>Klavye:</strong> ⬆️ ⬇️ ⬅️ ➡️ tuşları</span>
+                        <span id="realmaze-stars-badge" class="hud-pill star-pill">⭐ 0 Yıldız</span>
+                    </div>
+
+                    <!-- Büyük Canlı Yön Okları (Dokunmatik Ekranlar İçin) -->
+                    <div class="arrow-control-pad" aria-label="Canlı Yön Butonları">
+                        <button class="btn-command-arrow btn-arrow-up btn-real-up" data-realdir="UP" title="Yukarı Yürü">⬆️</button>
+                        <button class="btn-command-arrow btn-arrow-left btn-real-left" data-realdir="LEFT" title="Sola Yürü">⬅️</button>
+                        <button class="btn-command-arrow btn-arrow-right btn-real-right" data-realdir="RIGHT" title="Sağa Yürü">➡️</button>
+                        <button class="btn-command-arrow btn-arrow-down btn-real-down" data-realdir="DOWN" title="Aşağı Yürü">⬇️</button>
+                    </div>
+
+                    <button id="btn-reset-realmaze" class="btn-secondary-action" style="font-size: 1.25rem;">
+                        <span>⏪ Başa Dön</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🏀 MODÜL 2: NEŞELİ TOP ATMA & BASKET           -->
+        <!-- ============================================== -->
+        <section id="view-balltoss" class="game-view">
+            <div class="level-banner-card banner-balltoss">
+                <div class="level-meta">
+                    <h2 id="balltoss-title">Bölüm 1: Sevimli Ayıyı Doyur 🐻</h2>
+                    <p id="balltoss-instruction" class="level-instruction">Hedef karşıya gelince topa dokun ya da topu hedefe doğru kaydır!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="balltoss-score-badge" class="balloon-score-pill" style="border-color: #F97316; color: #EA580C; background: #FFF7ED;">🎯 0 / 5 İsabet</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-balltoss-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-balltoss-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Atma Arenası (Tam Ekran) -->
+            <div class="balltoss-arena-card">
+                <!-- Üst Hedef Bölgesi (Aç Hayvan / Pota) -->
+                <div class="toss-target-zone" id="balltoss-target-zone">
+                    <div id="balltoss-target-box" class="toss-target-box">
+                        <div class="target-halo-ring"></div>
+                        <span id="target-emoji-display" class="target-huge-emoji">🐻</span>
+                        <span id="target-label-display" class="target-name-badge">Aç Ayıcık</span>
+                    </div>
+                </div>
+
+                <!-- Orta Uçuş Alanı -->
+                <div id="balltoss-flying-field" class="balltoss-flying-field">
+                    <!-- Toplar burada uçar ve basket olur -->
+                </div>
+
+                <!-- Alt Fırlatma Paneli -->
+                <div class="balltoss-launch-bar">
+                    <div class="launch-ball-holder" id="balltoss-ball-holder" title="Dokun: düz at — Kaydır: o yöne at">
+                        <span id="ball-ammo-emoji" class="ball-ammo-emoji">🍎</span>
+                    </div>
+                    <button id="btn-launch-ball" class="btn-run-code btn-toss-action" title="Topu Fırlat!">
+                        <span>🚀 TOPU FIRLAT!</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🫧 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA     -->
+        <!-- ============================================== -->
+        <section id="view-bubbles" class="game-view">
+            <div class="level-banner-card banner-bubbles">
+                <div class="level-meta">
+                    <h2 id="bubbles-title">Bölüm 1: Deniz Canlısı Baloncukları 🫧🐬</h2>
+                    <p id="bubbles-instruction" class="level-instruction">Uçuşan sihirli sabun köpüklerine dokun ve içindeki deniz dostlarını kurtar!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="bubbles-score-badge" class="balloon-score-pill" style="border-color: #38BDF8; color: #0284C7; background: #F0F9FF;">🫧 0 / 8 Kurtarıldı</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-bubbles-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-bubbles-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baloncuk Uçuş Arenası -->
+            <div class="bubbles-arena-card">
+                <div id="bubbles-pond" class="bubbles-pond" aria-label="Sabun Köpüğü Göleti">
+                    <!-- Dinamik sabun köpükleri burada uçar -->
+                </div>
+
+                <!-- Alt: Toplanan Oyuncaklar Sandığı -->
+                <div class="bubbles-treasure-chest">
+                    <div class="chest-header">🧸 Toplanan Sürprizler:</div>
+                    <div id="bubbles-chest-items" class="chest-items-grid">
+                        <span class="chest-empty-hint">Köpüklere dokun, içindeki sürprizler buraya aksın! ✨</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🥕 MODÜL 4: TAVŞANCIK HAVUÇ PEŞİNDE (KODLAMA) -->
+        <!-- ============================================== -->
+        <section id="view-bunny" class="game-view">
+            <div class="level-banner-card">
+                <div class="level-meta">
+                    <h2 id="bunny-level-title">Bölüm 1: İlk Adım 🐾</h2>
+                    <p id="bunny-instruction" class="level-instruction">Tavşancığı sağa doğru 2 adım yürüt ve çıtır havuca ulaştır!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-bunny-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-bunny-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="bunny-gameplay-layout">
+                <div class="grid-board-card">
+                    <div id="bunny-grid" class="bunny-grid" aria-label="Tavşan Labirenti"></div>
+                </div>
+
+                <div class="coding-deck-card">
+                    <div class="deck-section-title">
+                        <span>🚂 Komut Treni (Algoritma Şeridi)</span>
+                    </div>
+
+                    <div id="command-train" class="command-train-container" aria-label="Kodlama Sırası"></div>
+
+                    <div class="arrow-control-pad" aria-label="Yön Komutları">
+                        <button class="btn-command-arrow btn-arrow-up" data-direction="UP" title="Yukarı Git">⬆️</button>
+                        <button class="btn-command-arrow btn-arrow-left" data-direction="LEFT" title="Sola Git">⬅️</button>
+                        <button class="btn-command-arrow btn-arrow-right" data-direction="RIGHT" title="Sağa Git">➡️</button>
+                        <button class="btn-command-arrow btn-arrow-down" data-direction="DOWN" title="Aşağı Git">⬇️</button>
+                    </div>
+
+                    <div class="code-action-row">
+                        <button id="btn-run-code" class="btn-run-code" title="Yazdığın Adımları Çalıştır!">
+                            <span>🚀 YÜRÜT!</span>
+                        </button>
+                        <button id="btn-reset-bunny" class="btn-secondary-action" title="Tavşanı Başa Al">
+                            <span>⏪ Başa Al</span>
+                        </button>
+                        <button id="btn-clear-code" class="btn-secondary-action" title="Tüm Komutları Sil">
+                            <span>🗑️ Sil</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🎈 MODÜL 5: BALON PATLATMA                     -->
+        <!-- ============================================== -->
+        <section id="view-balloon" class="game-view">
+            <div class="level-banner-card banner-balloon">
+                <div class="level-meta">
+                    <h2 id="balloon-title">Bölüm 1: Gökkuşağı Balonları 🎈</h2>
+                    <p id="balloon-instruction" class="level-instruction">Uçan renkli balonlara dokun ve patlat!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="balloon-score-badge" class="balloon-score-pill">🎯 0 / 8</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-balloon-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-balloon-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="balloon-sky-wrapper">
+                <div class="sky-clouds-bg">
+                    <span class="cloud c1">☁️</span>
+                    <span class="cloud c2">⛅</span>
+                    <span class="cloud c3">☁️</span>
+                </div>
+                <div id="balloon-sky" class="balloon-sky" aria-label="Balon Patlatma Gökyüzü"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🧩 MODÜL 6: ŞEKİL VE GÖLGE EŞLEŞTİRME         -->
+        <!-- ============================================== -->
+        <section id="view-shape" class="game-view">
+            <div class="level-banner-card banner-shape">
+                <div class="level-meta">
+                    <h2 id="shape-title">Bölüm 1: Geometrik Şekiller 🔺🟡⬛⭐</h2>
+                    <p id="shape-instruction" class="level-instruction">Renkli şekilleri doğru gölgelerine yerleştir!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-shape-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-shape-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="shape-matching-layout">
+                <div class="shape-section-card">
+                    <div class="section-badge">🎯 Gölgeleri Bul:</div>
+                    <div id="shape-silhouettes" class="silhouettes-grid"></div>
+                </div>
+
+                <div class="shape-section-card piece-dock-card">
+                    <div class="section-badge">🎨 Bir şekle dokun, sonra doğru gölgesine tıkla:</div>
+                    <div id="shape-pieces" class="pieces-row"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🧠 MODÜL 7: HAFIZA KARTLARI                   -->
+        <!-- ============================================== -->
+        <section id="view-memory" class="game-view">
+            <div class="level-banner-card banner-memory">
+                <div class="level-meta">
+                    <h2 id="memory-title">Bölüm 1: Sevimli Hayvanlar (4 Kart) 🐱🐶</h2>
+                    <p id="memory-instruction" class="level-instruction">Kartlara dokun, aynı olan çiftleri bul!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-memory-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-memory-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="memory-gameplay-container">
+                <div id="memory-board" class="memory-grid-board"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🚂 MODÜL 8: ÖRÜNTÜ TRENİ (MANTIK VE TAHMİN)   -->
+        <!-- ============================================== -->
+        <section id="view-pattern" class="game-view">
+            <div class="level-banner-card banner-pattern">
+                <div class="level-meta">
+                    <h2 id="pattern-title">Bölüm 1: Lezzetli Meyveler 🍎🍌</h2>
+                    <p id="pattern-instruction" class="level-instruction">Sırada hangi lezzetli meyve gelmeli?</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-pattern-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-pattern-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="pattern-container-card">
+                <div class="pattern-train-wrapper">
+                    <div id="pattern-train-wagons" class="pattern-train-track"></div>
+                </div>
+
+                <div class="pattern-options-area">
+                    <div class="options-title">Doğru vagonu seç ve trene yerleştir:</div>
+                    <div id="pattern-options" class="pattern-options-row"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- ⚖️ MODÜL 9: BOYUT DÜNYASI (SIRALAMA MANTIĞI) -->
+        <!-- ============================================== -->
+        <section id="view-size" class="game-view">
+            <div class="level-banner-card banner-size">
+                <div class="level-meta">
+                    <h2 id="size-title">Bölüm 1: Minik Hayvanlardan Devlere 🐾</h2>
+                    <p id="size-instruction" class="level-instruction">Hayvanları EN KÜÇÜKTEN EN BÜYÜĞE doğru podyuma yerleştir!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-size-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-size-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="size-container-card">
+                <div class="podium-container">
+                    <div class="podium-slot" data-slot="0"></div>
+                    <div class="podium-slot" data-slot="1"></div>
+                    <div class="podium-slot" data-slot="2"></div>
+                </div>
+
+                <div class="size-pool-wrapper">
+                    <div class="options-title">Bir nesneye dokun, podyumdaki yerine yerleşsin:</div>
+                    <div id="size-pool" class="size-items-pool"></div>
+                    <button id="btn-reset-size" class="btn-secondary-action" style="max-width: 220px;">
+                        <span>🔄 Baştan Sırala</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🎨 MODÜL 10: SESLİ & DOKUNMATİK RENK BULUCU    -->
+        <!-- ============================================== -->
+        <section id="view-colorfinder" class="game-view">
+            <div class="level-banner-card banner-colorfinder">
+                <div class="level-meta">
+                    <h2 id="colorfinder-title">Bölüm 1: Ana Renkler Dünyası 🎨</h2>
+                    <p id="colorfinder-instruction" class="level-instruction">Ekranda yazan rengi yüksek sesle söyle veya dokunarak bul!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-colorfinder-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-colorfinder-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="finder-interactive-container">
+                <!-- Üst Hedef & Ses Kontrol Paneli (Hero Banner) -->
+                <div class="finder-hero-card">
+                    <div class="finder-header-row">
+                        <div class="finder-mode-badge badge-color">
+                            <span>🎨 Renk Bulmaca</span>
+                        </div>
+                        <div id="color-round-badge" class="finder-round-pill">
+                            ⭐ Tur 1 / 4
+                        </div>
+                        <button id="btn-switch-to-numbers" class="btn-quick-switch" title="Sayı Bulucu Oyununa Geç">
+                            <span>🔢 Sayılara Geç ▶</span>
+                        </button>
+                    </div>
+
+                    <!-- Dev Hedef Göstergesi -->
+                    <div class="target-card-display">
+                        <div class="target-callout-text">HEDEF RENK:</div>
+                        <div id="color-target-word" class="target-word-glow">KIRMIZI</div>
+                        <div class="target-visual-preview">
+                            <span id="color-target-circle" class="target-color-circle">🔴</span>
+                            <span id="color-target-prompt" class="target-speech-prompt">"Kırmızı" de veya karta dokun!</span>
+                        </div>
+                    </div>
+
+                    <!-- Canlı Ses Tanıma (Mikrofon) & Geri Bildirim -->
+                    <div class="finder-voice-bar">
+                        <button id="btn-color-mic" class="voice-mic-pill" title="Mikrofonu Aç/Kapat">
+                            <span class="mic-wave-ring"></span>
+                            <span class="mic-icon">🎙️</span>
+                            <span id="color-mic-label" class="mic-label">Seni Dinliyorum: "Kırmızı" de!</span>
+                        </button>
+                        <div id="color-voice-feedback" class="voice-feedback-chip hidden">
+                            <span class="feedback-icon">🎤</span>
+                            <span id="color-voice-text" class="feedback-text">Duydum: "Kırmızı" 🎯</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Büyük Etkileşimli Renk Kartları Izgarası -->
+                <div class="finder-cards-area">
+                    <div id="color-cards-container" class="finder-cards-grid">
+                        <!-- Renk kartları JavaScript ile dinamik oluşturulur -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🔢 MODÜL 11: SESLİ & DOKUNMATİK SAYI BULUCU    -->
+        <!-- ============================================== -->
+        <section id="view-numberfinder" class="game-view">
+            <div class="level-banner-card banner-numberfinder">
+                <div class="level-meta">
+                    <h2 id="numberfinder-title">Bölüm 1: 1'den 3'e İlk Sayılar 🔢</h2>
+                    <p id="numberfinder-instruction" class="level-instruction">Ekranda yazan sayıyı yüksek sesle söyle veya dokunarak bul!</p>
+                </div>
+                <div class="level-nav-actions">
+                    <button id="btn-numberfinder-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                    <button id="btn-numberfinder-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                </div>
+            </div>
+
+            <div class="finder-interactive-container">
+                <!-- Üst Hedef & Ses Kontrol Paneli (Hero Banner) -->
+                <div class="finder-hero-card">
+                    <div class="finder-header-row">
+                        <div class="finder-mode-badge badge-number">
+                            <span>🔢 Sayı Bulmaca</span>
+                        </div>
+                        <div id="number-round-badge" class="finder-round-pill">
+                            ⭐ Tur 1 / 4
+                        </div>
+                        <button id="btn-switch-to-colors" class="btn-quick-switch" title="Renk Bulucu Oyununa Geç">
+                            <span>🎨 Renklere Geç ▶</span>
+                        </button>
+                    </div>
+
+                    <!-- Dev Hedef Göstergesi -->
+                    <div class="target-card-display">
+                        <div class="target-callout-text">HEDEF SAYI:</div>
+                        <div id="number-target-word" class="target-word-glow number-word-glow">
+                            <span id="number-target-digit" class="target-digit">3</span>
+                            <span id="number-target-spelling" class="target-spelling">ÜÇ</span>
+                        </div>
+                        <div class="target-visual-preview">
+                            <span id="number-target-visual" class="target-count-visual">⭐ ⭐ ⭐</span>
+                            <span id="number-target-prompt" class="target-speech-prompt">"Üç" de veya karta dokun!</span>
+                        </div>
+                    </div>
+
+                    <!-- Canlı Ses Tanıma (Mikrofon) & Geri Bildirim -->
+                    <div class="finder-voice-bar">
+                        <button id="btn-number-mic" class="voice-mic-pill" title="Mikrofonu Aç/Kapat">
+                            <span class="mic-wave-ring"></span>
+                            <span class="mic-icon">🎙️</span>
+                            <span id="number-mic-label" class="mic-label">Seni Dinliyorum: "Üç" de!</span>
+                        </button>
+                        <div id="number-voice-feedback" class="voice-feedback-chip hidden">
+                            <span class="feedback-icon">🎤</span>
+                            <span id="number-voice-text" class="feedback-text">Duydum: "3" 🎯</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Büyük Etkileşimli Sayı Kartları Izgarası -->
+                <div class="finder-cards-area">
+                    <div id="number-cards-container" class="finder-cards-grid">
+                        <!-- Sayı kartları JavaScript ile dinamik oluşturulur -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🖍️ MODÜL 12: BOYAMA KİTABI (RENK SEÇ & DOKUN)  -->
+        <!-- ============================================== -->
+        <section id="view-coloring" class="game-view">
+            <div class="level-banner-card banner-coloring">
+                <div class="level-meta">
+                    <h2 id="coloring-title">Sayfa 1: Sevimli Evimiz 🏠</h2>
+                    <p id="coloring-instruction" class="level-instruction">Bir renk seç, sonra resmin bir parçasına dokun ve boya!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="coloring-progress" class="balloon-score-pill coloring-progress-pill">🖍️ 0 / 9 Boyandı</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-coloring-prev" class="btn-nav-level" title="Önceki Sayfa">◀</button>
+                        <button id="btn-coloring-next" class="btn-nav-level" title="Sonraki Sayfa">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="coloring-layout">
+                <div class="coloring-canvas-card">
+                    <div id="coloring-svg-holder" class="coloring-svg-holder" aria-label="Boyama Sayfası"></div>
+                </div>
+                <div class="coloring-palette-card">
+                    <div class="deck-section-title"><span>🎨 Boya Kutusu</span></div>
+                    <div id="coloring-palette" class="coloring-palette"></div>
+                    <button id="btn-coloring-clear" class="btn-secondary-action">
+                        <span>🧽 Sayfayı Temizle</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🖼️ MODÜL 13: YAPBOZ (PARÇA - BÜTÜN)            -->
+        <!-- ============================================== -->
+        <section id="view-jigsaw" class="game-view">
+            <div class="level-banner-card banner-jigsaw">
+                <div class="level-meta">
+                    <h2 id="jigsaw-title">Bölüm 1: Sevimli Kaplumbağa 🐢</h2>
+                    <p id="jigsaw-instruction" class="level-instruction">Parçaları sürükle ya da bir parçaya dokunup yerine dokun!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="jigsaw-progress" class="balloon-score-pill jigsaw-progress-pill">🧩 0 / 4 Parça</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-jigsaw-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-jigsaw-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jigsaw-layout">
+                <div class="jigsaw-board-card">
+                    <div id="jigsaw-board" class="jigsaw-board" aria-label="Yapboz Tahtası"></div>
+                </div>
+                <div class="jigsaw-tray-card">
+                    <div class="deck-section-title"><span>🧩 Parçalar</span></div>
+                    <div id="jigsaw-tray" class="jigsaw-tray"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🎹 MODÜL 14: MELODİ TEKRARLA (KSİLOFON)        -->
+        <!-- ============================================== -->
+        <section id="view-melody" class="game-view">
+            <div class="level-banner-card banner-melody">
+                <div class="level-meta">
+                    <h2 id="melody-title">Bölüm 1: Serbest Ksilofon 🎹</h2>
+                    <p id="melody-instruction" class="level-instruction">Renkli tuşlara dokun, kendi şarkını çal!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="melody-progress" class="balloon-score-pill melody-progress-pill">🎵 0 / 10 Nota</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-melody-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-melody-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="melody-stage-card">
+                <div class="melody-status-row">
+                    <div id="melody-status" class="melody-status-chip">🎶 Hadi çalalım!</div>
+                    <button id="btn-melody-replay" class="btn-secondary-action melody-replay-btn" type="button">
+                        <span>🔁 Tekrar Dinle</span>
+                    </button>
+                </div>
+                <div id="melody-xylophone" class="melody-xylophone" aria-label="Ksilofon"></div>
+            </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- 🧺 MODÜL 15: SEPETLERE AYIR (SINIFLANDIRMA)    -->
+        <!-- ============================================== -->
+        <section id="view-sorting" class="game-view">
+            <div class="level-banner-card banner-sorting">
+                <div class="level-meta">
+                    <h2 id="sorting-title">Bölüm 1: Kırmızı mı, Mavi mi? 🔴🔵</h2>
+                    <p id="sorting-instruction" class="level-instruction">Her şeyi doğru sepete koy!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="sorting-progress" class="balloon-score-pill sorting-progress-pill">🧺 0 / 8</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-sorting-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-sorting-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sorting-stage-card">
+                <div id="sorting-pool" class="sorting-pool" aria-label="Ayrılacak Nesneler"></div>
+                <div id="sorting-baskets" class="sorting-baskets"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- 📖 EBEVEYN VE PEDAGOJİK REHBER MODALI          -->
+    <!-- ============================================== -->
+    <dialog id="parent-guide-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>👨‍👩‍👧 3 - 5 Yaş Bilişsel, Zihinsel ve Motor Gelişim Rehberi</h3>
+                <button id="btn-close-guide" class="btn-circle" style="width: 36px; height: 36px;">✕</button>
+            </div>
+            <div class="dialog-body">
+                <div class="guide-pill-card" style="border-left-color: #EC4899;">
+                    <h4>🎨 1. Sesli & Dokunmatik Renk Bulucu ("Ben Söyleyeyim O Tıklasın")</h4>
+                    <p><strong>Kazanımlar:</strong> Görsel renk ayırt etme, Türkçe telaffuz ve sesli ifade becerisi, konuşma tanıma (Speech Recognition) ile teknoloji etkileşimi veya dokunmatik keşif.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #8B5CF6;">
+                    <h4>🔢 2. Sesli & Dokunmatik Sayı Bulucu (Sayma & Eşleme)</h4>
+                    <p><strong>Kazanımlar:</strong> 1'den 10'a kadar rakamları tanıma, görsel nesneleri tek tek sayma (kardinalite), sayıyı sesli telaffuz ederek özgüven kazanma.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #3B82F6;">
+                    <h4>🐶 3. Canlı Yön Tuşlu Labirent (Anlık Karar & Motor Koordinasyon)</h4>
+                    <p><strong>Kazanımlar:</strong> Klavyedeki ok tuşları veya ekrandaki butonlarla anlık yön kontrolü, mekansal navigasyon, labirentten çıkış stratejisi kurma.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #F97316;">
+                    <h4>🏀 4. Neşeli Top Atma & Basket (Fizik, Hız ve İtme Mantığı)</h4>
+                    <p><strong>Kazanımlar:</strong> Hedefe yönelme, eğik atış sezgisi, el-göz koordinasyonu ve hedefi tutturma memnuniyeti.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #0284C7;">
+                    <h4>🫧 5. Sihirli Köpük Patlatma (Duyusal Rahatlama & Keşif)</h4>
+                    <p><strong>Kazanımlar:</strong> Su damlası pıtırtısı ve parçalanan köpük içinden çıkan oyuncakları tanıma, görsel odaklanma.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #22C55E;">
+                    <h4>🥕 6. Tavşancık Kodlama (Algoritmik Düşünme)</h4>
+                    <p><strong>Kazanımlar:</strong> Adım adım sıralama (Sequencing), hata ayıklama (Debugging) ve önceden planlama.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #EC4899;">
+                    <h4>🎈 7. Balon Avı (Refleks & Renkler)</h4>
+                    <p><strong>Kazanımlar:</strong> Dinleme ve ayırt etme (Örn: "Yalnızca kırmızı balonlar").</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #F43F5E;">
+                    <h4>🖍️ Boyama Kitabı (Yaratıcılık & Renk Adları)</h4>
+                    <p><strong>Kazanımlar:</strong> Renk seçip alanı doldurma, renk adlarını duyarak öğrenme, ince motor kontrol. <em>Soru önerisi:</em> "Güneşi neden sarı boyadın? Mor bir güneş olsa nasıl olurdu?"</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #14B8A6;">
+                    <h4>🖼️ Yapboz (Parça - Bütün İlişkisi)</h4>
+                    <p><strong>Kazanımlar:</strong> 4, 6 ve 9 parçalık resimlerde parçayı bütünle ilişkilendirme, görsel-uzamsal akıl yürütme, deneme-yanılma ile problem çözme.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #6366F1;">
+                    <h4>🎹 Melodi Tekrarla (İşitsel Bellek & Sıralama)</h4>
+                    <p><strong>Kazanımlar:</strong> Dinlediği nota dizisini aynı sırayla tekrar etme (2 → 3 → 4 nota), işitsel çalışma belleği ve sıralama. İlk bölüm serbest çalmadır.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #D97706;">
+                    <h4>🧺 Sepetlere Ayır (Sınıflandırma)</h4>
+                    <p><strong>Kazanımlar:</strong> Nesneleri <strong>tek bir özelliğe</strong> göre gruplama (renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen). 3-5 yaşta iki özelliğe birden göre ayırmak zordur; bölümler bu yüzden tek kurallıdır.</p>
+                </div>
+            </div>
+            <button class="btn-dialog-close" onclick="document.getElementById('parent-guide-dialog').close()">Anladım, Harika! 👍</button>
+        </div>
+    </dialog>
+
+    <!-- ============================================== -->
+    <!-- 🌟 SEVİYE BAŞARI KUTLAMA MODALI                -->
+    <!-- ============================================== -->
+    <dialog id="celebration-modal">
+        <div class="celebration-content">
+            <div class="celebration-icon">🎉⭐✨</div>
+            <h3 id="celebration-title">Harikasın Küçük Kaşif!</h3>
+            <p id="celebration-message">Görevi başarıyla tamamladın ve yıldız kazandın!</p>
+            <button id="btn-next-celebration" class="btn-celebration-next">
+                <span>Sonraki Bölüm 🌟</span>
+            </button>
+        </div>
+    </dialog>
+
+    <!-- Modüller ve Oyun Kodları -->
+    <script src="audio.js"></script>
+    <script src="levels.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
