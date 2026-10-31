@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Minik Kaşif uygulama simgesi: yeşil zemin üzerinde sevimli köpek + ödül yıldızı -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6EE7B7"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g id="puppy">
+    <!-- Kulaklar -->
+    <ellipse cx="128" cy="232" rx="58" ry="104" transform="rotate(22 128 232)" fill="#92400E"/>
+    <ellipse cx="384" cy="232" rx="58" ry="104" transform="rotate(-22 384 232)" fill="#92400E"/>
+    <!-- Kafa -->
+    <ellipse cx="256" cy="276" rx="150" ry="140" fill="#FBBF77"/>
+    <!-- Göz lekesi -->
+    <ellipse cx="318" cy="236" rx="52" ry="46" fill="#D97706" opacity="0.55"/>
+    <!-- Ağız çevresi -->
+    <ellipse cx="256" cy="340" rx="96" ry="70" fill="#FFF7ED"/>
+    <!-- Gözler -->
+    <circle cx="200" cy="244" r="22" fill="#1E293B"/>
+    <circle cx="314" cy="244" r="22" fill="#1E293B"/>
+    <circle cx="207" cy="236" r="8" fill="#FFFFFF"/>
+    <circle cx="321" cy="236" r="8" fill="#FFFFFF"/>
+    <!-- Burun -->
+    <ellipse cx="256" cy="306" rx="32" ry="23" fill="#1E293B"/>
+    <ellipse cx="247" cy="299" rx="9" ry="5" fill="#FFFFFF" opacity="0.6"/>
+    <!-- Dil ve ağız -->
+    <path d="M236 352 Q236 400 256 400 Q276 400 276 352 Z" fill="#F472B6"/>
+    <path d="M214 336 Q235 360 256 336 Q277 360 298 336" fill="none" stroke="#1E293B" stroke-width="9" stroke-linecap="round"/>
+  </g>
+  <!-- Ödül yıldızı -->
+  <path d="M412 78 l14 29 32 4 -23 22 6 32 -29 -15 -29 15 6 -32 -23 -22 32 -4 z" fill="#FACC15" stroke="#F59E0B" stroke-width="5" stroke-linejoin="round"/>
+</svg>

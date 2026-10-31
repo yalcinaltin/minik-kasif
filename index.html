@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minik Kaşif - 3-5 Yaş Çocuk Bilişsel ve Zihinsel Oyun Dünyası</title>
+    <meta name="description" content="3-5 yaş çocuklar için 15 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi ve daha fazlası.">
+
+    <!-- 📲 Uygulama (PWA): ana ekrana ekleme, simgeler, tam ekran açılış -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#10B981">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Minik Kaşif">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <!-- Sevimli ve Okunabilir Yuvarlak Yazı Tipleri -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,6 +107,10 @@
     <!-- Oyun Seçim Ana Ekranı (11 Eğitici Oyun) — oyun içindeyken gizlenir, 🏠 ile geri gelinir -->
     <nav class="nav-tab-container" aria-label="Oyun Modları">
         <h2 class="home-title">🎈 Hangi oyunu oynayalım?</h2>
+        <!-- Yalnızca kurulabilir durumdayken görünür (Android/masaüstü kurulum istemi, iPhone'da yardım) -->
+        <button id="btn-install-app" class="install-app-pill" type="button" hidden>
+            <span>📲 Ana ekrana ekle — uygulama gibi oyna</span>
+        </button>
         <button class="nav-tab-btn" data-tab="realmaze" aria-selected="false">
             <span class="tab-icon">🐶</span>
             <div>
@@ -841,8 +857,39 @@
                     <h4>🧺 Sepetlere Ayır (Sınıflandırma)</h4>
                     <p><strong>Kazanımlar:</strong> Nesneleri <strong>tek bir özelliğe</strong> göre gruplama (renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen). 3-5 yaşta iki özelliğe birden göre ayırmak zordur; bölümler bu yüzden tek kurallıdır.</p>
                 </div>
+
+                <div class="guide-pill-card" style="border-left-color: #10B981;">
+                    <h4>📲 Telefona Uygulama Gibi Kurma</h4>
+                    <p>Oyun ana ekrana eklenebilir: tarayıcı çubuğu olmadan tam ekran açılır ve bir kez açıldıktan sonra <strong>internetsiz</strong> oynanır. Android Chrome'da menüden <strong>"Uygulamayı yükle"</strong>, iPhone Safari'de <strong>Paylaş › Ana Ekrana Ekle</strong>. Oyun seçim ekranındaki <strong>📲 Ana ekrana ekle</strong> düğmesi de yol gösterir.</p>
+                </div>
             </div>
             <button class="btn-dialog-close" onclick="document.getElementById('parent-guide-dialog').close()">Anladım, Harika! 👍</button>
+        </div>
+    </dialog>
+
+    <!-- ============================================== -->
+    <!-- 📲 iPHONE / iPAD ANA EKRANA EKLEME YARDIMI     -->
+    <!-- ============================================== -->
+    <dialog id="install-help-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h3>📲 Ana Ekrana Ekle</h3>
+                <button id="btn-close-install-help" class="btn-circle" style="width: 36px; height: 36px;">✕</button>
+            </div>
+            <div class="dialog-body">
+                <div class="guide-pill-card" style="border-left-color: #10B981;">
+                    <h4>iPhone / iPad (Safari)</h4>
+                    <p>1. Alttaki <strong>Paylaş</strong> düğmesine (yukarı ok olan kare) dokunun.<br>
+                       2. Listeden <strong>"Ana Ekrana Ekle"</strong>yi seçin.<br>
+                       3. Sağ üstte <strong>Ekle</strong>'ye dokunun. Minik Kaşif simgesi ana ekranda belirir ve tam ekran açılır.</p>
+                </div>
+                <div class="guide-pill-card" style="border-left-color: #3B82F6;">
+                    <h4>Android (Chrome)</h4>
+                    <p>Sağ üstteki <strong>⋮</strong> menüsünden <strong>"Ana ekrana ekle"</strong> ya da <strong>"Uygulamayı yükle"</strong>yi seçin.</p>
+                </div>
+                <p>Bir kez açıldıktan sonra oyunlar <strong>internetsiz de</strong> oynanır. Yalnızca Renk/Sayı Bulucu'daki mikrofonla söyleme özelliği internet ister.</p>
+            </div>
+            <button class="btn-dialog-close" onclick="document.getElementById('install-help-dialog').close()">Tamam 👍</button>
         </div>
     </dialog>
 

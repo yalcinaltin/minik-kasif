@@ -3,6 +3,8 @@
 
 > **Toddler Games Online (toddlergamesonline.com)** pedagojisi ve okul öncesi erken çocukluk gelişim dinamikleri temel alınarak hazırlanan; **tam ekran / dev ekran uyumlu**, **büyük dokunmatik butonlu**, **yazısız piktografik arayüze** ve **anlaşılır Türkçe sesli yönlendirmeye** sahip zengin eğitici web oyun platformu.
 
+**▶️ Hemen oyna:** https://yalcinaltin.github.io/minik-kasif/ — telefonda açıp **Ana ekrana ekle** ile uygulama gibi kurabilirsiniz.
+
 ---
 
 ## 🌟 Yeni Eklenen Özellikler & 3-5 Yaş Yenilikleri
@@ -74,3 +76,16 @@
 3. **Renk / Sayı Bulucu'da sesle oynamak için** sayfayı yerel sunucudan açın (`python -m http.server 8765` → `http://localhost:8765`), Chrome veya Edge kullanın ve 🎙️ düğmesine dokunup mikrofon izni verin. Firefox ses tanımayı desteklemez; mikrofon olmadan da kartlara dokunarak oynanır.
 4. **Telefonda:** dikey ve yatay ekranda 15 oyun kaydırmadan oynanır (360×640'tan itibaren test edildi). Telefonda başlık yalnızca simgelerden oluşur; yönerge balonu kısa süre görünüp kaybolur, **başlıktaki 🐶'ya dokununca** yönerge tekrar söylenir.
 5. Sağ üstteki **⛶ Tam Ekran** veya **🔍 Dev Ekran** düğmesine basarak oyunu tam ekranda keyifle oynayabilirsiniz!
+
+---
+
+## 📲 Uygulama Olarak Kurma (PWA)
+
+Oyun bir **Progressive Web App**'tir: bir web adresinden (https) açıldığında telefona uygulama gibi kurulabilir.
+
+* **Kurulum:** Android Chrome'da menü › **"Uygulamayı yükle"**, iPhone Safari'de **Paylaş › Ana Ekrana Ekle**. Oyun seçim ekranındaki **📲 Ana ekrana ekle** düğmesi kurulabilir durumdayken görünür ve yol gösterir.
+* **Tam ekran açılış:** Ana ekrandaki Minik Kaşif simgesinden açılınca tarayıcı çubuğu görünmez (`manifest.webmanifest`, `display: fullscreen`).
+* **İnternetsiz oynama:** İlk açılışta tüm oyun dosyaları ve yazı tipleri cihaza kaydedilir (`sw.js`). Sonra internet olmadan da 15 oyun oynanır; yalnızca Renk/Sayı Bulucu'daki mikrofonla söyleme özelliği internet ister.
+* **Hep güncel:** Service worker oyun dosyalarında **önce interneti** dener; bağlantı varken her açılışta en yeni sürüm gelir, yoksa (ya da 4 sn'de cevap gelmezse) cihazdaki kopya kullanılır. Bu yüzden güncellemeden sonra telefonda eski görünüm kalmaz.
+* **Simgeler:** `icons/` klasöründe; kaynak çizimler `icon.svg` (normal) ve `icon-maskable.svg` (Android'in yuvarlak/damla maskeleri için kenara kadar dolu). PNG'ler bu SVG'lerden üretilmiştir.
+* **Not:** Service worker yalnızca `https://` ya da `localhost` üzerinden çalışır; `index.html` dosyaya çift tıklanarak açıldığında oyun yine çalışır ama kurulum ve internetsiz oynama devreye girmez.

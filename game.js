@@ -148,6 +148,7 @@ class MiniExplorerApp {
         
         this.setupPlayAreaSizing();
         this.setupFullscreenButton();
+        this.setupPwa();
 
         // Başlangıçta oyun seçim ekranını aç
         this.switchTab('home');
@@ -203,6 +204,62 @@ class MiniExplorerApp {
         }, 2500);
     }
 
+    // 📲 Uygulama (PWA): internetsiz oynama için service worker + "Ana ekrana ekle" düğmesi
+    setupPwa() {
+        // Service worker yalnızca güvenli bağlamda (https ya da localhost) çalışır; dosyadan açılışta atlanır
+        if ('serviceWorker' in navigator && window.isSecureContext) {
+            const register = () => navigator.serviceWorker.register('./sw.js')
+                .catch(err => console.log('Service worker kaydedilemedi:', err));
+            if (document.readyState === 'complete') register();
+            else window.addEventListener('load', register);
+        }
+
+        // Kurulu uygulama olarak mı açıldı? Açılışta bir kez bakılır: tarayıcıdaki tam ekran
+        // (Fullscreen API / F11) da display-mode: fullscreen eşleştirdiği için o durum ayrılır
+        const isInstalled = window.matchMedia('(display-mode: standalone)').matches
+            || (window.matchMedia('(display-mode: fullscreen)').matches
+                && !(document.fullscreenElement || document.webkitFullscreenElement))
+            || window.navigator.standalone === true;
+        document.documentElement.classList.toggle('pwa-launched', isInstalled);
+        if (isInstalled || !this.btnInstallApp) return;
+
+        // Android Chrome / masaüstü: tarayıcının kendi kurulum penceresi bu düğmeyle açılır
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            this.deferredInstallPrompt = e;
+            this.btnInstallApp.hidden = false;
+        });
+        window.addEventListener('appinstalled', () => {
+            this.deferredInstallPrompt = null;
+            this.btnInstallApp.hidden = true;
+        });
+
+        // iPhone/iPad'de kurulum penceresi yok: düğme adım adım yardımı açar
+        const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIos) this.btnInstallApp.hidden = false;
+
+        this.btnInstallApp.addEventListener('click', async () => {
+            soundManager.playPop();
+            if (this.deferredInstallPrompt) {
+                const promptEvent = this.deferredInstallPrompt;
+                this.deferredInstallPrompt = null;
+                promptEvent.prompt();
+                const choice = await promptEvent.userChoice;
+                // Reddedilirse de gizlenir (yardım penceresi yalnızca telefon adımlarını anlatır);
+                // tarayıcı daha sonra yeniden kurulum önerirse beforeinstallprompt düğmeyi geri getirir
+                if (choice.outcome === 'accepted' || !isIos) this.btnInstallApp.hidden = true;
+            } else {
+                this.installHelpDialog.showModal();
+            }
+        });
+
+        this.btnCloseInstallHelp.addEventListener('click', () => {
+            soundManager.playPop();
+            this.installHelpDialog.close();
+        });
+    }
+
     // iPhone Safari gibi tam ekran API'si olmayan tarayıcılarda düğme gizlenir
     setupFullscreenButton() {
         const root = document.documentElement;
@@ -216,6 +273,9 @@ class MiniExplorerApp {
         // Sekmeler
         this.tabBtns = document.querySelectorAll('.nav-tab-btn');
         this.btnHome = document.getElementById('btn-home');
+        this.btnInstallApp = document.getElementById('btn-install-app');
+        this.installHelpDialog = document.getElementById('install-help-dialog');
+        this.btnCloseInstallHelp = document.getElementById('btn-close-install-help');
         this.voiceNotice = document.getElementById('voice-missing-notice');
         this.btnCloseVoiceNotice = document.getElementById('btn-close-voice-notice');
         this.tabViews = {

@@ -1,0 +1,22 @@
+{
+  "id": "/minik-kasif/",
+  "name": "Minik Kaşif - 3-5 Yaş Oyun Dünyası",
+  "short_name": "Minik Kaşif",
+  "description": "3-5 yaş çocuklar için 15 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi, sınıflandırma ve daha fazlası.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#ECFDF5",
+  "theme_color": "#10B981",
+  "categories": ["education", "games", "kids"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
