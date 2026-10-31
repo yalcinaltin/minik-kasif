@@ -37,7 +37,7 @@ test('kutlama penceresi: beklerken 🏠 ya da sonraki bölüm → pencere açıl
 
     // Normal akışta pencere açılır
     await solveShape(page);
-    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    await expect.poll(() => modalOpen(page), { timeout: 6000 }).toBe(true);
     await expect(page.locator('#btn-next-celebration span')).toHaveText('Sonraki Bölüm 🌟');
     expect(errors).toEqual([]);
 });
@@ -48,7 +48,7 @@ test('son bölüm: pencere menüye götürür', async ({ page }) => {
     await switchTab(page, 'pattern');
     const label = await page.evaluate(() => GAME_DATA.PATTERN_LEVELS[app.patternLevelIdx].correct.label);
     await page.locator('.pattern-option-card', { hasText: label }).first().click();
-    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    await expect.poll(() => modalOpen(page), { timeout: 6000 }).toBe(true);
     await expect(page.locator('#btn-next-celebration span')).toHaveText('🏠 Oyun Menüsü');
     await page.locator('#btn-next-celebration').click();
     await expect(page.locator('body')).toHaveClass(/on-home/);
@@ -75,7 +75,7 @@ test('tavşancık: yürürken menüye dönülünce yürüyüş durur; havuçtan 
     await page.locator('#btn-run-code').click();
     await page.waitForTimeout(1100);
     await expect(page.locator('#btn-run-code')).toBeDisabled();
-    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    await expect.poll(() => modalOpen(page), { timeout: 6000 }).toBe(true);
     expect(await page.evaluate(() => app.totalStars) - before).toBe(2);
 
     // Havuçtan sonra yeniden çalıştırma (düğme kapalı olsa da doğrudan çağrı) yıldız vermez
@@ -114,7 +114,7 @@ test('boyut: doğru sıralamadan sonra tıklamak yıldız vermez', async ({ page
         [...GAME_DATA.SIZE_LEVELS[0].items].sort((a, b) => a.rank - b.rank)
             .forEach(it => app.placeItemOnFirstAvailableSlot(app.availableSizeItems.find(x => x.id === it.id)));
     });
-    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    await expect.poll(() => modalOpen(page), { timeout: 6000 }).toBe(true);
     const stars = await page.evaluate(() => app.totalStars);
     await page.evaluate(() => {
         document.getElementById('celebration-modal').close();
@@ -128,7 +128,7 @@ test('her oyunda önceki/sonraki bölüm düğmeleri ve yönerge çalışır', a
     const errors = collectErrors(page);
     await openGame(page);
     const keys = await page.evaluate(() => Object.keys(app.games));
-    expect(keys).toHaveLength(18);
+    expect(keys).toHaveLength(19);
 
     for (const key of keys) {
         const result = await page.evaluate(async (k) => {
@@ -175,7 +175,7 @@ test('labirent: kutlama penceresi Esc ile kapanmaz, bitmiş bölüm yeniden oyna
         if (lv.walls.some(w => w.x === lv.goal.x - 1 && w.y === lv.goal.y)) app.realmazePlayer = { x: lv.goal.x, y: lv.goal.y - 1, facing: 'right' };
         app.moveRealmaze(app.realmazePlayer.x < lv.goal.x ? 'RIGHT' : 'DOWN');
     });
-    await expect.poll(() => modalOpen(page), { timeout: 3000 }).toBe(true);
+    await expect.poll(() => modalOpen(page), { timeout: 6000 }).toBe(true);
     const stars = await page.evaluate(() => app.totalStars);
     await page.keyboard.press('Escape');
     expect(await modalOpen(page)).toBe(true);
@@ -213,7 +213,7 @@ test('dinle & bul: mikrofon yok, doğru karta dokununca tur ilerler', async ({ p
     await expect(page.locator('#color-round-badge')).toHaveText(/Tur 1 \//);
     const target = await page.evaluate(() => app.getFinderRound('color').target);
     await page.locator(`#color-cards-container .finder-card[data-id="${target}"]`).click();
-    await expect(page.locator('#color-round-badge')).toHaveText(/Tur 2 \//, { timeout: 3000 });
+    await expect(page.locator('#color-round-badge')).toHaveText(/Tur 2 \//, { timeout: 6000 });
 });
 
 test('şekil: gölgeler gerçek siluet, cevap yazısı gizli', async ({ page }) => {

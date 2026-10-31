@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minik Kaşif - 3-5 Yaş Çocuk Bilişsel ve Zihinsel Oyun Dünyası</title>
-    <meta name="description" content="3-5 yaş çocuklar için 18 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi ve daha fazlası.">
+    <meta name="description" content="3-5 yaş çocuklar için 19 oyunluk Türkçe eğitici oyun dünyası: labirent, kodlama, yapboz, boyama, melodi ve daha fazlası.">
 
     <!-- 📲 Uygulama (PWA): ana ekrana ekleme, simgeler, tam ekran açılış -->
     <link rel="manifest" href="manifest.webmanifest">
@@ -247,6 +247,14 @@
             <div>
                 <div class="tab-title">Kim Kayboldu?</div>
                 <div class="tab-sub">Bak, Hatırla & Bul</div>
+            </div>
+        </button>
+
+        <button class="nav-tab-btn" data-tab="pump" aria-selected="false">
+            <span class="tab-icon">🎁</span>
+            <div>
+                <div class="tab-title">Balon Şişir</div>
+                <div class="tab-sub">Pompala, Say & Sürprizi Bul</div>
             </div>
         </button>
     </nav>
@@ -871,6 +879,46 @@
             </div>
         </section>
 
+        <!-- ============================================== -->
+        <!-- 🎁 BALON ŞİŞİR (SAYMA, RENK & DUR KOMUTU)      -->
+        <!-- ============================================== -->
+        <section id="view-pump" class="game-view">
+            <div class="level-banner-card banner-pump">
+                <div class="level-meta">
+                    <h2 id="pump-title">Bölüm 1: Balonu Şişir 🎈</h2>
+                    <p id="pump-instruction" class="level-instruction">Pompaya dokun, balonu şişir!</p>
+                </div>
+                <div class="balloon-hud-wrapper">
+                    <span id="pump-progress" class="balloon-score-pill pump-progress-pill">🎈 0 / 3</span>
+                    <div class="level-nav-actions">
+                        <button id="btn-pump-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
+                        <button id="btn-pump-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="pump-stage" class="pump-stage-card" data-mode="tap">
+                <div class="pump-play">
+                    <div id="pump-dots" class="pump-dots" aria-label="Sayma Noktaları" hidden></div>
+                    <div id="pump-sky" class="pump-sky" aria-label="Balonlar"></div>
+                </div>
+                <div class="pump-side">
+                    <div id="pump-tray" class="pump-tray" aria-label="Toplanan Sürprizler"></div>
+                    <button id="btn-pump-inflate" class="pump-button" aria-label="Pompala">
+                        <svg viewBox="0 0 100 100" aria-hidden="true">
+                            <g class="pump-handle">
+                                <rect x="22" y="6" width="56" height="12" rx="6"></rect>
+                                <rect x="45" y="14" width="10" height="30" rx="3"></rect>
+                            </g>
+                            <rect class="pump-barrel" x="32" y="34" width="36" height="52" rx="8"></rect>
+                            <rect class="pump-foot" x="16" y="84" width="68" height="10" rx="5"></rect>
+                            <path class="pump-hose" d="M68 70 Q90 70 90 50"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ============================================== -->
@@ -915,7 +963,7 @@
 
                 <div class="guide-pill-card" style="border-left-color: #EC4899;">
                     <h4>🎈 7. Balon Avı (Refleks & Renkler)</h4>
-                    <p><strong>Kazanımlar:</strong> Dinleme ve ayırt etme (Örn: "Yalnızca kırmızı balonlar"), sayı adlarını duyma.</p>
+                    <p><strong>Kazanımlar:</strong> Dinleme ve ayırt etme (Örn: "Yalnızca kırmızı balonlar"), sayı adlarını duyma, hayvan seslerini tanıma ("Hav hav! Kim böyle der?"), uçup giden balonları sayma (altıya kadar), şekil (kalp, yıldız, yuvarlak) ve büyüklük ayırt etme.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #06B6D4;">
@@ -971,6 +1019,11 @@
                 <div class="guide-pill-card" style="border-left-color: #F59E0B;">
                     <h4>🙈 17. Kim Kayboldu? (Görsel Bellek)</h4>
                     <p><strong>Kazanımlar:</strong> Kısa süre bakılan 3-5 nesneyi akılda tutup perde kalkınca eksik olanı bulma; görsel çalışma belleği. İlk bölümlerde kaybolanın yeri ❓ ile boş kalır, sonra kartlar kayar, en sonda yerleri de karışır. İki yanlıştan sonra doğru seçenek parlayarak ipucu verir.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #F43F5E;">
+                    <h4>🎁 18. Balon Şişir (Sayma, Renk & Dur Komutu)</h4>
+                    <p><strong>Kazanımlar:</strong> Balona ya da pompaya her dokunuşta balon biraz şişer ve ses yükselir; sebep-sonuç ilişkisi. Sayma bölümlerinde noktalar dolar ve her dokunuş sesli sayılır (bire bir sayma). Renk bölümlerinde iki balondan söylenen renktekini şişirir. Çizgi bölümlerinde balonu çizgiye kadar şişirip <strong>durmayı</strong> dener (kendini durdurma, dürtü kontrolü); fazla şişen balon yalnızca nazikçe patlar, sürpriz yine gelir. Dokunuş sayısı 3'ten 6'ya, balon sayısı 3'ten 5'e yavaşça artar.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #10B981;">
@@ -1043,5 +1096,6 @@
     <script src="games/dots.js"></script>
     <script src="games/oddone.js"></script>
     <script src="games/missing.js"></script>
+    <script src="games/pump.js"></script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * Minik Kaşif - Ana Oyun Motoru (3-5 Yaş Çocuk Gelişim Sürümü)
- * 18 Zengin ve Eğlenceli Oyun Modülü:
+ * 19 Zengin ve Eğlenceli Oyun Modülü:
  * 1. 🐶 Yön Tuşlu Canlı Labirent (Klavyeyle/Dokunmatik Canlı Çıkış)
  * 2. 🏀 Neşeli Top Atma & Basket (Fizik & Hedef Vurma)
  * 3. 🧼 Sihirli Sabun Köpüğü (Duyusal Patlatma & Sürprizler)
@@ -18,6 +18,8 @@
  * 15. 🧺 Sepetlere Ayır (Sınıflandırma)
  * 16. 🔍 Farklı Olanı Bul (Görsel Ayırt Etme)
  * 17. 🙈 Kim Kayboldu? (Görsel Bellek)
+ * 18. ✏️ Noktaları Birleştir (Sayı Sırası)
+ * 19. 🎁 Balon Şişir (Sayma, Renk & Dur Komutu)
  */
 
 // Tarayıcı depolaması kapalı ya da dolu olabilir (gizli pencere, engellenmiş site verisi):
@@ -158,7 +160,18 @@ class MiniExplorerApp {
         this.missingItem = null;
         this.missingWrongCount = 0;
 
-        // 18 oyunun ortak kaydı: önceki/sonraki düğmeleri, sekme açılışı, yönerge, kutlama sonrası
+        // 🎁 Balon Şişir Durumu
+        this.pumpLevelIdx = 0;
+        this.pumpStep = 0;         // Açık balona kaç kez pompalandı
+        this.pumpDone = 0;         // Bölümde toplanan sürpriz sayısı
+        this.pumpBusy = false;     // Patlama/sürpriz uçarken dokunuş sayılmaz
+        this.pumpQueue = [];       // Bu bölümde balonlardan çıkacak sürprizler (karışık sıra)
+        this.pumpLanes = null;     // Ekrandaki balonların renkleri
+        this.pumpTargetLane = 0;   // Şişirilecek balonun sırası (renk bölümünde söylenen)
+        this.pumpLastColor = null;
+        this.pumpSettleTimer = null; // Çizgi bölümü: balon çizgide durunca bağlanma sayacı
+
+        // 19 oyunun ortak kaydı: önceki/sonraki düğmeleri, sekme açılışı, yönerge, kutlama sonrası
         // ilerleme ve oyundan çıkarken temizlik buradan yürür. Anahtar = sekme adı = HTML kimlik öneki
         // (`${anahtar}-title`, `${anahtar}-instruction`, `btn-${anahtar}-prev/next`).
         //   levels()      → bölüm listesi          idxKey / getIdx() → açık bölüm sırası
@@ -187,7 +200,9 @@ class MiniExplorerApp {
             bunny: { levels: () => D().BUNNY_LEVELS, idxKey: 'bunnyLevelIdx', load: (i) => this.loadBunnyLevel(i), titleId: 'bunny-level-title' },
             balloon: {
                 levels: () => D().BALLOON_LEVELS, idxKey: 'balloonLevelIdx', load: (i) => this.loadBalloonLevel(i),
-                onLeave: () => this.stopBalloonSpawner()
+                onLeave: () => this.stopBalloonSpawner(),
+                // Turlu bölümlerde (hayvan sesi, sayma) Tekrar düğmesi o anki soruyu söyler
+                instruction: () => this.getBalloonInstruction()
             },
             shape: { levels: () => D().SHAPE_MATCH_LEVELS, idxKey: 'shapeLevelIdx', load: (i) => this.loadShapeLevel(i) },
             memory: { levels: () => D().MEMORY_LEVELS, idxKey: 'memoryLevelIdx', load: (i) => this.loadMemoryLevel(i) },
@@ -210,6 +225,12 @@ class MiniExplorerApp {
             missing: {
                 levels: () => D().MISSING_LEVELS, idxKey: 'missingLevelIdx', load: (i) => this.loadMissingLevel(i),
                 instruction: () => this.getMissingInstruction()
+            },
+            // Renk bölümünde Tekrar düğmesi o anki rengi söyler; çıkarken çizgi sayacı ve uçan sürpriz temizlenir
+            pump: {
+                levels: () => D().PUMP_LEVELS, idxKey: 'pumpLevelIdx', load: (i) => this.loadPumpLevel(i),
+                instruction: () => this.getPumpInstruction(),
+                onLeave: () => this.stopPumpTimers()
             }
         };
 
@@ -395,7 +416,8 @@ class MiniExplorerApp {
             sorting: document.getElementById('view-sorting'),
             dots: document.getElementById('view-dots'),
             oddone: document.getElementById('view-oddone'),
-            missing: document.getElementById('view-missing')
+            missing: document.getElementById('view-missing'),
+            pump: document.getElementById('view-pump')
         };
 
         // Üst panel
@@ -526,6 +548,14 @@ class MiniExplorerApp {
         this.missingStatus = document.getElementById('missing-status');
         this.missingShelf = document.getElementById('missing-shelf');
         this.missingOptions = document.getElementById('missing-options');
+
+        // --- Balon Şişir ---
+        this.pumpProgress = document.getElementById('pump-progress');
+        this.pumpStage = document.getElementById('pump-stage');
+        this.pumpDots = document.getElementById('pump-dots');
+        this.pumpSky = document.getElementById('pump-sky');
+        this.pumpTray = document.getElementById('pump-tray');
+        this.btnPumpInflate = document.getElementById('btn-pump-inflate');
 
         // Başarı Kutlama Modalı
         this.celebrationModal = document.getElementById('celebration-modal');
@@ -752,6 +782,9 @@ class MiniExplorerApp {
             soundManager.playPop();
             this.playMelodySequence();
         });
+
+        // Balon Şişir: büyük pompa düğmesi açık balonu bir adım şişirir (klavyede Enter/Boşluk da)
+        this.btnPumpInflate.addEventListener('click', () => this.handlePumpTap(this.pumpTargetLane));
 
         // Başarı modalı kapatma/ilerleme
         // Esc / telefonun geri tuşu pencereyi kapatmasın: bölüm bitmiş halde kalır ve

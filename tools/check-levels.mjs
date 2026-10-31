@@ -103,10 +103,32 @@ D.SIZE_LEVELS.forEach(l => {
     uniqueIds(`Boyut ${l.id}`, l.items);
 });
 
-// Balon: renk görevinde hedef renk balonlarda var; sırayla saymada hedef = sayı adedi
+// Balon: renk görevinde hedef renk balonlarda var; sırayla saymada hedef = sayı adedi;
+// hayvan sesinde en az iki hayvan, saymada turlar 1-6 arası, şekilde hedef şekil balonlarda var
+const BALLOON_MODES = ['free', 'color_filter', 'numbers', 'sequence', 'animal', 'count', 'shape', 'size'];
+const BALLOON_SHAPES = ['heart', 'star', 'round'];
 D.BALLOON_LEVELS.forEach(l => {
     const where = `Balon ${l.id}`;
     if (!(l.targetCount >= 1)) fail(where, 'targetCount eksik');
+    if (!BALLOON_MODES.includes(l.mode)) fail(where, `bilinmeyen mode ${l.mode}`);
+    if (l.mode === 'animal') {
+        if (!(l.animals && l.animals.length >= 2)) fail(where, 'hayvan sesinde en az iki hayvan olmalı (art arda aynı hayvan sorulmaz)');
+        else {
+            uniqueIds(where, l.animals);
+            l.animals.forEach(a => { if (!a.name || !a.emoji || !a.sound) fail(where, `${a.id}: name/emoji/sound eksik`); });
+        }
+    }
+    if (l.mode === 'count') {
+        if (!(Array.isArray(l.rounds) && l.rounds.length)) fail(where, 'saymada rounds eksik');
+        else {
+            if (l.rounds.some(n => !Number.isInteger(n) || n < 1 || n > 6)) fail(where, 'saymada balon sayısı 1-6 olmalı');
+            if (l.targetCount !== l.rounds.length) fail(where, 'saymada targetCount tur adedi olmalı');
+        }
+    }
+    if (l.mode === 'shape') {
+        if (!(l.shapes && l.shapes.length >= 2) || l.shapes.some(s => !BALLOON_SHAPES.includes(s))) fail(where, `şekiller ${BALLOON_SHAPES.join('/')} olmalı (en az iki)`);
+        else if (!l.shapes.includes(l.targetShape)) fail(where, `${l.targetShape} balonu hiç çıkmaz`);
+    }
     if (l.mode === 'color_filter' && !l.colors.some(c => c.name === l.targetColor)) fail(where, `${l.targetColor} balonu hiç çıkmaz`);
     if ((l.mode === 'numbers' || l.mode === 'sequence') && !(l.items && l.items.length)) fail(where, 'sayı balonu yok');
     if (l.mode === 'sequence' && l.items && l.targetCount !== l.items.length) fail(where, 'sırayla saymada targetCount sayı adedi olmalı');
@@ -177,6 +199,25 @@ D.MISSING_LEVELS.forEach(l => {
     if (!(l.rounds >= 1)) fail(where, 'rounds eksik');
     uniqueIds(where, l.pool, 'label');
     uniqueIds(where, l.pool, 'symbol');
+});
+
+// Balon Şişir: bilinen kip, 3-6 dokunuş, 3-5 balon (raf ekrana sığsın), her balona bir sürpriz,
+// renk bölümünde en az iki tanımlı renk (hedef her zaman ekranda)
+const PUMP_MODES = ['tap', 'count', 'choose', 'line'];
+const pumpColorNames = (D.PUMP_COLORS || []).map(c => c.name);
+if ((D.PUMP_LEVELS || []).length && new Set(pumpColorNames).size !== pumpColorNames.length) fail('Balon Şişir', 'yinelenen renk adı');
+(D.PUMP_LEVELS || []).forEach(l => {
+    const where = `Balon Şişir ${l.id}`;
+    if (!PUMP_MODES.includes(l.mode)) fail(where, `bilinmeyen mode ${l.mode}`);
+    if (!(l.taps >= 3 && l.taps <= 6)) fail(where, 'taps 3-6 olmalı');
+    if (!(l.balloons >= 3 && l.balloons <= 5)) fail(where, 'balloons 3-5 olmalı');
+    if (!Array.isArray(l.surprises) || l.surprises.length < l.balloons) { fail(where, 'her balona bir sürpriz gerekli'); return; }
+    l.surprises.forEach((s, i) => { if (!s.symbol || !s.label) fail(where, `${i + 1}. sürprizde symbol/label eksik`); });
+    uniqueIds(where, l.surprises, 'symbol');
+    if (l.mode === 'choose') {
+        if (!Array.isArray(l.colors) || l.colors.length < 2) fail(where, 'renk bölümünde en az iki renk gerekli');
+        else l.colors.forEach(n => { if (!pumpColorNames.includes(n)) fail(where, `PUMP_COLORS'ta olmayan renk ${n}`); });
+    }
 });
 
 D.JIGSAW_LEVELS.forEach(l => {

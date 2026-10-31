@@ -1,8 +1,8 @@
-// Duman testi: 18 oyunun bütün bölümleri her cihaz profilinde hatasız açılır ve ekrana kaydırmasız sığar
+// Duman testi: 19 oyunun bütün bölümleri her cihaz profilinde hatasız açılır ve ekrana kaydırmasız sığar
 const { test, expect } = require('@playwright/test');
 const { collectErrors, openGame } = require('./helpers');
 
-test('18 oyunun bütün bölümleri hatasız açılır ve ekrana sığar', async ({ page }) => {
+test('19 oyunun bütün bölümleri hatasız açılır ve ekrana sığar', async ({ page }) => {
     test.setTimeout(180000);
     const errors = collectErrors(page);
     await openGame(page);
@@ -32,6 +32,8 @@ test('18 oyunun bütün bölümleri hatasız açılır ve ekrana sığar', async
             const count = app.games[t].levels().length;
             for (let i = 0; i < count; i++) {
                 if (i > 0) { app.games[t].load(i); await sleep(300); }
+                // Tahta boyu bir sonraki karede yeniden ölçülür (setLevelHeader): iki kare bekle
+                await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
                 speechSynthesis.cancel();
                 levels++;
                 const where = `${t} ${i + 1}. bölüm`;
@@ -47,7 +49,7 @@ test('18 oyunun bütün bölümleri hatasız açılır ve ekrana sığar', async
         return { count: tabs.length, levels, problems };
     });
 
-    expect(report.count).toBe(18);
+    expect(report.count).toBe(19);
     expect(report.problems).toEqual([]);
     expect(errors).toEqual([]);
 });

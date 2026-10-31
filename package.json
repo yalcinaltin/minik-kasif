@@ -2,7 +2,7 @@
   "name": "minik-kasif",
   "version": "1.0.0",
   "private": true,
-  "description": "Minik Kaşif — 3-5 yaş için 18 oyunluk Türkçe tarayıcı oyunu. Oyun derlemesizdir; bu dosya yalnızca geliştirme/test araçları içindir.",
+  "description": "Minik Kaşif — 3-5 yaş için 19 oyunluk Türkçe tarayıcı oyunu. Oyun derlemesizdir; bu dosya yalnızca geliştirme/test araçları içindir.",
   "scripts": {
     "serve": "node tools/serve.mjs 8765",
     "check:levels": "node tools/check-levels.mjs",

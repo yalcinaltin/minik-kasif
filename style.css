@@ -933,6 +933,170 @@ body.on-home .nav-tab-btn:hover .tab-icon {
     pointer-events: none;
 }
 
+/* Şekilli balon (kalp / yıldız / yuvarlak): gövde SVG, kutu kare ve zeminsiz */
+.floating-balloon.shape-balloon {
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.balloon-shape-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    stroke-width: 5;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.22));
+}
+
+.balloon-shape-svg .shine { fill: #FFFFFF; stroke: none; opacity: 0.4; }
+/* Şeklin boş köşeleri dokunuş almasın: üst üste binen balonlarda yıldıza dokunan kalbi patlatmasın */
+.floating-balloon.shape-balloon,
+.balloon-shape-svg { pointer-events: none; }
+.balloon-shape-svg path,
+.balloon-shape-svg polygon,
+.balloon-shape-svg circle { pointer-events: visiblePainted; }
+
+/* Hayvan sesi: sesi tekrar dinleten büyük düğme (balonların üstünde) */
+.balloon-listen-btn {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 6;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 4px solid #F472B6;
+    background: #FFFFFF;
+    font-size: 2.2rem;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    touch-action: manipulation;
+}
+
+.balloon-listen-btn:active { transform: scale(0.94); }
+
+/* Sayma: tek tek uçup giden balonlara dokunulmaz, yalnızca sayılır */
+.floating-balloon.count-balloon {
+    bottom: -170px;
+    pointer-events: none;
+}
+
+.balloon-question-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 2.2vh, 20px);
+    padding: 8px;
+}
+
+.bq-title {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1E3A8A;
+    font-weight: 900;
+    font-size: clamp(1.05rem, 3.4vh, 2rem);
+    padding: 4px 18px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.bq-cards {
+    display: flex;
+    gap: clamp(10px, 2.5vw, 28px);
+}
+
+.bq-card {
+    --card: min(150px, 27vw, calc(var(--play-h) * 0.38));
+    width: var(--card);
+    height: var(--card);
+    border-radius: 24px;
+    border: 4px solid #FFFFFF;
+    background: #FFFFFF;
+    color: #BE185D;
+    box-shadow: 0 8px 0 #F9A8D4, 0 12px 20px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    touch-action: manipulation;
+    font-family: inherit;
+    padding: 4px;
+}
+
+.bq-card:active { transform: translateY(4px); box-shadow: 0 4px 0 #F9A8D4; }
+
+.bq-digit {
+    font-size: calc(var(--card) * 0.46);
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* Rakamın altında o kadar nokta (üçerli sıra) */
+.bq-dots {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 3px;
+    justify-content: center;
+}
+
+.bq-dots i {
+    width: calc(var(--card) * 0.09);
+    height: calc(var(--card) * 0.09);
+    border-radius: 50%;
+    background: #F472B6;
+}
+
+.bq-card.bq-correct { background: #DCFCE7; border-color: #22C55E; color: #15803D; }
+
+.bq-replay {
+    background: #FFFFFF;
+    border: 3px solid #F472B6;
+    color: #BE185D;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: clamp(0.9rem, 2.6vh, 1.3rem);
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+/* Büyüklük: üç balon yan yana, yerinde hafifçe süzülür */
+.balloon-size-row {
+    position: absolute;
+    inset: 0 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.balloon-size-slot { transform-origin: center center; }
+
+.balloon-size-slot .floating-balloon { position: relative; }
+
+.floating-balloon.size-bob { animation: balloonBob 2.4s ease-in-out infinite; }
+
+.floating-balloon.balloon-nudge,
+.bq-card.balloon-nudge { animation: balloonNudge 0.5s ease-in-out; }
+
+@keyframes balloonBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+@keyframes balloonNudge {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-8px) rotate(-6deg); }
+    75% { transform: translateX(8px) rotate(6deg); }
+}
+
 /* ========================================= */
 /* 🧩 MODÜL 3: ŞEKİL VE GÖLGE EŞLEŞTİRME     */
 /* ========================================= */
@@ -3188,41 +3352,20 @@ dialog::backdrop {
     .btn-pill-info { width: 38px; height: 38px; padding: 0; justify-content: center; border-radius: 50%; font-size: 1.05rem; }
     .btn-pill-info .pill-text { display: none; }
 
-    /* Konuşma balonu akıştan çıkar, oyunun üstünde kısa süre görünüp kaybolur */
-    .mascot-speech-container {
-        position: fixed;
-        top: 50px;
-        left: 0;
-        right: 0;
-        padding: 0 10px;
-        min-height: 0;
-        z-index: 150;
-        pointer-events: none;
-    }
-    .mascot-speech-bubble { padding: 6px 10px; gap: 8px; border-width: 2px; border-radius: 18px; }
-    .bubble-tag { display: none; }
-    .bubble-mascot-avatar { font-size: 1.6rem; }
-    .bubble-text {
-        font-size: 0.95rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    /* Balon bölüm kartının (◀ ▶) üstüne biner: dokunuşlar alttaki düğmelere geçsin.
-       Yönergeyi tekrar dinlemek için başlıktaki 🐶'ya dokunulur */
-    .btn-bubble-action { display: none; }
+    /* Telefonda yüzen konuşma balonu yok: bölüm kartının üstüne binip yazıları karıştırıyordu.
+       Yönerge sesle söylenir ve bölüm kartında tek satır yazar; başlıktaki 🐶 tekrar söyletir */
+    .mascot-speech-container { display: none; }
 
     .main-content { padding: 6px 10px 8px; }
     .game-view { gap: 8px; }
 
-    /* Bölüm kartı: tek satır başlık, yönerge sesle + balonla verilir */
+    /* Bölüm kartı: tek satır başlık + en çok iki satır yönerge */
     .level-banner-card { padding: 6px 10px; gap: 8px; border-left-width: 6px; border-radius: 16px; }
     /* Başlık tek satır ("…" ile kısalır): skor ve önceki/sonraki düğmeleri hep ekranda kalsın */
     .level-meta { flex: 1; min-width: 0; }
     .level-meta h2 { font-size: 0.98rem; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .balloon-hud-wrapper, .level-nav-actions { flex-shrink: 0; }
-    .level-instruction { display: none; }
+    .level-instruction { font-size: 0.8rem; line-height: 1.2; margin-top: 1px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .btn-nav-level { width: 36px; height: 36px; font-size: 1rem; }
     .level-nav-actions { gap: 6px; }
     .balloon-hud-wrapper { gap: 8px; }
@@ -3290,6 +3433,8 @@ dialog::backdrop {
     .floating-balloon .balloon-emoji { font-size: 2.2rem; }
     .floating-balloon .balloon-label { font-size: 2.3rem; }
     .floating-balloon .balloon-string { bottom: -30px; height: 30px; }
+    .balloon-listen-btn { width: 52px; height: 52px; font-size: 1.6rem; top: 8px; left: 8px; border-width: 3px; }
+    .bq-card { border-radius: 18px; }
     .sky-clouds-bg .cloud { font-size: 3rem; }
 }
 
@@ -4008,4 +4153,271 @@ html.pwa-launched #btn-fullscreen-toggle { display: none; }
 @media (max-height: 500px) and (orientation: landscape) {
     .size-four .size-item-card { width: 60px; height: 60px; }
     .size-four .size-item-card .item-visual { font-size: 1.8rem; }
+}
+
+/* ========================================= */
+/* 🎁 BALON ŞİŞİR                            */
+/* ========================================= */
+
+.banner-pump { border-left-color: #F43F5E; }
+.nav-tab-btn[data-tab="pump"].active { border-color: #F43F5E; box-shadow: 0 8px 24px rgba(244, 63, 94, 0.25); }
+.pump-progress-pill { border-color: #FDA4AF; color: #BE123C; background: #FFF1F2; }
+
+/* Yatay ekranda gökyüzü solda, raf + pompa sağ sütunda; dikey ekranda raf + pompa altta */
+.pump-stage-card {
+    background: #FFFFFF;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    padding: clamp(12px, 2.4vh, 24px);
+    height: min(var(--play-h), 900px);
+    width: 100%;
+    display: flex;
+    gap: clamp(12px, 2vw, 28px);
+}
+
+.pump-play {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.4vh, 12px);
+}
+
+/* Sayma noktaları: her dokunuşta biri balon renginde dolar */
+.pump-dots {
+    display: flex;
+    justify-content: center;
+    gap: clamp(8px, 1.6vw, 16px);
+    flex-shrink: 0;
+}
+
+.pump-dot {
+    width: clamp(22px, 4.6vh, 42px);
+    height: clamp(22px, 4.6vh, 42px);
+    border-radius: 50%;
+    border: 3px solid #CBD5E1;
+    background: #F8FAFC;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s;
+}
+
+.pump-dot.filled { border-color: rgba(0, 0, 0, 0.12); transform: scale(1.12); }
+
+.pump-sky {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    gap: 8px;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #E0F2FE 0%, #F0F9FF 70%, #FFFFFF 100%);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Bütün şerit dokunma alanı; balon SVG'si şeride sığacak kadar büyür */
+.pump-lane {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(4px, 1.2vh, 12px);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: var(--radius-lg);
+    animation: pumpLaneIn 0.35s ease;
+}
+
+.pump-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Büyüme düğümden (alttan) olur; her pompada esneyerek şişer */
+.pump-balloon {
+    transform-origin: 50px 104px;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pump-balloon-body { transform-origin: 50px 54px; }
+.pump-shine { fill: rgba(255, 255, 255, 0.45); }
+
+.pump-string {
+    fill: none;
+    stroke: rgba(15, 23, 42, 0.3);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+}
+
+/* Çizgi bölümü: kesik çizgi; balon değince yeşil, geçince turuncu */
+.pump-line {
+    stroke: #64748B;
+    stroke-width: 1.6;
+    stroke-dasharray: 5 3;
+    transition: stroke 0.2s;
+}
+
+.pump-line.pump-line-hit { stroke: #22C55E; stroke-width: 2.4; stroke-dasharray: none; }
+.pump-line.pump-line-over { stroke: #F59E0B; }
+
+.pump-balloon-body.pump-popped { animation: pumpPop 0.28s ease-out forwards; }
+.pump-string.pump-string-drop { animation: pumpStringDrop 0.6s ease-in forwards; }
+.pump-svg.pump-flyaway .pump-rig { animation: pumpFlyAway 1.2s ease-in forwards; }
+.pump-lane.pump-fade { opacity: 0.25; transition: opacity 0.4s; }
+.pump-lane.pump-wrong { animation: gentleShake 0.5s ease; }
+.pump-lane.pump-hint .pump-svg { animation: pumpHint 0.9s ease-in-out infinite; }
+
+/* Patlamada saçılan kâğıtlar */
+.pump-bit {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 3px;
+    pointer-events: none;
+    animation: pumpBit 0.7s ease-out forwards;
+}
+
+/* Balondan çıkan sürpriz: sayfanın üstünde durur, sonra rafa uçar */
+.pump-surprise {
+    position: fixed;
+    z-index: 60;
+    font-size: clamp(3rem, 12vh, 6rem);
+    line-height: 1;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.2));
+    animation: pumpSurpriseOut 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pump-side {
+    width: clamp(130px, 17vw, 220px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+/* Raf: her balon için bir boş yer; sürpriz gelince dolar (bölüm ilerlemesi) */
+.pump-tray {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 8px;
+}
+
+.pump-slot {
+    width: clamp(36px, 6.4vh, 58px);
+    height: clamp(36px, 6.4vh, 58px);
+    border-radius: 50%;
+    border: 3px dashed #CBD5E1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(1.3rem, 3.8vh, 2.2rem);
+    line-height: 1;
+}
+
+.pump-slot.filled {
+    border-style: solid;
+    border-color: #FDA4AF;
+    background: #FFF1F2;
+    animation: pumpSlotPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pump-button {
+    width: clamp(110px, 21vh, 180px);
+    height: clamp(110px, 21vh, 180px);
+    flex-shrink: 0;
+    border-radius: 28px;
+    border: 4px solid #FDA4AF;
+    background: #FFF1F2;
+    box-shadow: 0 6px 0 #FDA4AF;
+    padding: 12px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.pump-button:active { transform: translateY(4px); box-shadow: 0 2px 0 #FDA4AF; }
+.pump-button svg { display: block; width: 100%; height: 100%; }
+.pump-button .pump-handle rect { fill: #475569; }
+.pump-button .pump-barrel { fill: #F43F5E; }
+.pump-button .pump-foot { fill: #64748B; }
+.pump-button .pump-hose { fill: none; stroke: #334155; stroke-width: 5; stroke-linecap: round; }
+.pump-button.pump-pushing .pump-handle { animation: pumpPush 0.22s ease; }
+
+@keyframes pumpLaneIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pumpPop {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.25); }
+}
+
+@keyframes pumpStringDrop {
+    to { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes pumpFlyAway {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-140px); opacity: 0; }
+}
+
+@keyframes pumpHint {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(250, 204, 21, 0)); }
+    50% { filter: drop-shadow(0 0 12px rgba(250, 204, 21, 0.95)); }
+}
+
+@keyframes pumpBit {
+    to { transform: translate(var(--dx), var(--dy)) rotate(220deg); opacity: 0; }
+}
+
+@keyframes pumpSurpriseOut {
+    0% { transform: translate(-50%, -50%) scale(0); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes pumpSlotPop {
+    0% { transform: scale(0.6); }
+    100% { transform: scale(1); }
+}
+
+@keyframes pumpPush {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(18px); }
+}
+
+/* Dikey ekran (telefon, tablet): raf solda, pompa sağda, ikisi gökyüzünün altında */
+@media (max-aspect-ratio: 1/1) {
+    .pump-stage-card { flex-direction: column; }
+    .pump-side { width: 100%; flex-direction: row; align-items: center; }
+    .pump-tray { flex: 1; justify-content: flex-start; }
+    .pump-button { width: clamp(84px, 13vh, 150px); height: clamp(84px, 13vh, 150px); }
+}
+
+/* Telefon (dikey ve yatay): ince kart kenarı, küçük raf */
+@media (max-width: 600px), (max-height: 500px) and (orientation: landscape) {
+    .pump-stage-card { padding: 10px; border-radius: 20px; gap: 10px; }
+    .pump-sky { border-radius: 16px; }
+    .pump-slot { width: 30px; height: 30px; border-width: 2px; font-size: 1.15rem; }
+    .pump-tray { gap: 5px; }
+    .pump-dot { width: 22px; height: 22px; border-width: 2px; }
+    .pump-button { border-radius: 20px; border-width: 3px; box-shadow: 0 4px 0 #FDA4AF; padding: 8px; }
+}
+
+/* Telefon yatay: dar sağ sütun, pompa kalan yüksekliğe sığar */
+@media (max-height: 500px) and (orientation: landscape) {
+    .pump-side { width: 120px; gap: 8px; }
+    .pump-button { width: min(100px, calc(var(--play-h) - 110px)); height: min(100px, calc(var(--play-h) - 110px)); }
 }

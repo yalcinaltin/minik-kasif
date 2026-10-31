@@ -314,6 +314,72 @@ const BALLOON_LEVELS = [
             { label: "4", speech: "Dört!" },
             { label: "5", speech: "Beş!" }
         ]
+    },
+    {
+        id: 8,
+        title: "Kim Böyle Der? 🐶",
+        instruction: "Sesi dinle, o hayvanın balonunu patlat!",
+        targetCount: 4, // tur sayısı: her tur bir hayvan sesi sorulur
+        mode: "animal",
+        targetDesc: "Sesi çıkaran hayvanı bul!",
+        animals: [
+            { id: "dog", name: "Köpek", emoji: "🐶", sound: "Hav hav", bark: true },
+            { id: "cat", name: "Kedi", emoji: "🐱", sound: "Miyav miyav" },
+            { id: "cow", name: "İnek", emoji: "🐮", sound: "Mööö" },
+            { id: "duck", name: "Ördek", emoji: "🦆", sound: "Vak vak" }
+        ]
+    },
+    {
+        id: 9,
+        title: "Çiftlik Sesleri 🐑",
+        instruction: "Kim böyle der? Sesi dinle, doğru balonu patlat!",
+        targetCount: 5,
+        mode: "animal",
+        targetDesc: "Sesi çıkaran hayvanı bul!",
+        animals: [
+            { id: "dog", name: "Köpek", emoji: "🐶", sound: "Hav hav", bark: true },
+            { id: "cat", name: "Kedi", emoji: "🐱", sound: "Miyav miyav" },
+            { id: "cow", name: "İnek", emoji: "🐮", sound: "Mööö" },
+            { id: "sheep", name: "Koyun", emoji: "🐑", sound: "Meee" },
+            { id: "frog", name: "Kurbağa", emoji: "🐸", sound: "Vırak vırak" },
+            { id: "chicken", name: "Tavuk", emoji: "🐔", sound: "Gıt gıt gıdak" }
+        ]
+    },
+    {
+        id: 10,
+        title: "Balonları Say 🔢",
+        instruction: "Uçan balonları say! Kaç balon gördün?",
+        targetCount: 3, // tur sayısı = rounds adedi
+        mode: "count", // Balonlar tek tek uçup gider; sonra üç sayı kartından doğrusu seçilir
+        targetDesc: "Balonları say!",
+        rounds: [2, 3, 4]
+    },
+    {
+        id: 11,
+        title: "Altıya Kadar Say 🎈",
+        instruction: "Balonlar uçuyor! Dikkatle say!",
+        targetCount: 3,
+        mode: "count",
+        targetDesc: "Balonları say!",
+        rounds: [4, 6, 5]
+    },
+    {
+        id: 12,
+        title: "Yıldız Balonlar ⭐",
+        instruction: "Sadece yıldız balonları patlat!",
+        targetCount: 5,
+        mode: "shape", // Balon gövdesi kalp, yıldız ya da yuvarlak çizilir
+        targetShape: "star",
+        targetDesc: "Yalnızca yıldız balonları patlat!",
+        shapes: ["star", "heart", "round"]
+    },
+    {
+        id: 13,
+        title: "En Büyük Balon 🎈",
+        instruction: "En büyük balonu patlat!",
+        targetCount: 4, // tur sayısı: her turda üç farklı boyda balon
+        mode: "size",
+        targetDesc: "En büyük balonu bul!"
     }
 ];
 
@@ -2077,6 +2143,137 @@ const DOTS_LEVELS = [
     }
 ];
 
+// 🎁 BALON ŞİŞİR: balon renkleri (renk bölümlerinde adı söylenir) ve bölümler
+// mode: tap (dokun, şişir) | count (noktalar + sesli sayma) | choose (iki balon, söylenen renk) |
+//       line (çizgiye kadar şişir, dur; fazlası nazikçe patlar ve yine sayılır)
+// taps: balonun patlaması (ya da çizgiye gelmesi) için dokunuş; balloons: bölümdeki balon sayısı
+const PUMP_COLORS = [
+    { name: 'kırmızı', color: '#EF4444' },
+    { name: 'mavi', color: '#3B82F6' },
+    { name: 'sarı', color: '#FACC15' },
+    { name: 'yeşil', color: '#22C55E' },
+    { name: 'mor', color: '#A855F7' },
+    { name: 'turuncu', color: '#F97316' },
+    { name: 'pembe', color: '#EC4899' }
+];
+
+const PUMP_LEVELS = [
+    {
+        id: 1,
+        title: "Balonu Şişir 🎈",
+        instruction: "Pompaya dokun, balonu şişir!",
+        mode: 'tap',
+        taps: 3,
+        balloons: 3,
+        surprises: [
+            { symbol: '🐶', label: 'köpek' },
+            { symbol: '🐱', label: 'kedi' },
+            { symbol: '🐰', label: 'tavşan' }
+        ]
+    },
+    {
+        id: 2,
+        title: "Üç Kez Dokun 🎈",
+        instruction: "Üç kez dokun! Balon patlasın.",
+        mode: 'count',
+        taps: 3,
+        balloons: 3,
+        surprises: [
+            { symbol: '🐻', label: 'ayı' },
+            { symbol: '🐥', label: 'civciv' },
+            { symbol: '🚗', label: 'araba' }
+        ]
+    },
+    {
+        id: 3,
+        title: "Dört Kez Dokun 🎈",
+        instruction: "Dört kez dokun! Birlikte sayalım.",
+        mode: 'count',
+        taps: 4,
+        balloons: 4,
+        surprises: [
+            { symbol: '🐸', label: 'kurbağa' },
+            { symbol: '🐧', label: 'penguen' },
+            { symbol: '⚽', label: 'top' },
+            { symbol: '🐼', label: 'panda' }
+        ]
+    },
+    {
+        id: 4,
+        title: "Renkli Balonlar 🎈",
+        instruction: "Söylenen renkteki balonu şişir!",
+        mode: 'choose',
+        taps: 4,
+        balloons: 4,
+        colors: ['kırmızı', 'mavi', 'sarı', 'yeşil'],
+        surprises: [
+            { symbol: '🦁', label: 'aslan' },
+            { symbol: '🐢', label: 'kaplumbağa' },
+            { symbol: '🧸', label: 'oyuncak ayı' },
+            { symbol: '🐵', label: 'maymun' }
+        ]
+    },
+    {
+        id: 5,
+        title: "Beş Kez Dokun 🎈",
+        instruction: "Beş kez dokun! Birlikte sayalım.",
+        mode: 'count',
+        taps: 5,
+        balloons: 4,
+        surprises: [
+            { symbol: '🐠', label: 'balık' },
+            { symbol: '🦋', label: 'kelebek' },
+            { symbol: '🚀', label: 'roket' },
+            { symbol: '🐮', label: 'inek' }
+        ]
+    },
+    {
+        id: 6,
+        title: "Çizgiye Kadar 🎈",
+        instruction: "Çizgiye kadar şişir, sonra dur!",
+        mode: 'line',
+        taps: 5,
+        balloons: 4,
+        surprises: [
+            { symbol: '🦒', label: 'zürafa' },
+            { symbol: '🐨', label: 'koala' },
+            { symbol: '🚂', label: 'tren' },
+            { symbol: '🐞', label: 'uğur böceği' }
+        ]
+    },
+    {
+        id: 7,
+        title: "Renk Ustası 🎈",
+        instruction: "Söylenen renkteki balonu şişir!",
+        mode: 'choose',
+        taps: 6,
+        balloons: 5,
+        colors: ['kırmızı', 'mavi', 'sarı', 'yeşil', 'mor', 'turuncu'],
+        surprises: [
+            { symbol: '🦓', label: 'zebra' },
+            { symbol: '🐯', label: 'kaplan' },
+            { symbol: '🦔', label: 'kirpi' },
+            { symbol: '🐳', label: 'balina' },
+            { symbol: '🐙', label: 'ahtapot' }
+        ]
+    },
+    {
+        id: 8,
+        title: "Tam Çizgide 🎈",
+        instruction: "Çizgiye kadar şişir, sonra dur!",
+        mode: 'line',
+        taps: 6,
+        balloons: 5,
+        surprises: [
+            { symbol: '🦊', label: 'tilki' },
+            { symbol: '🐘', label: 'fil' },
+            { symbol: '🦉', label: 'baykuş' },
+            { symbol: '🐬', label: 'yunus' },
+            { symbol: '🦕', label: 'dinozor' }
+        ]
+    }
+];
+
 // Dışarı aktarma (tarayıcı ortamı için global nesneler)
 window.GAME_DATA = {
     BUNNY_LEVELS,
@@ -2101,5 +2298,7 @@ window.GAME_DATA = {
     DOTS_LEVELS,
     SORTING_LEVELS,
     ODDONE_LEVELS,
-    MISSING_LEVELS
+    MISSING_LEVELS,
+    PUMP_COLORS,
+    PUMP_LEVELS
 };
