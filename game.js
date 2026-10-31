@@ -3,26 +3,51 @@
  * 15 Zengin ve Eğlenceli Oyun Modülü:
  * 1. 🐶 Yön Tuşlu Canlı Labirent (Klavyeyle/Dokunmatik Canlı Çıkış)
  * 2. 🏀 Neşeli Top Atma & Basket (Fizik & Hedef Vurma)
- * 3. 🫧 Sihirli Sabun Köpüğü (Duyusal Patlatma & Sürprizler)
+ * 3. 🧼 Sihirli Sabun Köpüğü (Duyusal Patlatma & Sürprizler)
  * 4. 🥕 Tavşancık Kodlama (Algoritmik Sıralama)
  * 5. 🎈 Balon Avı (Renkler & Sayılar)
  * 6. 🧩 Şekil & Gölge (Form & Eşleme)
  * 7. 🧠 Hafıza Kartları (3D Kart Çevirme)
  * 8. 🚂 Örüntü Treni (Mantık & Tahmin)
  * 9. ⚖️ Boyut Dünyası (Küçükten Büyüğe Sıralama)
- * 10. 🎨 Renk Bulucu (Söyle & Tıkla - Sesli Tanıma)
- * 11. 🔢 Sayı Bulucu (Söyle & Say - Sesli Tanıma)
+ * 10. 🎨 Renk Bulucu (Dinle & Bul)
+ * 11. 🔢 Sayı Bulucu (Dinle & Bul)
  * 12. 🖍️ Boyama Kitabı (Renk Seç & Dokun Boya)
  * 13. 🖼️ Yapboz (Parça - Bütün)
  * 14. 🎹 Melodi Tekrarla (Ksilofon & İşitsel Bellek)
  * 15. 🧺 Sepetlere Ayır (Sınıflandırma)
  */
 
+// Tarayıcı depolaması kapalı ya da dolu olabilir (gizli pencere, engellenmiş site verisi):
+// okuma/yazma hata fırlatsa da oyun açılsın ve oynansın
+const safeStorage = {
+    get(key, fallback = null) {
+        try {
+            const value = localStorage.getItem(key);
+            return value === null ? fallback : value;
+        } catch (e) {
+            return fallback;
+        }
+    },
+    set(key, value) {
+        try {
+            localStorage.setItem(key, String(value));
+        } catch (e) { /* kaydedilemedi: oyun yine de sürer */ }
+    },
+    getInt(key, fallback = 0) {
+        const n = parseInt(this.get(key, ''), 10);
+        return Number.isFinite(n) && n >= 0 ? n : fallback;
+    }
+};
+
 class MiniExplorerApp {
     constructor() {
         this.activeTab = 'home'; // Başlangıçta oyun seçim ana ekranı açılsın
-        this.totalStars = parseInt(localStorage.getItem('minik_kasif_stars') || '0', 10);
-        
+        this.totalStars = safeStorage.getInt('minik_kasif_stars', 0);
+        // Her bölüm yüklemesinde ve sekme değişiminde artar; geciken işler (kutlama penceresi,
+        // tavşan yürüyüşü, hafıza kartı geri çevirme) hâlâ aynı tahtada mıyız diye buna bakar
+        this.levelEpoch = 0;
+
         // 🐶 1. Canlı Labirent Durumu
         this.realmazeLevelIdx = 0;
         this.realmazePlayer = { x: 0, y: 0, facing: 'right' };
@@ -38,7 +63,7 @@ class MiniExplorerApp {
         this.tossTargetRaf = null;
         this.tossDrag = null;        // Topu kaydırarak nişan alma durumu
 
-        // 🫧 3. Sabun Köpüğü Durumu
+        // 🧼 3. Sabun Köpüğü Durumu
         this.bubblesLevelIdx = 0;
         this.bubblesPoppedScore = 0;
         this.bubblesSpawnTimer = null;
@@ -78,17 +103,13 @@ class MiniExplorerApp {
         this.sizeLevelIdx = 0;
         this.sizePodiumSlots = [null, null, null];
         this.availableSizeItems = [];
+        this.sizeLocked = false;     // Üç podyum dolunca/başarınca tıklamalar kilitlenir
 
         // 🎨🔢 10-11. Renk & Sayı Bulucu Durumu (ortak motor, tür başına ayrı ilerleme)
         this.finderState = {
             color: { levelIdx: 0, roundIdx: 0, busy: false, roundToken: 0 },
             number: { levelIdx: 0, roundIdx: 0, busy: false, roundToken: 0 }
         };
-        this.finderRecognition = null;
-        this.finderMicOn = false;
-        this.finderMicError = null;
-        this.finderHandledResults = new Set();
-        this.finderFeedbackTimer = null;
 
         // 🖍️ 12. Boyama Kitabı Durumu
         this.coloringLevelIdx = 0;
@@ -138,14 +159,24 @@ class MiniExplorerApp {
         this.updateStarDisplay();
 
         // Kayıtlı Dev Ekran Tercihi
-        if (localStorage.getItem('minik_kasif_giant_mode') === '1') {
+        if (safeStorage.get('minik_kasif_giant_mode') === '1') {
             document.body.classList.add('giant-screen-active');
             if (this.btnScreenScale) {
                 this.btnScreenScale.classList.add('active-mode');
                 this.btnScreenScale.querySelector('.btn-icon').textContent = '🔎';
             }
         }
-        
+
+        // Kayıtlı ses efekti / sesli anlatım tercihleri
+        if (safeStorage.get('minik_kasif_sound') === '0') {
+            soundManager.soundEnabled = false;
+            this.showSoundState(false);
+        }
+        if (safeStorage.get('minik_kasif_voice') === '0') {
+            soundManager.voiceEnabled = false;
+            this.showVoiceState(false);
+        }
+
         this.setupPlayAreaSizing();
         this.setupFullscreenButton();
         this.setupPwa();
@@ -187,9 +218,7 @@ class MiniExplorerApp {
     // Cihazda Türkçe ses yoksa ebeveyne bir kez nasıl kurulacağını göster
     checkTurkishVoice() {
         if (!('speechSynthesis' in window) || !this.voiceNotice) return;
-        try {
-            if (localStorage.getItem('minik_kasif_voice_notice_closed') === '1') return;
-        } catch (e) { /* depolama kapalıysa yine göster */ }
+        if (safeStorage.get('minik_kasif_voice_notice_closed') === '1') return;
 
         // Telefon/tablette Windows yerine cihazın metin okuma ayarı anlatılır
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
@@ -266,7 +295,16 @@ class MiniExplorerApp {
         this.requestFullscreenFn = root.requestFullscreen || root.webkitRequestFullscreen;
         if (!this.requestFullscreenFn && this.btnFullscreen) {
             this.btnFullscreen.hidden = true;
+            return;
         }
+
+        // Esc / geri tuşuyla tam ekrandan çıkılınca da simge doğru kalsın
+        const syncIcon = () => {
+            const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            this.btnFullscreen.querySelector('.btn-icon').textContent = isFull ? '🗗' : '⛶';
+        };
+        document.addEventListener('fullscreenchange', syncIcon);
+        document.addEventListener('webkitfullscreenchange', syncIcon);
     }
 
     cacheDOM() {
@@ -405,10 +443,7 @@ class MiniExplorerApp {
                 targetWord: document.getElementById('color-target-word'),
                 targetCircle: document.getElementById('color-target-circle'),
                 targetPrompt: document.getElementById('color-target-prompt'),
-                micBtn: document.getElementById('btn-color-mic'),
-                micLabel: document.getElementById('color-mic-label'),
-                feedback: document.getElementById('color-voice-feedback'),
-                feedbackText: document.getElementById('color-voice-text'),
+                listenBtn: document.getElementById('btn-color-listen'),
                 cards: document.getElementById('color-cards-container')
             },
             number: {
@@ -422,10 +457,7 @@ class MiniExplorerApp {
                 targetSpelling: document.getElementById('number-target-spelling'),
                 targetVisual: document.getElementById('number-target-visual'),
                 targetPrompt: document.getElementById('number-target-prompt'),
-                micBtn: document.getElementById('btn-number-mic'),
-                micLabel: document.getElementById('number-mic-label'),
-                feedback: document.getElementById('number-voice-feedback'),
-                feedbackText: document.getElementById('number-voice-text'),
+                listenBtn: document.getElementById('btn-number-listen'),
                 cards: document.getElementById('number-cards-container')
             }
         };
@@ -493,26 +525,22 @@ class MiniExplorerApp {
         this.btnCloseVoiceNotice.addEventListener('click', () => {
             soundManager.playPop();
             this.voiceNotice.hidden = true;
-            try {
-                localStorage.setItem('minik_kasif_voice_notice_closed', '1');
-            } catch (e) { /* depolama kapalıysa yalnızca bu oturumda gizlenir */ }
+            safeStorage.set('minik_kasif_voice_notice_closed', '1');
         });
 
-        // Ses Düğmeleri
+        // Ses Düğmeleri (tercih kaydedilir, bir sonraki açılışta aynı kalır)
         this.btnSoundToggle.addEventListener('click', () => {
             const active = soundManager.toggleSound();
             soundManager.playPop();
-            this.btnSoundToggle.classList.toggle('muted', !active);
-            this.btnSoundToggle.setAttribute('aria-label', active ? 'Ses Açık' : 'Ses Kapalı');
-            this.btnSoundToggle.querySelector('.btn-icon').textContent = active ? '🔊' : '🔇';
+            this.showSoundState(active);
+            safeStorage.set('minik_kasif_sound', active ? '1' : '0');
         });
 
         this.btnVoiceToggle.addEventListener('click', () => {
             const active = soundManager.toggleVoice();
             soundManager.playPop();
-            this.btnVoiceToggle.classList.toggle('muted', !active);
-            this.btnVoiceToggle.setAttribute('aria-label', active ? 'Sesli Anlatım Açık' : 'Sesli Anlatım Kapalı');
-            this.btnVoiceToggle.querySelector('.btn-icon').textContent = active ? '🗣️' : '🤫';
+            this.showVoiceState(active);
+            safeStorage.set('minik_kasif_voice', active ? '1' : '0');
             if (active) {
                 soundManager.speak("Sesli anlatım açık!");
             }
@@ -562,6 +590,10 @@ class MiniExplorerApp {
         // ⌨️ KLAVYE YÖN TUŞLARI DİNLEYİCİSİ
         // ==========================================
         window.addEventListener('keydown', (e) => {
+            // Açık bir pencere (rehber, kutlama, kurulum yardımı) varken oyun arkada yürümesin;
+            // tuşu basılı tutunca köpek/top art arda gitmesin
+            if (e.repeat || document.querySelector('dialog[open]')) return;
+
             if (this.activeTab === 'realmaze') {
                 if (['ArrowUp', 'KeyW'].includes(e.code)) {
                     e.preventDefault();
@@ -821,9 +853,11 @@ class MiniExplorerApp {
                 this.switchTab(kind === 'color' ? 'numberfinder' : 'colorfinder');
             });
 
-            ui.micBtn.addEventListener('click', () => {
+            // Hedef rengi/sayıyı tekrar dinle (oyun mikrofonsuz: çocuk dinler ve karta dokunur)
+            // (Eski önbellekten gelen bir sayfada düğme yoksa açılış çökmesin)
+            if (ui.listenBtn) ui.listenBtn.addEventListener('click', () => {
                 soundManager.playPop();
-                this.toggleFinderMic();
+                soundManager.speak(this.getFinderRoundPrompt(kind));
             });
         });
 
@@ -868,18 +902,28 @@ class MiniExplorerApp {
             Promise.resolve(this.requestFullscreenFn.call(document.documentElement)).catch(err => {
                 console.log("Fullscreen request error:", err);
             });
-            this.btnFullscreen.querySelector('.btn-icon').textContent = '🗗';
         } else {
             const exit = document.exitFullscreen || document.webkitExitFullscreen;
             if (exit) exit.call(document);
-            this.btnFullscreen.querySelector('.btn-icon').textContent = '⛶';
         }
+    }
+
+    showSoundState(active) {
+        this.btnSoundToggle.classList.toggle('muted', !active);
+        this.btnSoundToggle.setAttribute('aria-label', active ? 'Ses Açık' : 'Ses Kapalı');
+        this.btnSoundToggle.querySelector('.btn-icon').textContent = active ? '🔊' : '🔇';
+    }
+
+    showVoiceState(active) {
+        this.btnVoiceToggle.classList.toggle('muted', !active);
+        this.btnVoiceToggle.setAttribute('aria-label', active ? 'Sesli Anlatım Açık' : 'Sesli Anlatım Kapalı');
+        this.btnVoiceToggle.querySelector('.btn-icon').textContent = active ? '🗣️' : '🤫';
     }
 
     toggleGiantScreen() {
         const isGiant = document.body.classList.toggle('giant-screen-active');
         this.updatePlayAreaHeight();
-        localStorage.setItem('minik_kasif_giant_mode', isGiant ? '1' : '0');
+        safeStorage.set('minik_kasif_giant_mode', isGiant ? '1' : '0');
         if (this.btnScreenScale) {
             this.btnScreenScale.classList.toggle('active-mode', isGiant);
             this.btnScreenScale.querySelector('.btn-icon').textContent = isGiant ? '🔎' : '🔍';
@@ -944,11 +988,8 @@ class MiniExplorerApp {
             this.melodyToken++; // Çalmakta olan melodiyi durdur
             this.melodyBusy = false;
         }
-        // Bulucu oyunlarından çıkınca mikrofonu kapat (renk ↔ sayı geçişinde açık kalır)
-        if (!['colorfinder', 'numberfinder'].includes(tabName)) {
-            this.stopFinderMic();
-        }
 
+        this.levelEpoch++;
         this.activeTab = tabName;
 
         this.tabBtns.forEach(btn => {
@@ -998,8 +1039,18 @@ class MiniExplorerApp {
 
     addStar(count = 1) {
         this.totalStars += count;
-        localStorage.setItem('minik_kasif_stars', this.totalStars.toString());
+        safeStorage.set('minik_kasif_stars', this.totalStars);
         this.updateStarDisplay();
+    }
+
+    // Bekleyip kutlama penceresini açar; bu arada sekme ya da bölüm değiştiyse (çocuk 🏠'a
+    // bastı, başka bölüme geçti) açmaz — aksi halde pencere yanlış oyunu ilerletirdi
+    async celebrateAfter(delayMs, title, message) {
+        const epoch = this.levelEpoch;
+        await this.sleep(delayMs);
+        if (epoch !== this.levelEpoch) return false;
+        this.showCelebrationModal(title, message);
+        return true;
     }
 
     updateStarDisplay() {
@@ -1011,6 +1062,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadRealmazeLevel(idx) {
+        this.levelEpoch++;
         this.realmazeLevelIdx = idx;
         const level = window.GAME_DATA.REALTIME_MAZE_LEVELS[idx];
 
@@ -1162,10 +1214,9 @@ class MiniExplorerApp {
 
             soundManager.speak("Aferin sana! Kemik ödülünü yakaladın!");
 
-            await this.sleep(900);
-            this.showCelebrationModal(
+            this.celebrateAfter(900,
                 "Labirent Şampiyonu! 🐶🦴⭐",
-                `Bölüm ${level.id}'yi başarıyla tamamladın!`
+                `Köpekçik kemiğine ulaştı, ${level.id}. bölüm tamam!`
             );
         }
     }
@@ -1175,6 +1226,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadBallTossLevel(idx) {
+        this.levelEpoch++;
         this.ballTossLevelIdx = idx;
         const level = window.GAME_DATA.BALL_TOSS_LEVELS[idx];
         this.ballTossScore = 0;
@@ -1346,7 +1398,7 @@ class MiniExplorerApp {
         const level = window.GAME_DATA.BALL_TOSS_LEVELS[this.ballTossLevelIdx];
         if (this.isTossLaunching || this.ballTossScore >= level.targetCount) return;
         this.isTossLaunching = true;
-        const levelIdx = this.ballTossLevelIdx;
+        const epoch = this.levelEpoch;
 
         soundManager.playPop();
 
@@ -1373,10 +1425,9 @@ class MiniExplorerApp {
 
         await this.waitForAnimation(flight, 650);
 
-        // Sekme ya da bölüm değiştiyse sonuç sayılmaz
-        if (this.activeTab !== 'balltoss' || levelIdx !== this.ballTossLevelIdx) {
+        // Sekme ya da bölüm değiştiyse sonuç sayılmaz (yeni bölüm kendi durumunu zaten sıfırladı)
+        if (epoch !== this.levelEpoch) {
             flyingBall.remove();
-            this.isTossLaunching = false;
             return;
         }
 
@@ -1419,13 +1470,13 @@ class MiniExplorerApp {
             this.addStar(2);
             soundManager.speak("Harikasın! Bütün atışları tam hedefe yaptın!");
 
-            await this.sleep(800);
-            this.showCelebrationModal(
+            this.celebrateAfter(800,
                 "Müthiş Nişancı! 🏀🎯",
                 `Tüm hedefleri vurdun ve görevi bitirdin!`
             );
         } else if (!level.targetSpeed) {
             await this.sleep(350);
+            if (epoch !== this.levelEpoch) return;
             this.relocateStaticTossTarget();
         }
 
@@ -1433,10 +1484,11 @@ class MiniExplorerApp {
     }
 
     // ==========================================
-    // 🫧 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA
+    // 🧼 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA
     // ==========================================
 
     loadBubblesLevel(idx) {
+        this.levelEpoch++;
         this.bubblesLevelIdx = idx;
         const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[idx];
         this.bubblesPoppedScore = 0;
@@ -1455,7 +1507,7 @@ class MiniExplorerApp {
 
     updateBubblesScoreUI() {
         const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
-        this.bubblesScoreBadge.textContent = `🫧 ${this.bubblesPoppedScore} / ${level.targetCount} Kurtarıldı`;
+        this.bubblesScoreBadge.textContent = `🧼 ${this.bubblesPoppedScore} / ${level.targetCount} Kurtarıldı`;
     }
 
     startBubblesSpawner() {
@@ -1470,6 +1522,8 @@ class MiniExplorerApp {
         }
 
         this.bubblesSpawnTimer = setInterval(() => {
+            // Uygulama arka plandayken yeni köpük çıkmasın (dönünce kaldığı yerden sürer)
+            if (document.hidden) return;
             if (this.activeBubbles.length < 8) {
                 this.spawnSoapBubble();
             }
@@ -1547,9 +1601,8 @@ class MiniExplorerApp {
             this.triggerConfetti();
             this.addStar(2);
 
-            await this.sleep(800);
-            this.showCelebrationModal(
-                "Sihirli Köpük Ustası! 🫧✨",
+            this.celebrateAfter(800,
+                "Sihirli Köpük Ustası! 🧼✨",
                 `Tüm gizli sürprizleri sandığına topladın!`
             );
         }
@@ -1566,6 +1619,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadBunnyLevel(idx) {
+        this.levelEpoch++;
         this.bunnyLevelIdx = idx;
         const level = window.GAME_DATA.BUNNY_LEVELS[idx];
 
@@ -1578,6 +1632,8 @@ class MiniExplorerApp {
         this.commands = [];
         this.collectedStars.clear();
         this.bunnyPos = { ...level.start, facing: 'right' };
+        // Önceki tahtadaki yarım kalmış yürüyüş (levelEpoch ile kendiliğinden biter) kontrolleri kilitli bırakmasın
+        this.finishBunnyRun();
 
         this.renderBunnyGrid();
         this.renderCommandTrain();
@@ -1718,6 +1774,10 @@ class MiniExplorerApp {
         this.setBunnyControlsDisabled(true);
         this.resetBunnyPosition();
 
+        // Yürüyüş sürerken çocuk menüye döner ya da bölüm değişirse yürüyüş sessizce biter
+        const epoch = this.levelEpoch;
+        const leftBoard = () => epoch !== this.levelEpoch;
+
         // Dar/dikey ekranda tahta yukarıda kalabilir: yürüyüşü izlemek için görünür yap
         const gridRect = this.bunnyGrid.getBoundingClientRect();
         if (gridRect.top < 0 || gridRect.bottom > window.innerHeight) {
@@ -1750,6 +1810,7 @@ class MiniExplorerApp {
                 hitObstacle = true;
                 if (cards[i]) cards[i].classList.add('cmd-error');
                 await this.animateObstacleHit("Çitten dışarı çıkamayız!");
+                if (leftBoard()) return this.finishBunnyRun();
                 break;
             }
 
@@ -1758,6 +1819,7 @@ class MiniExplorerApp {
                 hitObstacle = true;
                 if (cards[i]) cards[i].classList.add('cmd-error');
                 await this.animateObstacleHit("Dikkat! Engele takıldık!");
+                if (leftBoard()) return this.finishBunnyRun();
                 break;
             }
 
@@ -1781,17 +1843,23 @@ class MiniExplorerApp {
             }
 
             await this.sleep(450);
+            if (leftBoard()) return this.finishBunnyRun();
         }
 
         cards.forEach(c => c.classList.remove('active-executing'));
 
         if (reachedTarget) {
+            // Pencere açılana dek kontroller kilitli kalır (yoksa arada yeniden çalıştırıp yıldız toplanırdı)
             await this.handleBunnyVictory();
         } else if (!hitObstacle) {
             soundManager.playObstacle();
             soundManager.speak("Tavşancık havuca henüz varamadı, biraz daha adım ekleyelim!");
         }
 
+        this.finishBunnyRun();
+    }
+
+    finishBunnyRun() {
         this.isRunning = false;
         this.setBunnyControlsDisabled(false);
     }
@@ -1822,12 +1890,11 @@ class MiniExplorerApp {
 
         soundManager.speak("Aferin sana! Çıtır havucu yakaladın!");
 
-        await this.sleep(800);
-        this.showCelebrationModal(
+        await this.celebrateAfter(800,
             "Harikasın Küçük Kaşif! 🥕⭐",
             isLastLevel
                 ? "Tüm labirentleri başarıyla bitirdin! Tam bir Algoritma Ustasısın!"
-                : `Bölüm ${level.id}'yi tamamladın! Tavşancık çok mutlu oldu!`
+                : `${level.id}. bölüm tamam! Tavşancık çok mutlu oldu!`
         );
     }
 
@@ -1836,6 +1903,10 @@ class MiniExplorerApp {
         this.btnClearCode.disabled = disabled;
         this.btnResetBunny.disabled = disabled;
         this.arrowBtns.forEach(btn => btn.disabled = disabled);
+        // Yürüyüş sürerken bölüm değiştirilemez; bitince ilk/son bölüm sınırları geri gelir
+        const lastIdx = window.GAME_DATA.BUNNY_LEVELS.length - 1;
+        this.bunnyPrevLevelBtn.disabled = disabled || this.bunnyLevelIdx === 0;
+        this.bunnyNextLevelBtn.disabled = disabled || this.bunnyLevelIdx === lastIdx;
     }
 
     // ==========================================
@@ -1843,6 +1914,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadBalloonLevel(idx) {
+        this.levelEpoch++;
         this.balloonLevelIdx = idx;
         const level = window.GAME_DATA.BALLOON_LEVELS[idx];
         this.balloonScore = 0;
@@ -1874,6 +1946,8 @@ class MiniExplorerApp {
         }
 
         this.balloonInterval = setInterval(() => {
+            // Uygulama arka plandayken yeni balon çıkmasın (dönünce kaldığı yerden sürer)
+            if (document.hidden) return;
             if (this.activeBalloons.length < 7) {
                 this.spawnBalloon();
             }
@@ -1975,10 +2049,9 @@ class MiniExplorerApp {
                 this.triggerConfetti();
                 this.addStar(2);
 
-                await this.sleep(700);
-                this.showCelebrationModal(
+                this.celebrateAfter(700,
                     "Müthiş Balon Avcısı! 🎈⭐",
-                    `Bölüm ${level.id}'deki tüm balonları başarıyla patlattın!`
+                    `Bütün balonları patlattın, ${level.id}. bölüm tamam!`
                 );
             }
         }
@@ -1995,6 +2068,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadShapeLevel(idx) {
+        this.levelEpoch++;
         this.shapeLevelIdx = idx;
         const level = window.GAME_DATA.SHAPE_MATCH_LEVELS[idx];
         this.selectedShapeItem = null;
@@ -2016,13 +2090,16 @@ class MiniExplorerApp {
         this.shapeSilhouettesContainer.innerHTML = '';
         this.shapePiecesContainer.innerHTML = '';
 
-        level.items.forEach(item => {
+        // Gölge, nesnenin kendi emojisinden CSS ile üretilir (siyah siluet): her nesnenin gölgesi
+        // gerçekten kendine benzer. Cevabı söyleyen yazı yalnızca eşleşince görünür.
+        this.shuffleArray(level.items).forEach(item => {
             const silSlot = document.createElement('div');
             silSlot.className = 'silhouette-slot';
             silSlot.dataset.id = item.id;
+            silSlot.setAttribute('aria-label', 'Gölge');
             silSlot.innerHTML = `
-                <div class="silhouette-icon">${item.silhouette}</div>
-                <div class="slot-hint">${item.label}</div>
+                <div class="silhouette-icon">${item.symbol}</div>
+                <div class="slot-hint">?</div>
             `;
 
             silSlot.addEventListener('click', () => {
@@ -2034,9 +2111,7 @@ class MiniExplorerApp {
             this.shapeSilhouettesContainer.appendChild(silSlot);
         });
 
-        const shuffled = [...level.items].sort(() => Math.random() - 0.5);
-
-        shuffled.forEach(item => {
+        this.shuffleArray(level.items).forEach(item => {
             const piece = document.createElement('div');
             piece.className = 'shape-piece-card';
             piece.dataset.id = item.id;
@@ -2081,8 +2156,7 @@ class MiniExplorerApp {
                 this.triggerConfetti();
                 this.addStar(2);
 
-                await this.sleep(900);
-                this.showCelebrationModal(
+                this.celebrateAfter(900,
                     "Şekil Ustası! 🧩✨",
                     "Bütün nesneleri gölgeleriyle kusursuz eşleştirdin!"
                 );
@@ -2113,6 +2187,7 @@ class MiniExplorerApp {
     }
 
     loadMemoryLevel(idx) {
+        this.levelEpoch++;
         this.memoryLevelIdx = idx;
         const level = window.GAME_DATA.MEMORY_LEVELS[idx];
         this.flippedCards = [];
@@ -2194,15 +2269,17 @@ class MiniExplorerApp {
                     this.triggerConfetti();
                     this.addStar(2);
 
-                    await this.sleep(900);
-                    this.showCelebrationModal(
+                    this.celebrateAfter(900,
                         "Muazzam Hafıza! 🧠🌟",
                         "Tüm çiftleri başarıyla aklında tuttun ve buldun!"
                     );
                 }
             } else {
                 soundManager.playObstacle();
+                const epoch = this.levelEpoch;
                 await this.sleep(900);
+                // Bu arada bölüm değiştiyse yeni tahtanın kartlarına/kilidine dokunma
+                if (epoch !== this.levelEpoch) return;
                 c1.element.classList.remove('is-flipped');
                 c2.element.classList.remove('is-flipped');
                 this.flippedCards = [];
@@ -2216,6 +2293,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadPatternLevel(idx) {
+        this.levelEpoch++;
         this.patternLevelIdx = idx;
         const level = window.GAME_DATA.PATTERN_LEVELS[idx];
         this.patternSolved = false;
@@ -2319,9 +2397,7 @@ class MiniExplorerApp {
 
             soundManager.speak("Tebrikler! Trenin vagonunu doğru tamamladın!");
 
-            await this.sleep(1200);
-
-            this.showCelebrationModal(
+            this.celebrateAfter(1200,
                 "Harika Bir Örüntü Çözücü! 🚂✨",
                 `Sıradaki vagonu doğru tahmin ettin! (${chosenOpt.label})`
             );
@@ -2340,6 +2416,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadSizeLevel(idx) {
+        this.levelEpoch++;
         this.sizeLevelIdx = idx;
         const level = window.GAME_DATA.SIZE_LEVELS[idx];
 
@@ -2355,8 +2432,12 @@ class MiniExplorerApp {
 
     resetSizeLevel() {
         const level = window.GAME_DATA.SIZE_LEVELS[this.sizeLevelIdx];
+        this.sizeLocked = false;
+        this.sizeToken = (this.sizeToken || 0) + 1; // Bekleyen değerlendirme yeni dizilişe dokunmasın
         this.sizePodiumSlots = [null, null, null];
-        this.availableSizeItems = [...level.items].sort(() => Math.random() - 0.5);
+        this.availableSizeItems = this.shuffleArray(level.items);
+        // Önceki bölümün yeşil "başardın" / kırmızı "karıştı" görünümü yeni bölüme taşınmasın
+        this.podiumSlotsEl.forEach(el => el.classList.remove('podium-success', 'podium-error'));
 
         this.renderSizePool();
         this.renderSizePodium();
@@ -2419,7 +2500,7 @@ class MiniExplorerApp {
             } else {
                 const placeholder = document.createElement('div');
                 placeholder.className = 'podium-empty-box';
-                placeholder.innerHTML = '<span>Buraya Dokun</span>';
+                placeholder.innerHTML = '<span>Boş</span>';
                 slotEl.appendChild(placeholder);
                 slotEl.classList.remove('has-item');
             }
@@ -2427,6 +2508,7 @@ class MiniExplorerApp {
     }
 
     placeItemOnFirstAvailableSlot(item) {
+        if (this.sizeLocked) return;
         const emptyIndex = this.sizePodiumSlots.findIndex(slot => slot === null);
         if (emptyIndex === -1) return;
 
@@ -2444,6 +2526,8 @@ class MiniExplorerApp {
     }
 
     returnItemToPool(slotIndex) {
+        // Doğru sıralandıktan sonra nesneyi çıkarıp yeniden koyarak tekrar tekrar yıldız kazanılmasın
+        if (this.sizeLocked) return;
         const item = this.sizePodiumSlots[slotIndex];
         if (!item) return;
 
@@ -2456,9 +2540,14 @@ class MiniExplorerApp {
     }
 
     async checkSizeOrder() {
+        // Üç podyum doldu: değerlendirme bitene kadar (ve doğruysa bölüm boyunca) tıklamalar kilitli
+        this.sizeLocked = true;
+        const epoch = this.levelEpoch;
+        const token = this.sizeToken;
         const isCorrect = this.sizePodiumSlots.every((item, idx) => item.rank === (idx + 1));
 
         await this.sleep(300);
+        if (epoch !== this.levelEpoch || token !== this.sizeToken) return;
 
         if (isCorrect) {
             soundManager.playSuccess();
@@ -2468,8 +2557,7 @@ class MiniExplorerApp {
             this.podiumSlotsEl.forEach(el => el.classList.add('podium-success'));
             soundManager.speak("Tebrikler! Küçükten büyüğe kusursuz sıraladın!");
 
-            await this.sleep(900);
-            this.showCelebrationModal(
+            this.celebrateAfter(900,
                 "Boyut Ustası! ⚖️🌟",
                 "Nesneleri küçükten büyüğe harika bir şekilde yerleştirdin!"
             );
@@ -2479,6 +2567,7 @@ class MiniExplorerApp {
             soundManager.speak("Biraz karıştı! Hadi baştan en küçüğü bularak başlayalım.");
 
             await this.sleep(1000);
+            if (epoch !== this.levelEpoch || token !== this.sizeToken) return;
             this.podiumSlotsEl.forEach(el => el.classList.remove('podium-error'));
             this.resetSizeLevel();
         }
@@ -2520,6 +2609,7 @@ class MiniExplorerApp {
     }
 
     loadFinderLevel(kind, idx) {
+        this.levelEpoch++;
         const { levels } = this.getFinderConfig(kind);
         const ui = this.finderUI[kind];
         const level = levels[idx];
@@ -2550,11 +2640,13 @@ class MiniExplorerApp {
         state.roundToken++;
 
         ui.roundBadge.textContent = `⭐ Tur ${state.roundIdx + 1} / ${level.rounds.length}`;
-        ui.targetPrompt.textContent = `"${targetName}" de veya karta dokun!`;
+        ui.targetPrompt.textContent = kind === 'color'
+            ? `${targetName} kartı bul ve dokun!`
+            : `${targetName} sayısının kartını bul ve dokun!`;
 
         if (kind === 'color') {
             ui.targetWord.textContent = targetName.toLocaleUpperCase('tr-TR');
-            ui.targetWord.style.color = target.colorHex;
+            this.applyFinderColorText(ui.targetWord, target);
             ui.targetCircle.textContent = target.items[0].split(' ')[0];
         } else {
             ui.targetDigit.textContent = target.num;
@@ -2562,13 +2654,24 @@ class MiniExplorerApp {
             ui.targetVisual.textContent = target.countVisual;
         }
 
-        ui.feedback.classList.add('hidden');
-        this.updateFinderMicUI();
-
         ui.cards.innerHTML = '';
         round.options.forEach(id => {
             ui.cards.appendChild(this.createFinderCard(kind, id, items[id]));
         });
+    }
+
+    // Renk adı yazısı okunur kalsın: açık renkler (sarı) için koyu kenar tonu,
+    // beyaz için konturlu beyaz harf (beyaz zeminde kaybolmasın, gri de görünmesin)
+    applyFinderColorText(el, item) {
+        if (item.id === 'white') {
+            el.style.color = '#FFFFFF';
+            el.style.webkitTextStroke = '1.5px #64748B';
+            el.style.paintOrder = 'stroke fill';
+        } else {
+            el.style.color = item.borderHex;
+            el.style.webkitTextStroke = '';
+            el.style.paintOrder = '';
+        }
     }
 
     createFinderCard(kind, id, item) {
@@ -2586,9 +2689,10 @@ class MiniExplorerApp {
             card.innerHTML = `
                 <button type="button" class="card-speak-btn" title="Adını Dinle">🔊</button>
                 <div class="card-emoji-visual">${item.emoji}</div>
-                <div class="card-title-text" style="color: ${item.colorHex}">${name}</div>
+                <div class="card-title-text">${name}</div>
                 <div class="card-count-visual">${item.items.map(s => s.split(' ')[0]).join(' ')}</div>
             `;
+            this.applyFinderColorText(card.querySelector('.card-title-text'), item);
         } else {
             card.style.borderColor = '#A78BFA';
             card.innerHTML = `
@@ -2669,230 +2773,6 @@ class MiniExplorerApp {
         );
     }
 
-    // Sesle seçimde maskot kartın üstünde belirip kendisi tıklar
-    async voiceSelectFinderCard(kind, id) {
-        const state = this.finderState[kind];
-        if (state.busy) return;
-
-        const cardEl = this.finderUI[kind].cards.querySelector(`.finder-card[data-id="${id}"]`);
-        if (!cardEl) return;
-
-        const pointer = document.createElement('span');
-        pointer.className = 'magic-touch-pointer';
-        pointer.textContent = '🐶';
-        cardEl.appendChild(pointer);
-        setTimeout(() => pointer.remove(), 800);
-
-        const token = state.roundToken;
-        await this.sleep(450);
-        if (token !== state.roundToken || this.getActiveFinderKind() !== kind) return;
-        this.chooseFinderCard(kind, id, cardEl);
-    }
-
-    // ---------- 🎙️ Sesli Tanıma (Web Speech API, tr-TR) ----------
-
-    toggleFinderMic() {
-        if (this.finderMicOn) {
-            this.stopFinderMic();
-            return;
-        }
-
-        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!Recognition) {
-            this.finderMicError = 'Bu tarayıcı sesini duyamıyor, kartlara dokun!';
-            this.updateFinderMicUI();
-            soundManager.speak("Bu tarayıcı sesini duyamıyor. Kartlara dokunarak oynayalım!");
-            return;
-        }
-
-        if (!this.finderRecognition) {
-            this.finderRecognition = this.createFinderRecognition(Recognition);
-        }
-
-        this.finderMicOn = true;
-        this.finderMicError = null;
-        this.startFinderRecognition();
-        this.updateFinderMicUI();
-    }
-
-    createFinderRecognition(Recognition) {
-        const rec = new Recognition();
-        rec.lang = 'tr-TR';
-        rec.continuous = true;
-        rec.interimResults = true; // Çocuk beklemesin: ara sonuçla da kart seçilebilir
-        rec.maxAlternatives = 3;
-
-        rec.onstart = () => {
-            // Sonuç indeksleri her oturumda sıfırdan başlar
-            this.finderHandledResults = new Set();
-        };
-
-        rec.onresult = (event) => this.handleFinderSpeech(event);
-
-        rec.onerror = (event) => {
-            if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-                this.finderMicOn = false;
-                this.finderMicError = 'Mikrofon izni yok, kartlara dokun!';
-            } else if (event.error === 'audio-capture') {
-                this.finderMicOn = false;
-                this.finderMicError = 'Mikrofon bulunamadı, kartlara dokun!';
-            } else if (event.error === 'network') {
-                this.finderMicOn = false;
-                this.finderMicError = 'Ses tanıma için internet gerekli, kartlara dokun!';
-            }
-            // 'no-speech' ve 'aborted' zararsız: onend yeniden başlatır
-            this.updateFinderMicUI();
-        };
-
-        rec.onend = () => {
-            // Tarayıcı sessizlikte dinlemeyi kendiliğinden bitirir; oyun açıkken yeniden başlat
-            if (this.finderMicOn && this.getActiveFinderKind()) {
-                setTimeout(() => {
-                    if (this.finderMicOn) this.startFinderRecognition();
-                }, 250);
-            }
-        };
-
-        return rec;
-    }
-
-    startFinderRecognition() {
-        try {
-            this.finderRecognition.start();
-        } catch (e) {
-            // Zaten dinliyorsa InvalidStateError fırlatır; yok sayılır
-        }
-    }
-
-    stopFinderMic() {
-        this.finderMicOn = false;
-        if (this.finderRecognition) {
-            try {
-                this.finderRecognition.abort();
-            } catch (e) {
-                console.log("Ses tanıma durdurulamadı:", e);
-            }
-        }
-        if (this.finderUI) this.updateFinderMicUI();
-    }
-
-    updateFinderMicUI() {
-        ['color', 'number'].forEach(kind => {
-            const ui = this.finderUI[kind];
-            const { items } = this.getFinderConfig(kind);
-            const targetName = this.getFinderItemName(kind, items[this.getFinderRound(kind).target]);
-
-            ui.micBtn.classList.remove('listening', 'idle', 'error');
-            if (this.finderMicError) {
-                ui.micBtn.classList.add('error');
-                ui.micLabel.textContent = this.finderMicError;
-            } else if (this.finderMicOn) {
-                ui.micBtn.classList.add('listening');
-                ui.micLabel.textContent = `Seni Dinliyorum: "${targetName}" de!`;
-            } else {
-                ui.micBtn.classList.add('idle');
-                ui.micLabel.textContent = `Mikrofona dokun, "${targetName}" de!`;
-            }
-            ui.micBtn.setAttribute('aria-pressed', this.finderMicOn ? 'true' : 'false');
-        });
-    }
-
-    handleFinderSpeech(event) {
-        const kind = this.getActiveFinderKind();
-        if (!kind) return;
-
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            if (this.finderHandledResults.has(i)) continue;
-            const result = event.results[i];
-
-            // Maskot konuşurken hoparlörden gelen sesi çocuğun sesi sanmayalım
-            if (window.speechSynthesis && window.speechSynthesis.speaking) {
-                this.finderHandledResults.add(i);
-                continue;
-            }
-
-            const transcripts = Array.from(result).map(alt => alt.transcript);
-            const matchedId = this.matchFinderTranscript(kind, transcripts);
-
-            if (matchedId !== null) {
-                // Aynı sözün sonraki ara/kesin sonuçları tekrar seçim yapmasın
-                this.finderHandledResults.add(i);
-                const name = this.getFinderItemName(kind, this.getFinderConfig(kind).items[matchedId]);
-                this.showFinderHeard(kind, `Duydum: "${name}" 🎯`);
-                this.voiceSelectFinderCard(kind, matchedId);
-            } else if (result.isFinal) {
-                this.finderHandledResults.add(i);
-                const heard = transcripts[0].trim();
-                if (heard) this.showFinderHeard(kind, `Duydum: "${heard}" 🤔`);
-            }
-        }
-    }
-
-    showFinderHeard(kind, text) {
-        const ui = this.finderUI[kind];
-        ui.feedbackText.textContent = text;
-        ui.feedback.classList.remove('hidden');
-        clearTimeout(this.finderFeedbackTimer);
-        this.finderFeedbackTimer = setTimeout(() => ui.feedback.classList.add('hidden'), 2500);
-    }
-
-    // Küçük harf + Türkçe karakter katlama: "Kırmızı!" → "kirmizi"
-    normalizeFinderText(text) {
-        return String(text)
-            .toLocaleLowerCase('tr-TR')
-            .replace(/̇/g, '')
-            .replace(/[çğıöşü]/g, ch => ({ 'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u' }[ch]))
-            .replace(/[^a-z0-9\s]/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-    }
-
-    // İfade cümlede geçiyorsa son geçtiği kelimenin sırasını döner, yoksa -1.
-    // 4+ harfli kelimelerde Türkçe ekler tolere edilir ("maviyi", "sariyi").
-    findFinderPhrase(tokens, phrase) {
-        const parts = this.normalizeFinderText(phrase).split(' ').filter(Boolean);
-        if (parts.length === 0) return -1;
-
-        for (let i = tokens.length - parts.length; i >= 0; i--) {
-            const ok = parts.every((part, j) => {
-                const token = tokens[i + j];
-                return token === part || (part.length >= 4 && token.startsWith(part));
-            });
-            if (ok) return i + parts.length - 1;
-        }
-        return -1;
-    }
-
-    // Yalnızca ekrandaki kartlar arasında eşleşme arar. Önce asıl ad ("yeşil", "3"),
-    // bulunamazsa eş anlamlılar ("elma", "kurbağa"); birden çok eşleşmede en son söylenen kazanır.
-    matchFinderTranscript(kind, transcripts) {
-        const { items } = this.getFinderConfig(kind);
-        const options = this.getFinderRound(kind).options;
-
-        const primaryWords = (item) => kind === 'color' ? [item.name] : [String(item.num), item.word];
-
-        for (const transcript of transcripts) {
-            const tokens = this.normalizeFinderText(transcript).split(' ').filter(Boolean);
-            if (tokens.length === 0) continue;
-
-            for (const getWords of [primaryWords, (item) => item.synonyms]) {
-                let best = null;
-                let bestPos = -1;
-                options.forEach(id => {
-                    getWords(items[id]).forEach(word => {
-                        const pos = this.findFinderPhrase(tokens, word);
-                        if (pos > bestPos) {
-                            bestPos = pos;
-                            best = id;
-                        }
-                    });
-                });
-                if (best !== null) return best;
-            }
-        }
-        return null;
-    }
-
     // ==========================================
     // ✋ ORTAK: SÜRÜKLE YA DA DOKUN
     // ==========================================
@@ -2964,6 +2844,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadColoringLevel(idx) {
+        this.levelEpoch++;
         this.coloringLevelIdx = idx;
         const page = window.GAME_DATA.COLORING_PAGES[idx];
         this.coloringDone = false;
@@ -3090,6 +2971,7 @@ class MiniExplorerApp {
     }
 
     loadJigsawLevel(idx) {
+        this.levelEpoch++;
         this.jigsawLevelIdx = idx;
         const level = window.GAME_DATA.JIGSAW_LEVELS[idx];
         this.jigsawSelected = null;
@@ -3188,10 +3070,7 @@ class MiniExplorerApp {
             this.triggerConfetti();
             this.addStar(2);
             soundManager.speak(`Yapboz tamam! Bu bir ${level.heroLabel}!`);
-            setTimeout(() => {
-                if (this.activeTab !== 'jigsaw') return;
-                this.showCelebrationModal("Yapboz Ustası! 🖼️✨", `${level.heroLabel} resmini parça parça tamamladın!`);
-            }, 1200);
+            this.celebrateAfter(1200, "Yapboz Ustası! 🖼️✨", `${level.heroLabel} resmini parça parça tamamladın!`);
         }
     }
 
@@ -3209,6 +3088,7 @@ class MiniExplorerApp {
     }
 
     loadMelodyLevel(idx) {
+        this.levelEpoch++;
         this.melodyLevelIdx = idx;
         const level = window.GAME_DATA.MELODY_LEVELS[idx];
         this.melodyToken++;
@@ -3381,6 +3261,7 @@ class MiniExplorerApp {
     // ==========================================
 
     loadSortingLevel(idx) {
+        this.levelEpoch++;
         this.sortingLevelIdx = idx;
         const level = window.GAME_DATA.SORTING_LEVELS[idx];
         this.sortingSelected = null;
@@ -3445,7 +3326,7 @@ class MiniExplorerApp {
 
         if (itemEl.dataset.basket !== basketEl.dataset.basket) {
             soundManager.playObstacle();
-            soundManager.speak(`Hmm, ${itemEl.dataset.label} bu sepete ait değil. Öbür sepeti dene!`);
+            soundManager.speak(`Hmm, ${itemEl.dataset.label} bu sepete ait değil. Başka bir sepeti dene!`);
             itemEl.classList.add('piece-wrong');
             basketEl.classList.add('basket-wrong');
             setTimeout(() => {
@@ -3472,10 +3353,7 @@ class MiniExplorerApp {
             this.triggerConfetti();
             this.addStar(2);
             soundManager.speak("Süpersin! Her şeyi doğru sepete koydun!");
-            setTimeout(() => {
-                if (this.activeTab !== 'sorting') return;
-                this.showCelebrationModal("Sınıflandırma Ustası! 🧺✨", "Hepsini doğru gruplara ayırdın!");
-            }, 1200);
+            this.celebrateAfter(1200, "Sınıflandırma Ustası! 🧺✨", "Hepsini doğru gruplara ayırdın!");
         }
     }
 
@@ -3488,13 +3366,51 @@ class MiniExplorerApp {
     // 🌟 BAŞARI KUTLAMA VE MODAL
     // ==========================================
 
+    // Açık oyunun bölüm sırası ve toplam bölüm sayısı (son bölüm mü kararı için)
+    getActiveLevelProgress() {
+        const classic = {
+            realmaze: ['realmazeLevelIdx', 'REALTIME_MAZE_LEVELS'],
+            balltoss: ['ballTossLevelIdx', 'BALL_TOSS_LEVELS'],
+            bubbles: ['bubblesLevelIdx', 'SOAP_BUBBLE_LEVELS'],
+            bunny: ['bunnyLevelIdx', 'BUNNY_LEVELS'],
+            balloon: ['balloonLevelIdx', 'BALLOON_LEVELS'],
+            shape: ['shapeLevelIdx', 'SHAPE_MATCH_LEVELS'],
+            memory: ['memoryLevelIdx', 'MEMORY_LEVELS'],
+            pattern: ['patternLevelIdx', 'PATTERN_LEVELS'],
+            size: ['sizeLevelIdx', 'SIZE_LEVELS']
+        }[this.activeTab];
+        if (classic) return { idx: this[classic[0]], count: window.GAME_DATA[classic[1]].length };
+
+        const kind = this.getActiveFinderKind();
+        if (kind) return { idx: this.finderState[kind].levelIdx, count: this.getFinderConfig(kind).levels.length };
+
+        const mod = this.extraModules[this.activeTab];
+        if (mod) return { idx: this[mod.idxKey], count: mod.levels().length };
+        return null;
+    }
+
     showCelebrationModal(title, msg) {
+        // Son bölümde "Sonraki Bölüm" yerine menüye dönülür (eskiden tahta bitmiş halde kalıyordu)
+        const progress = this.getActiveLevelProgress();
+        this.celebrationGoesHome = !!progress && progress.idx >= progress.count - 1;
+
         this.celebrationTitle.textContent = title;
-        this.celebrationMessage.textContent = msg;
+        this.celebrationMessage.textContent = this.celebrationGoesHome
+            ? `${msg} Bu oyunun bütün bölümlerini bitirdin! 🏆`
+            : msg;
+        this.btnNextCelebration.querySelector('span').textContent = this.celebrationGoesHome
+            ? '🏠 Oyun Menüsü'
+            : 'Sonraki Bölüm 🌟';
         this.celebrationModal.showModal();
     }
 
     handleCelebrationNext() {
+        if (this.celebrationGoesHome) {
+            this.celebrationGoesHome = false;
+            this.switchTab('home');
+            return;
+        }
+
         if (this.activeTab === 'realmaze') {
             if (this.realmazeLevelIdx < window.GAME_DATA.REALTIME_MAZE_LEVELS.length - 1) {
                 this.realmazeLevelIdx++;
@@ -3541,16 +3457,14 @@ class MiniExplorerApp {
                 this.loadSizeLevel(this.sizeLevelIdx);
             }
         } else if (this.getActiveFinderKind()) {
-            // Son bölümde aynı bölüm baştan oynanır; tüm turlar bittiği için ekran boş kalmasın
             const kind = this.getActiveFinderKind();
             const { levels } = this.getFinderConfig(kind);
             const idx = this.finderState[kind].levelIdx;
-            this.loadFinderLevel(kind, idx < levels.length - 1 ? idx + 1 : idx);
+            if (idx < levels.length - 1) this.loadFinderLevel(kind, idx + 1);
         } else if (this.extraModules[this.activeTab]) {
-            // Son bölümde aynı bölüm baştan açılır
             const mod = this.extraModules[this.activeTab];
             const idx = this[mod.idxKey];
-            mod.load(idx < mod.levels().length - 1 ? idx + 1 : idx);
+            if (idx < mod.levels().length - 1) mod.load(idx + 1);
         }
     }
 
@@ -3592,6 +3506,9 @@ class MiniExplorerApp {
             });
         }
 
+        // Konfeti zaten yağıyorsa yeni parçacıklar çalışan döngüyle düşer; ikinci döngü
+        // başlatılmaz (yoksa konfeti iki kat hızlı düşerdi)
+        if (this.confettiActive) return;
         this.confettiActive = true;
         this.runConfettiLoop();
     }

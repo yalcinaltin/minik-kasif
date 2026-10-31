@@ -96,7 +96,7 @@
             <div class="bubble-mascot-avatar">🐶</div>
             <div class="bubble-text-box">
                 <span class="bubble-tag">Sevimli Dostumuz Diyor ki:</span>
-                <p class="bubble-text">Hadi yön tuşlarıyla labirentten çıkalım!</p>
+                <p class="bubble-text">Hangi oyunu oynamak istersin? Bir resme dokun!</p>
             </div>
             <button id="btn-replay-speech" class="btn-bubble-action" title="Yönergeyi Tekrar Oku / Dinle">
                 <span>🔁 Tekrar</span>
@@ -104,7 +104,7 @@
         </div>
     </div>
 
-    <!-- Oyun Seçim Ana Ekranı (11 Eğitici Oyun) — oyun içindeyken gizlenir, 🏠 ile geri gelinir -->
+    <!-- Oyun Seçim Ana Ekranı (15 Eğitici Oyun) — oyun içindeyken gizlenir, 🏠 ile geri gelinir -->
     <nav class="nav-tab-container" aria-label="Oyun Modları">
         <h2 class="home-title">🎈 Hangi oyunu oynayalım?</h2>
         <!-- Yalnızca kurulabilir durumdayken görünür (Android/masaüstü kurulum istemi, iPhone'da yardım) -->
@@ -114,7 +114,7 @@
         <button class="nav-tab-btn" data-tab="realmaze" aria-selected="false">
             <span class="tab-icon">🐶</span>
             <div>
-                <div class="tab-title">Yön Tuşlu Labirent</div>
+                <div class="tab-title">Yön Oklu Labirent</div>
                 <div class="tab-sub">Canlı Çıkış Macerası</div>
             </div>
         </button>
@@ -123,7 +123,7 @@
             <span class="tab-icon">🎨</span>
             <div>
                 <div class="tab-title">Renk Bulucu</div>
-                <div class="tab-sub">Söyle & Tıkla</div>
+                <div class="tab-sub">Dinle & Bul</div>
             </div>
         </button>
 
@@ -131,7 +131,7 @@
             <span class="tab-icon">🔢</span>
             <div>
                 <div class="tab-title">Sayı Bulucu</div>
-                <div class="tab-sub">Söyle & Say</div>
+                <div class="tab-sub">Dinle & Say</div>
             </div>
         </button>
 
@@ -144,7 +144,7 @@
         </button>
 
         <button class="nav-tab-btn" data-tab="bubbles" aria-selected="false">
-            <span class="tab-icon">🫧</span>
+            <span class="tab-icon">🧼</span>
             <div>
                 <div class="tab-title">Köpük Patlatma</div>
                 <div class="tab-sub">Sürpriz Oyuncak Keşfi</div>
@@ -236,7 +236,7 @@
     <main class="main-content">
 
         <!-- ============================================== -->
-        <!-- 🐶 MODÜL 1: CANLI YÖN TUŞLU LABİRENT           -->
+        <!-- 🐶 MODÜL 1: CANLI YÖN OKLU LABİRENT            -->
         <!-- ============================================== -->
         <section id="view-realmaze" class="game-view active">
             <div class="level-banner-card banner-realmaze">
@@ -331,16 +331,16 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- 🫧 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA     -->
+        <!-- 🧼 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA     -->
         <!-- ============================================== -->
         <section id="view-bubbles" class="game-view">
             <div class="level-banner-card banner-bubbles">
                 <div class="level-meta">
-                    <h2 id="bubbles-title">Bölüm 1: Deniz Canlısı Baloncukları 🫧🐬</h2>
+                    <h2 id="bubbles-title">Bölüm 1: Deniz Canlısı Baloncukları 🧼🐬</h2>
                     <p id="bubbles-instruction" class="level-instruction">Uçuşan sihirli sabun köpüklerine dokun ve içindeki deniz dostlarını kurtar!</p>
                 </div>
                 <div class="balloon-hud-wrapper">
-                    <span id="bubbles-score-badge" class="balloon-score-pill" style="border-color: #38BDF8; color: #0284C7; background: #F0F9FF;">🫧 0 / 8 Kurtarıldı</span>
+                    <span id="bubbles-score-badge" class="balloon-score-pill" style="border-color: #38BDF8; color: #0284C7; background: #F0F9FF;">🧼 0 / 8 Kurtarıldı</span>
                     <div class="level-nav-actions">
                         <button id="btn-bubbles-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
                         <button id="btn-bubbles-next" class="btn-nav-level" title="Sonraki Bölüm">▶</button>
@@ -549,13 +549,13 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- 🎨 MODÜL 10: SESLİ & DOKUNMATİK RENK BULUCU    -->
+        <!-- 🎨 MODÜL 10: RENK BULUCU (DİNLE & BUL)          -->
         <!-- ============================================== -->
         <section id="view-colorfinder" class="game-view">
             <div class="level-banner-card banner-colorfinder">
                 <div class="level-meta">
                     <h2 id="colorfinder-title">Bölüm 1: Ana Renkler Dünyası 🎨</h2>
-                    <p id="colorfinder-instruction" class="level-instruction">Ekranda yazan rengi yüksek sesle söyle veya dokunarak bul!</p>
+                    <p id="colorfinder-instruction" class="level-instruction">Hangi rengi istediğimi dinle, o renkteki karta dokun!</p>
                 </div>
                 <div class="level-nav-actions">
                     <button id="btn-colorfinder-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
@@ -584,21 +584,16 @@
                         <div id="color-target-word" class="target-word-glow">KIRMIZI</div>
                         <div class="target-visual-preview">
                             <span id="color-target-circle" class="target-color-circle">🔴</span>
-                            <span id="color-target-prompt" class="target-speech-prompt">"Kırmızı" de veya karta dokun!</span>
+                            <span id="color-target-prompt" class="target-speech-prompt">Kırmızı kartı bul ve dokun!</span>
                         </div>
                     </div>
 
-                    <!-- Canlı Ses Tanıma (Mikrofon) & Geri Bildirim -->
+                    <!-- Hedefi tekrar dinle (oyun mikrofonsuz: çocuk dinler, karta dokunur) -->
                     <div class="finder-voice-bar">
-                        <button id="btn-color-mic" class="voice-mic-pill" title="Mikrofonu Aç/Kapat">
-                            <span class="mic-wave-ring"></span>
-                            <span class="mic-icon">🎙️</span>
-                            <span id="color-mic-label" class="mic-label">Seni Dinliyorum: "Kırmızı" de!</span>
+                        <button id="btn-color-listen" class="finder-listen-btn" type="button" title="Hedef rengi tekrar dinle">
+                            <span class="listen-icon">🔊</span>
+                            <span class="listen-label">Tekrar dinle</span>
                         </button>
-                        <div id="color-voice-feedback" class="voice-feedback-chip hidden">
-                            <span class="feedback-icon">🎤</span>
-                            <span id="color-voice-text" class="feedback-text">Duydum: "Kırmızı" 🎯</span>
-                        </div>
                     </div>
                 </div>
 
@@ -612,13 +607,13 @@
         </section>
 
         <!-- ============================================== -->
-        <!-- 🔢 MODÜL 11: SESLİ & DOKUNMATİK SAYI BULUCU    -->
+        <!-- 🔢 MODÜL 11: SAYI BULUCU (DİNLE & SAY)          -->
         <!-- ============================================== -->
         <section id="view-numberfinder" class="game-view">
             <div class="level-banner-card banner-numberfinder">
                 <div class="level-meta">
                     <h2 id="numberfinder-title">Bölüm 1: 1'den 3'e İlk Sayılar 🔢</h2>
-                    <p id="numberfinder-instruction" class="level-instruction">Ekranda yazan sayıyı yüksek sesle söyle veya dokunarak bul!</p>
+                    <p id="numberfinder-instruction" class="level-instruction">Hangi sayıyı istediğimi dinle, o sayının kartına dokun!</p>
                 </div>
                 <div class="level-nav-actions">
                     <button id="btn-numberfinder-prev" class="btn-nav-level" title="Önceki Bölüm">◀</button>
@@ -650,21 +645,16 @@
                         </div>
                         <div class="target-visual-preview">
                             <span id="number-target-visual" class="target-count-visual">⭐ ⭐ ⭐</span>
-                            <span id="number-target-prompt" class="target-speech-prompt">"Üç" de veya karta dokun!</span>
+                            <span id="number-target-prompt" class="target-speech-prompt">Üç sayısının kartını bul ve dokun!</span>
                         </div>
                     </div>
 
-                    <!-- Canlı Ses Tanıma (Mikrofon) & Geri Bildirim -->
+                    <!-- Hedefi tekrar dinle (oyun mikrofonsuz: çocuk dinler, karta dokunur) -->
                     <div class="finder-voice-bar">
-                        <button id="btn-number-mic" class="voice-mic-pill" title="Mikrofonu Aç/Kapat">
-                            <span class="mic-wave-ring"></span>
-                            <span class="mic-icon">🎙️</span>
-                            <span id="number-mic-label" class="mic-label">Seni Dinliyorum: "Üç" de!</span>
+                        <button id="btn-number-listen" class="finder-listen-btn" type="button" title="Hedef sayıyı tekrar dinle">
+                            <span class="listen-icon">🔊</span>
+                            <span class="listen-label">Tekrar dinle</span>
                         </button>
-                        <div id="number-voice-feedback" class="voice-feedback-chip hidden">
-                            <span class="feedback-icon">🎤</span>
-                            <span id="number-voice-text" class="feedback-text">Duydum: "3" 🎯</span>
-                        </div>
                     </div>
                 </div>
 
@@ -803,29 +793,29 @@
                 <button id="btn-close-guide" class="btn-circle" style="width: 36px; height: 36px;">✕</button>
             </div>
             <div class="dialog-body">
+                <div class="guide-pill-card" style="border-left-color: #3B82F6;">
+                    <h4>🐶 1. Yön Oklu Labirent (Anlık Karar & Motor Koordinasyon)</h4>
+                    <p><strong>Kazanımlar:</strong> Ekrandaki oklarla (klavyede ok tuşlarıyla da) anlık yön kontrolü, mekânsal yönelim, labirentten çıkış stratejisi kurma.</p>
+                </div>
+
                 <div class="guide-pill-card" style="border-left-color: #EC4899;">
-                    <h4>🎨 1. Sesli & Dokunmatik Renk Bulucu ("Ben Söyleyeyim O Tıklasın")</h4>
-                    <p><strong>Kazanımlar:</strong> Görsel renk ayırt etme, Türkçe telaffuz ve sesli ifade becerisi, konuşma tanıma (Speech Recognition) ile teknoloji etkileşimi veya dokunmatik keşif.</p>
+                    <h4>🎨 2. Renk Bulucu (Dinle & Bul)</h4>
+                    <p><strong>Kazanımlar:</strong> Söylenen renk adını dinleyip doğru renkle eşleştirme, renk ayırt etme, dinleme dikkati. <em>Soru önerisi:</em> "Evimizde kırmızı ne var?"</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #8B5CF6;">
-                    <h4>🔢 2. Sesli & Dokunmatik Sayı Bulucu (Sayma & Eşleme)</h4>
-                    <p><strong>Kazanımlar:</strong> 1'den 10'a kadar rakamları tanıma, görsel nesneleri tek tek sayma (kardinalite), sayıyı sesli telaffuz ederek özgüven kazanma.</p>
-                </div>
-
-                <div class="guide-pill-card" style="border-left-color: #3B82F6;">
-                    <h4>🐶 3. Canlı Yön Tuşlu Labirent (Anlık Karar & Motor Koordinasyon)</h4>
-                    <p><strong>Kazanımlar:</strong> Klavyedeki ok tuşları veya ekrandaki butonlarla anlık yön kontrolü, mekansal navigasyon, labirentten çıkış stratejisi kurma.</p>
+                    <h4>🔢 3. Sayı Bulucu (Dinle & Say)</h4>
+                    <p><strong>Kazanımlar:</strong> 1'den 10'a kadar rakamları tanıma, kartlardaki nesneleri tek tek sayma (kardinalite), söylenen sayıyı rakamla eşleştirme.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #F97316;">
-                    <h4>🏀 4. Neşeli Top Atma & Basket (Fizik, Hız ve İtme Mantığı)</h4>
-                    <p><strong>Kazanımlar:</strong> Hedefe yönelme, eğik atış sezgisi, el-göz koordinasyonu ve hedefi tutturma memnuniyeti.</p>
+                    <h4>🏀 4. Neşeli Top Atma & Basket (Nişan & Zamanlama)</h4>
+                    <p><strong>Kazanımlar:</strong> Hedefe yönelme, açı tahmini, kayan hedefte doğru anı bekleme, el-göz koordinasyonu.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #0284C7;">
-                    <h4>🫧 5. Sihirli Köpük Patlatma (Duyusal Rahatlama & Keşif)</h4>
-                    <p><strong>Kazanımlar:</strong> Su damlası pıtırtısı ve parçalanan köpük içinden çıkan oyuncakları tanıma, görsel odaklanma.</p>
+                    <h4>🧼 5. Sihirli Köpük Patlatma (Duyusal Rahatlama & Keşif)</h4>
+                    <p><strong>Kazanımlar:</strong> Hareketli hedefi takip etme, köpüklerden çıkan nesneleri tanıma ve adlandırma, görsel odaklanma.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #22C55E;">
@@ -835,26 +825,46 @@
 
                 <div class="guide-pill-card" style="border-left-color: #EC4899;">
                     <h4>🎈 7. Balon Avı (Refleks & Renkler)</h4>
-                    <p><strong>Kazanımlar:</strong> Dinleme ve ayırt etme (Örn: "Yalnızca kırmızı balonlar").</p>
+                    <p><strong>Kazanımlar:</strong> Dinleme ve ayırt etme (Örn: "Yalnızca kırmızı balonlar"), sayı adlarını duyma.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #06B6D4;">
+                    <h4>🧩 8. Şekil & Gölge (Görsel Algı)</h4>
+                    <p><strong>Kazanımlar:</strong> Nesneyi siluetiyle eşleştirme, biçim ve parça-bütün algısı, görsel ayırt etme. <em>Soru önerisi:</em> "Gölgesinden hangi hayvan olduğunu tahmin edebilir misin?"</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #A855F7;">
+                    <h4>🧠 9. Hafıza Kartları (Çalışma Belleği)</h4>
+                    <p><strong>Kazanımlar:</strong> Kartların yerini akılda tutma, dikkat ve sıra bekleme; 4 ve 6 kartlık kademeler.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #29B6F6;">
+                    <h4>🚂 10. Örüntü Treni (Mantık & Kural Bulma)</h4>
+                    <p><strong>Kazanımlar:</strong> AB, AAB, ABC gibi tekrarlayan kuralları fark edip sıradakini tahmin etme; matematiğe ve okumaya hazırlık.</p>
+                </div>
+
+                <div class="guide-pill-card" style="border-left-color: #FF9800;">
+                    <h4>⚖️ 11. Boyut Dünyası (Küçükten Büyüğe Sıralama)</h4>
+                    <p><strong>Kazanımlar:</strong> Nesneleri boyutuna göre karşılaştırma ve sıralama (seriasyon), "küçük / orta / büyük" kavramları.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #F43F5E;">
-                    <h4>🖍️ Boyama Kitabı (Yaratıcılık & Renk Adları)</h4>
+                    <h4>🖍️ 12. Boyama Kitabı (Yaratıcılık & Renk Adları)</h4>
                     <p><strong>Kazanımlar:</strong> Renk seçip alanı doldurma, renk adlarını duyarak öğrenme, ince motor kontrol. <em>Soru önerisi:</em> "Güneşi neden sarı boyadın? Mor bir güneş olsa nasıl olurdu?"</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #14B8A6;">
-                    <h4>🖼️ Yapboz (Parça - Bütün İlişkisi)</h4>
+                    <h4>🖼️ 13. Yapboz (Parça - Bütün İlişkisi)</h4>
                     <p><strong>Kazanımlar:</strong> 4, 6 ve 9 parçalık resimlerde parçayı bütünle ilişkilendirme, görsel-uzamsal akıl yürütme, deneme-yanılma ile problem çözme.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #6366F1;">
-                    <h4>🎹 Melodi Tekrarla (İşitsel Bellek & Sıralama)</h4>
+                    <h4>🎹 14. Melodi Tekrarla (İşitsel Bellek & Sıralama)</h4>
                     <p><strong>Kazanımlar:</strong> Dinlediği nota dizisini aynı sırayla tekrar etme (2 → 3 → 4 nota), işitsel çalışma belleği ve sıralama. İlk bölüm serbest çalmadır.</p>
                 </div>
 
                 <div class="guide-pill-card" style="border-left-color: #D97706;">
-                    <h4>🧺 Sepetlere Ayır (Sınıflandırma)</h4>
+                    <h4>🧺 15. Sepetlere Ayır (Sınıflandırma)</h4>
                     <p><strong>Kazanımlar:</strong> Nesneleri <strong>tek bir özelliğe</strong> göre gruplama (renk, hayvan/meyve, kara/deniz, uçan/yürüyen/yüzen). 3-5 yaşta iki özelliğe birden göre ayırmak zordur; bölümler bu yüzden tek kurallıdır.</p>
                 </div>
 
@@ -887,7 +897,7 @@
                     <h4>Android (Chrome)</h4>
                     <p>Sağ üstteki <strong>⋮</strong> menüsünden <strong>"Ana ekrana ekle"</strong> ya da <strong>"Uygulamayı yükle"</strong>yi seçin.</p>
                 </div>
-                <p>Bir kez açıldıktan sonra oyunlar <strong>internetsiz de</strong> oynanır. Yalnızca Renk/Sayı Bulucu'daki mikrofonla söyleme özelliği internet ister.</p>
+                <p>Bir kez açıldıktan sonra bütün oyunlar <strong>internetsiz de</strong> oynanır.</p>
             </div>
             <button class="btn-dialog-close" onclick="document.getElementById('install-help-dialog').close()">Tamam 👍</button>
         </div>

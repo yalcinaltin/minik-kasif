@@ -9,7 +9,7 @@
  * - Önbellek adını değiştirmek (CACHE_VERSION) eski kopyaları siler.
  */
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const APP_CACHE = `minik-kasif-app-${CACHE_VERSION}`;
 const FONT_CACHE = `minik-kasif-fonts-${CACHE_VERSION}`;
 const NETWORK_TIMEOUT_MS = 4000;

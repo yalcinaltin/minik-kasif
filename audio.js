@@ -28,8 +28,11 @@ class SoundManager {
         if (!this.ctx) {
             this.initAudioContext();
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-            this.ctx.resume();
+        // 'interrupted': iPhone'da arama, Siri ya da uygulama arka plana gidince ses bu durumda kalır
+        if (this.ctx && (this.ctx.state === 'suspended' || this.ctx.state === 'interrupted')) {
+            const resumed = this.ctx.resume();
+            // Eski Safari'de resume() Promise döndürmeyebilir
+            if (resumed && resumed.catch) resumed.catch(() => { /* dokunuşla tekrar denenecek */ });
         }
     }
 
