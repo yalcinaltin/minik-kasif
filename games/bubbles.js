@@ -1,0 +1,132 @@
+// 🧼 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA
+// Bu dosyadaki yöntemler game.js'teki MiniExplorerApp sınıfına eklenir (game.js'ten sonra yüklenir).
+class BubblesGame {
+    // ==========================================
+    // 🧼 MODÜL 3: SİHİRLİ SABUN KÖPÜĞÜ PATLATMA
+    // ==========================================
+
+    loadBubblesLevel(idx) {
+        this.levelEpoch++;
+        this.bubblesLevelIdx = idx;
+        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[idx];
+        this.bubblesPoppedScore = 0;
+
+        this.setLevelHeader('bubbles', level);
+
+        this.updateBubblesScoreUI();
+        this.startBubblesSpawner();
+
+        soundManager.speak(level.instruction);
+    }
+
+    updateBubblesScoreUI() {
+        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
+        this.bubblesScoreBadge.textContent = `🧼 ${this.bubblesPoppedScore} / ${level.targetCount} Kurtarıldı`;
+    }
+
+    startBubblesSpawner() {
+        this.stopBubblesSpawner();
+        this.bubblesPond.innerHTML = '';
+        this.bubblesChestItems.innerHTML = '<span class="chest-empty-hint">Köpükleri patlatınca sürprizler buraya gelecek! ✨</span>';
+        this.activeBubbles = [];
+
+        // İlk 4 baloncuk hemen çıksın
+        for (let i = 0; i < 4; i++) {
+            this.spawnSoapBubble();
+        }
+
+        this.bubblesSpawnTimer = setInterval(() => {
+            // Uygulama arka plandayken yeni köpük çıkmasın (dönünce kaldığı yerden sürer)
+            if (document.hidden) return;
+            if (this.activeBubbles.length < 8) {
+                this.spawnSoapBubble();
+            }
+        }, 1300);
+    }
+
+    stopBubblesSpawner() {
+        if (this.bubblesSpawnTimer) {
+            clearInterval(this.bubblesSpawnTimer);
+            this.bubblesSpawnTimer = null;
+        }
+        this.activeBubbles.forEach(b => {
+            if (b.parentNode) b.parentNode.removeChild(b);
+        });
+        this.activeBubbles = [];
+    }
+
+    spawnSoapBubble() {
+        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
+        const surprise = level.surprises[Math.floor(Math.random() * level.surprises.length)];
+
+        const bubble = document.createElement('div');
+        bubble.className = 'magic-soap-bubble';
+
+        // Yatay rastgele konum (%8 - %88)
+        const leftPercent = 8 + Math.random() * 80;
+        bubble.style.left = `${leftPercent}%`;
+        bubble.style.bottom = '-140px';
+
+        bubble.innerHTML = `
+            <div class="bubble-sheen-shine"></div>
+            <div class="bubble-surprise-inside">${surprise.symbol}</div>
+        `;
+
+        const duration = 6.5 + Math.random() * 4;
+        bubble.style.animation = `soapBubbleFloat ${duration}s linear infinite`;
+
+        const popHandler = (e) => {
+            e.stopPropagation();
+            this.popSoapBubble(bubble, surprise);
+        };
+        bubble.addEventListener('pointerdown', popHandler);
+
+        this.bubblesPond.appendChild(bubble);
+        this.activeBubbles.push(bubble);
+    }
+
+    async popSoapBubble(bubbleEl, surprise) {
+        soundManager.playBubblePlop();
+
+        this.activeBubbles = this.activeBubbles.filter(b => b !== bubbleEl);
+        bubbleEl.classList.add('soap-bubble-popped');
+
+        // Sesli isimlendirme
+        soundManager.speak(surprise.label);
+
+        // Sandığa oyuncak ekle
+        const emptyHint = this.bubblesChestItems.querySelector('.chest-empty-hint');
+        if (emptyHint) {
+            this.bubblesChestItems.innerHTML = '';
+        }
+
+        const toyEl = document.createElement('div');
+        toyEl.className = 'chest-toy-item';
+        toyEl.innerHTML = `<span>${surprise.symbol}</span>`;
+        this.bubblesChestItems.appendChild(toyEl);
+
+        this.bubblesPoppedScore++;
+        this.updateBubblesScoreUI();
+
+        const level = window.GAME_DATA.SOAP_BUBBLE_LEVELS[this.bubblesLevelIdx];
+        if (this.bubblesPoppedScore >= level.targetCount) {
+            this.stopBubblesSpawner();
+            soundManager.playSuccess();
+            this.triggerConfetti();
+            this.addStar(2);
+
+            this.celebrateAfter(800,
+                "Sihirli Köpük Ustası! 🧼✨",
+                `Tüm gizli sürprizleri sandığına topladın!`
+            );
+        }
+
+        setTimeout(() => {
+            if (bubbleEl.parentNode) {
+                bubbleEl.parentNode.removeChild(bubbleEl);
+            }
+        }, 300);
+    }
+}
+
+installGameMethods(BubblesGame);

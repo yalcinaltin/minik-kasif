@@ -1,7 +1,7 @@
 # 🐰 Minik Kaşif: 3-5 Yaş Bilişsel, Zihinsel ve Algoritmik Oyun Dünyası
 ### 🌐 (Toddler Games Online İlhamlı, 15 Oyunlu, Telefona Kurulabilen Sürüm)
 
-> **Toddler Games Online (toddlergamesonline.com)** pedagojisi ve okul öncesi erken çocukluk gelişim dinamikleri temel alınarak hazırlanan; **tam ekran / dev ekran uyumlu**, **büyük dokunmatik butonlu**, **yazısız piktografik arayüze** ve **anlaşılır Türkçe sesli yönlendirmeye** sahip zengin eğitici web oyun platformu.
+> **Toddler Games Online (toddlergamesonline.com)** pedagojisi ve okul öncesi erken çocukluk gelişim dinamikleri temel alınarak hazırlanan; **tam ekran uyumlu**, **büyük dokunmatik butonlu**, **yazısız piktografik arayüze** ve **anlaşılır Türkçe sesli yönlendirmeye** sahip zengin eğitici web oyun platformu.
 
 **▶️ Hemen oyna:** https://yalcinaltin.github.io/minik-kasif/ — telefonda açıp **Ana ekrana ekle** ile uygulama gibi kurabilirsiniz.
 
@@ -27,7 +27,7 @@
 4. **📺 Ekrana Tam Sığan Dev Oyun Alanı:**
    * Oyun tahtaları kalan ekran yüksekliğine göre büyür: 1920×1080'de labirent ~750px, 1366×768 dizüstünde ve 768×1024 dikey tablette **kaydırmadan** tek ekrana sığar (tahta ile yön okları aynı anda görünür).
    * Dikey tablette labirentin okları tahtanın altında yan yana, Tavşancık'ın komut masası tahtanın yanında dar bir sütundur.
-   * Tek tıkla **Dev Ekran Modu** (`🔍`) ve **Tam Ekran (F11 / Fullscreen API)** desteği.
+   * Tek tıkla **Tam Ekran (F11 / Fullscreen API)** desteği.
 
 5. **🏠 Oyun Seçim Ana Ekranı:**
    * Açılışta 15 oyun büyük resimli kartlar halinde görünür (yatay kaydırmalı sekme şeridi kaldırıldı).
@@ -75,7 +75,7 @@
 2. Açılan **oyun seçim ekranından** bir oyuna dokunun; oyun içinden **🏠** ile menüye dönebilirsiniz. Labirentte klavyenin **Yön Tuşları** (`⬆️ ⬇️ ⬅️ ➡️`) da çalışır.
 3. **Mikrofon kullanılmaz:** Renk / Sayı Bulucu'da maskot rengi ya da sayıyı söyler, çocuk dinleyip doğru karta dokunur. Oyun hiçbir ses kaydı almaz ve dışarı ses göndermez.
 4. **Telefonda:** dikey ve yatay ekranda 15 oyun kaydırmadan oynanır (360×640'tan itibaren test edildi). Telefonda başlık yalnızca simgelerden oluşur; yönerge balonu kısa süre görünüp kaybolur, **başlıktaki 🐶'ya dokununca** yönerge tekrar söylenir.
-5. Sağ üstteki **⛶ Tam Ekran** veya **🔍 Dev Ekran** düğmesine basarak oyunu tam ekranda keyifle oynayabilirsiniz!
+5. Sağ üstteki **⛶ Tam Ekran** düğmesine basarak oyunu tam ekranda keyifle oynayabilirsiniz!
 
 ---
 
@@ -89,3 +89,16 @@ Oyun bir **Progressive Web App**'tir: bir web adresinden (https) açıldığınd
 * **Hep güncel:** Service worker oyun dosyalarında **önce interneti** dener; bağlantı varken her açılışta en yeni sürüm gelir, yoksa (ya da 4 sn'de cevap gelmezse) cihazdaki kopya kullanılır. Bu yüzden güncellemeden sonra telefonda eski görünüm kalmaz.
 * **Simgeler:** `icons/` klasöründe; kaynak çizimler `icon.svg` (normal) ve `icon-maskable.svg` (Android'in yuvarlak/damla maskeleri için kenara kadar dolu). PNG'ler bu SVG'lerden üretilmiştir.
 * **Not:** Service worker yalnızca `https://` ya da `localhost` üzerinden çalışır; `index.html` dosyaya çift tıklanarak açıldığında oyun yine çalışır ama kurulum ve internetsiz oynama devreye girmez.
+
+---
+
+## 🛠️ Geliştirme ve Test
+
+Oyun derlemesizdir: tarayıcı dosyaları olduğu gibi yükler. `package.json` yalnızca geliştirme araçları içindir (Node 22+).
+
+* **Dosya düzeni:** `game.js` ortak motor (menü, ses, yıldız, kutlama, oyun kaydı `this.games`); her oyun kendi dosyasında (`games/realmaze.js`, `games/bunny.js` …). Oyun dosyaları `game.js`'ten sonra yüklenir ve yöntemlerini `installGameMethods` ile ana sınıfa ekler. Bölüm verisi `levels.js`'te.
+* **Yeni oyun eklerken:** `index.html`'e bölüm ve `<script src="games/…">` satırı, `game.js`'teki `this.games` kaydına bir satır, `sw.js`'teki `APP_SHELL` listesine dosya adı eklenir; `sw.js`'teki `CACHE_VERSION` bir artırılır.
+* **Kurulum:** `npm ci` ve bir kez `npx playwright install chromium`.
+* **Yerel sunucu:** `npm run serve` → http://localhost:8765
+* **Hepsini denetle:** `npm run check` — bölüm verisi denetimi (`tools/check-levels.mjs`: labirentler çözülebilir mi, cevaplar seçeneklerde mi …), ESLint + Stylelint ve Playwright testleri (15 oyun 4 ekran boyutunda taşmadan ve hatasız açılır, çevrimdışı açılış, düzeltilmiş hataların geri gelmemesi).
+* **GitHub Actions:** her push'ta aynı denetim çalışır (`.github/workflows/check.yml`). `master`'a push ~15 sn içinde canlıya çıktığı için önce yerelde `npm run check` çalıştırın.

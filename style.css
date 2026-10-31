@@ -66,7 +66,6 @@ html, body {
     -webkit-touch-callout: none;
 }
 
-.brand-mascot { cursor: pointer; }
 
 /* Konfeti Katmanı */
 #confetti-canvas {
@@ -107,6 +106,7 @@ html, body {
 .brand-mascot {
     font-size: 2.6rem;
     animation: mascotBounce 2.5s infinite ease-in-out;
+    cursor: pointer; /* dokununca yönerge tekrar söylenir */
 }
 
 .brand-title {
@@ -186,19 +186,6 @@ html, body {
     background: #EFF6FF;
     border-color: #BFDBFE;
     color: #1D4ED8;
-}
-
-.btn-screen-scale {
-    background: #FEF3C7;
-    border-color: #FDE68A;
-    color: #B45309;
-}
-
-.btn-screen-scale.active-mode {
-    background: #F59E0B;
-    border-color: #D97706;
-    color: #FFFFFF;
-    box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
 }
 
 .btn-pill-info {
@@ -1375,12 +1362,11 @@ body.on-home .nav-tab-btn:hover .tab-icon {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 20px;
+    padding: clamp(10px, 1.8vh, 20px);
     cursor: pointer;
     transition: all 0.25s;
 }
 
-.podium-slot { padding: clamp(10px, 1.8vh, 20px); }
 .podium-slot:nth-child(1) { height: calc(var(--podium-max) * 0.74); }
 .podium-slot:nth-child(2) { height: calc(var(--podium-max) * 0.87); }
 .podium-slot:nth-child(3) { height: var(--podium-max); } /* DEVASE PODYUM */
@@ -1466,13 +1452,17 @@ body.on-home .nav-tab-btn:hover .tab-icon {
     font-weight: 900;
 }
 
+/* "Baştan Sırala" başlıkla aynı satırda, nesneler altta */
 .size-pool-wrapper {
     border-top: 4px dashed #E2E8F0;
     padding-top: clamp(10px, 2.4vh, 28px);
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "title reset"
+        "pool pool";
     align-items: center;
-    gap: clamp(8px, 1.8vh, 20px);
+    gap: clamp(8px, 1.8vh, 20px) 16px;
 }
 
 .size-items-pool {
@@ -1508,50 +1498,6 @@ body.on-home .nav-tab-btn:hover .tab-icon {
 .size-item-card .item-visual { font-size: clamp(2.8rem, 8vh, 5.5rem); }
 .size-item-card .item-name { font-size: 1.15rem; font-weight: 900; color: #C2410C; margin-top: 8px; }
 .pool-all-placed { color: #16A34A; font-weight: 800; font-size: 1.4rem; }
-
-/* ========================================= */
-/* 🌟 DEV EKRAN MODU (.giant-screen-active)  */
-/* Tüm pencereyi kaplayan Arcade Modu       */
-/* ========================================= */
-
-body.giant-screen-active {
-    background: linear-gradient(135deg, #CFFAFE 0%, #D1FAE5 50%, #FEF9C3 100%);
-}
-
-body.giant-screen-active .app-header {
-    padding: 6px 20px;
-}
-
-body.giant-screen-active .brand-title {
-    font-size: 1.4rem;
-}
-
-body.giant-screen-active .brand-badge {
-    display: none;
-}
-
-body.giant-screen-active .mascot-speech-container {
-    padding: 4px 16px 0;
-}
-
-body.giant-screen-active .nav-tab-container {
-    padding: 6px 16px;
-}
-
-body.giant-screen-active .main-content {
-    padding: 6px 16px 20px;
-}
-
-/* Dev ekranda başlık küçülür; --chrome-h game.js tarafından yeniden ölçüldüğü için
-   tahta ve gökyüzü kendiliğinden büyür, yalnızca üst sınırlar gevşetilir */
-body.giant-screen-active .bunny-grid {
-    max-width: min(calc(var(--play-h) - 48px), 960px);
-    max-height: min(calc(var(--play-h) - 48px), 960px);
-}
-
-body.giant-screen-active .balloon-sky-wrapper {
-    height: min(var(--play-h), 1050px);
-}
 
 /* ========================================= */
 /* 📖 MODALLAR & DİALOGLAR                   */
@@ -2368,28 +2314,6 @@ dialog::backdrop {
     40%, 80% { transform: translateX(9px); }
 }
 
-/* Dev Ekran Uyarlamaları (büyük monitörde büyür, dizüstünde ekrana sığar) */
-body.giant-screen-active .finder-hero-card {
-    padding: clamp(10px, 2.4vh, 30px) 42px;
-}
-
-body.giant-screen-active .target-word-glow {
-    font-size: clamp(2.6rem, min(8vw, 9vh), 6rem);
-}
-
-body.giant-screen-active .finder-card {
-    min-height: clamp(140px, 22vh, 270px);
-    padding: clamp(10px, 2vh, 36px) 24px;
-}
-
-body.giant-screen-active .finder-card .card-emoji-visual {
-    font-size: clamp(2.4rem, min(7vw, 7vh), 6.2rem);
-}
-
-body.giant-screen-active .finder-card .card-title-text {
-    font-size: clamp(1.6rem, 3.6vh, 2.3rem);
-}
-
 /* ========================================= */
 /* 🖥️ YATAY EKRAN SIKIŞTIRMALARI             */
 /* Dizüstü (768px yükseklik) ekranlarda da   */
@@ -2434,16 +2358,7 @@ body.giant-screen-active .finder-card .card-title-text {
 }
 #view-bunny .code-action-row .btn-run-code { flex: 1.4; }
 
-/* Boyut Dünyası: "Baştan Sırala" başlıkla aynı satırda */
-.size-pool-wrapper {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-        "title reset"
-        "pool pool";
-    align-items: center;
-    column-gap: 16px;
-}
+/* Boyut Dünyası: "Baştan Sırala" başlıkla aynı satırda (kapsayıcı kuralı yukarıda) */
 .size-pool-wrapper .options-title { grid-area: title; text-align: center; }
 .size-pool-wrapper .size-items-pool { grid-area: pool; }
 .size-pool-wrapper #btn-reset-size { grid-area: reset; padding: 10px 18px; }
@@ -2472,25 +2387,34 @@ body.giant-screen-active .finder-card .card-title-text {
     .realmaze-controls-card .realmaze-hud-box { grid-area: hud; justify-content: flex-start; }
     .realmaze-controls-card #btn-reset-realmaze { grid-area: reset; }
 
+    /* Ok düğmesi ölçüleri: düğmeler ve tahta hesabı aynı değişkeni kullanır */
+    #view-realmaze, #view-bunny {
+        --arrow-btn: clamp(64px, 8vh, 96px);
+        --arrow-gap: 10px;
+    }
+
     /* Dikeyde oklar biraz küçülür ki tahtaya yer kalsın (yine de 64px+ dokunma hedefi) */
     .btn-command-arrow {
-        width: clamp(64px, 8vh, 96px);
-        height: clamp(64px, 8vh, 96px);
+        width: var(--arrow-btn);
+        height: var(--arrow-btn);
         font-size: clamp(2rem, 4vh, 2.8rem);
     }
-    .arrow-control-pad { gap: 10px; }
+    .arrow-control-pad { gap: var(--arrow-gap); }
 
     /* Tahta: kalan yükseklikten kontrol şeridi (3 ok + 2 boşluk + kart iç boşlukları) düşülür */
     #view-realmaze .bunny-grid {
-        max-width: min(calc(var(--play-h) - 48px - 28px - 3 * clamp(64px, 8vh, 96px) - 20px - 40px), calc(100vw - 80px));
-        max-height: min(calc(var(--play-h) - 48px - 28px - 3 * clamp(64px, 8vh, 96px) - 20px - 40px), calc(100vw - 80px));
+        --controls-h: calc(3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 48px + 28px + 40px);
+        --board-size: min(calc(var(--play-h) - var(--controls-h)), calc(100vw - 80px));
+        max-width: var(--board-size);
+        max-height: var(--board-size);
     }
 
     #view-realmaze .grid-board-card { height: auto; }
 
     /* Tavşancık dikey: tahta solda, komut masası sağda dar sütun — çocuk komut dizerken tahtayı görür */
+    #view-bunny { --deck-w: 290px; }
     #view-bunny .bunny-gameplay-layout {
-        grid-template-columns: 1fr minmax(250px, 290px);
+        grid-template-columns: 1fr minmax(250px, var(--deck-w));
         align-items: start;
     }
     #view-bunny .coding-deck-card {
@@ -2501,9 +2425,11 @@ body.giant-screen-active .finder-card .card-title-text {
     #view-bunny .code-action-row { flex-direction: row; flex-wrap: wrap; }
     #view-bunny .code-action-row .btn-run-code { flex: 1 1 100%; }
     #view-bunny .code-action-row .btn-secondary-action { flex: 1 1 40%; padding: 10px; font-size: 1rem; }
+    /* Genişlikten komut masası sütunu, sütun arası ve kenar boşlukları düşülür */
     #view-bunny .bunny-grid {
-        max-width: min(calc(var(--play-h) - 32px), calc(100vw - 32px - 16px - 290px - 32px));
-        max-height: min(calc(var(--play-h) - 32px), calc(100vw - 32px - 16px - 290px - 32px));
+        --board-size: min(calc(var(--play-h) - 32px), calc(100vw - var(--deck-w) - 32px - 16px - 32px));
+        max-width: var(--board-size);
+        max-height: var(--board-size);
     }
     #view-bunny .grid-board-card { height: auto; }
 
@@ -3099,7 +3025,7 @@ body.giant-screen-active .finder-card .card-title-text {
     /* Başlık: yalnızca simgeler (köpeğe dokun = yönergeyi tekrar dinle) */
     .app-header { padding: 4px 10px; }
     .brand-wrapper { gap: 8px; }
-    .brand-title, .brand-badge, .btn-screen-scale { display: none; }
+    .brand-title, .brand-badge { display: none; }
     .brand-mascot { font-size: 1.9rem; }
     .header-actions { gap: 6px; }
     .btn-circle { width: 38px; height: 38px; font-size: 1.05rem; }
@@ -3220,15 +3146,20 @@ body.giant-screen-active .finder-card .card-title-text {
     body.on-home .nav-tab-container { grid-template-columns: repeat(2, 1fr); }
 
     /* Labirent: tahta üstte, oklar altta solda, bilgi + başa dön sağda */
-    .btn-command-arrow { width: 60px; height: 60px; font-size: 2rem; border-radius: 18px; }
-    .arrow-control-pad { gap: 8px; }
+    #view-realmaze, #view-bunny { --arrow-btn: 60px; --arrow-gap: 8px; }
+    #view-bunny { --arrow-btn: 54px; --train-h: 66px; }
+    .btn-command-arrow { width: var(--arrow-btn); height: var(--arrow-btn); font-size: 2rem; border-radius: 18px; }
+    .arrow-control-pad { gap: var(--arrow-gap); }
     .realmaze-controls-card { column-gap: 12px; }
     .realmaze-controls-card .deck-section-title { display: none; }
     .realmaze-controls-card .realmaze-hud-box { justify-content: center; }
     .hud-pill { font-size: 0.85rem; padding: 4px 10px; }
+    /* Tahta: kalan yükseklikten 3 ok + 2 boşluk + kart iç boşlukları düşülür */
     #view-realmaze .bunny-grid {
-        max-width: min(calc(100vw - 40px), calc(var(--play-h) - 3 * 60px - 16px - 20px - 20px - 8px));
-        max-height: min(calc(100vw - 40px), calc(var(--play-h) - 3 * 60px - 16px - 20px - 20px - 8px));
+        --controls-h: calc(3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 20px + 20px + 8px);
+        --board-size: min(calc(100vw - 40px), calc(var(--play-h) - var(--controls-h)));
+        max-width: var(--board-size);
+        max-height: var(--board-size);
     }
     .grid-board-card { padding: 8px; }
 
@@ -3243,19 +3174,21 @@ body.giant-screen-active .finder-card .card-title-text {
         gap: 8px 12px;
     }
     #view-bunny .deck-section-title { display: none; }
-    #view-bunny .command-train-container { min-height: 66px; padding: 6px 8px; gap: 8px; }
+    #view-bunny .command-train-container { min-height: var(--train-h); padding: 6px 8px; gap: 8px; }
     .command-card { width: 50px; height: 56px; border-width: 3px; }
     .command-card .card-arrow { font-size: 1.7rem; }
     .command-card .card-step-badge { font-size: 0.7rem; top: 2px; left: 5px; }
     .command-card .card-remove-badge { width: 20px; height: 20px; font-size: 0.7rem; }
     .train-empty-placeholder { font-size: 0.9rem; }
-    #view-bunny .btn-command-arrow { width: 54px; height: 54px; }
     #view-bunny .code-action-row { flex-direction: column; flex-wrap: nowrap; }
     #view-bunny .code-action-row .btn-run-code { flex: 1; font-size: 1.2rem; padding: 10px; }
     #view-bunny .code-action-row .btn-secondary-action { flex: 0 0 auto; font-size: 0.95rem; padding: 8px; }
+    /* Tahta: kalan yükseklikten komut treni + 3 ok + boşluklar düşülür */
     #view-bunny .bunny-grid {
-        max-width: min(calc(100vw - 40px), calc(var(--play-h) - 3 * 54px - 16px - 66px - 8px - 20px - 16px - 16px));
-        max-height: min(calc(100vw - 40px), calc(var(--play-h) - 3 * 54px - 16px - 66px - 8px - 20px - 16px - 16px));
+        --controls-h: calc(var(--train-h) + 3 * var(--arrow-btn) + 2 * var(--arrow-gap) + 8px + 20px + 16px + 16px);
+        --board-size: min(calc(100vw - 40px), calc(var(--play-h) - var(--controls-h)));
+        max-width: var(--board-size);
+        max-height: var(--board-size);
     }
 
     /* Yapboz: tahta üstte, parça tepsisi altta */
